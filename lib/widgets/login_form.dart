@@ -11,47 +11,35 @@ class LoginForm extends StatefulWidget {
 
 class _LoginFormState extends State<LoginForm> {
 
-  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  LoginBloc _loginBloc;
+
   final _formKey = GlobalKey<FormState>();
-  var _formData = {
-    'email': '',
-    'password': ''
-  };
 
-  void _submit() {
-    if (_formKey.currentState.validate()) {
-//      dev.log("Valid Form");
-      _formKey.currentState.save();
-   //   UserRepository().getAuthToken(email: _formData['email'], password: _formData['password']);
-    }
+  @override
+  void initState() {
+    super.initState();
+    _loginBloc = BlocProvider.of<LoginBloc>(context);
+    _emailController.addListener(_onLoginEmailChanged);
+    _passwordController.addListener(_onLoginPasswordChanged);
   }
 
-  /*
-  String _validateEmail(String value){
-    if (value.isEmpty){
-      return "Email is empty";
-    }
-
-    if (!value.contains("@")  || !value.contains(".")){
-      return "Not a valid email";
-    }
+  void _onLoginEmailChanged() {
+    _loginBloc.add(LoginEmailChanged(email: _emailController.text));
   }
 
-  String _validatePassword(String value){
-    if (value.isEmpty || value.length < 5) {
-      return 'Password is too short!';
-    }
+  void _onLoginPasswordChanged() {
+    _loginBloc.add(LoginPasswordChanged(password: _passwordController.text));
   }
-*/
 
-  Widget _buildForm(){
+  Widget _buildForm(LoginState state){
 
     _onLoginButtonPressed() {
       BlocProvider.of<LoginBloc>(context).add(
         LoginButtonPressed(
-            username: _usernameController.text,
+            email: _emailController.text,
             password: _passwordController.text
         ),
       );
@@ -67,12 +55,20 @@ class _LoginFormState extends State<LoginForm> {
           TextFormField(
             decoration: InputDecoration(labelText: 'E-mail'),
             keyboardType: TextInputType.emailAddress,
-            controller: _usernameController,
+            controller: _emailController,
+            autovalidate: true,
+            validator: (_) {
+              return !state.isEmailValid ? 'Invalid Email': null;
+            },
           ),
           TextFormField(
             decoration: InputDecoration(labelText: 'Password'),
             obscureText: true,
             controller: _passwordController,
+            autovalidate: true,
+            validator: (_) {
+              return !state.isPasswordValid ? "Invalid password" : null;
+            },
           ),
           SizedBox(
             height: 20,
@@ -87,7 +83,7 @@ class _LoginFormState extends State<LoginForm> {
                 .primaryTextTheme
                 .button
                 .color,
-            onPressed: _onLoginButtonPressed,
+            onPressed: state.isFormValid ? _onLoginButtonPressed : null,
           ),
         ],
       ),
@@ -100,10 +96,10 @@ class _LoginFormState extends State<LoginForm> {
 
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
-        if (state is LoginFailure) {
+        if (state.isFailure) {
           Scaffold.of(context).showSnackBar(
             SnackBar(
-              content: Text('${state.error}'),
+              content: Text('${state.errorMessage}'),
               backgroundColor: Colors.red,
             )
           );
@@ -111,12 +107,12 @@ class _LoginFormState extends State<LoginForm> {
       },
       child: BlocBuilder<LoginBloc, LoginState>(
         builder: (context, state) {
-          if (state is LoginInProgress) {
+          if (state.isSubmitting) {
             return Center(
               child: CircularProgressIndicator(),
             );
           }
-            return _buildForm();
+            return _buildForm(state);
 
         },
       ),
