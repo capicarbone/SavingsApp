@@ -28,12 +28,13 @@ class UserRepository {
 
     if (response.statusCode == 200){
       final responseData = json.decode(response.body);
-      // TODO: Save token
 
       return responseData['token'];
+    }else{
+      // TODO: Improve message
+      throw Exception(response.body);
     }
 
-    return null;
   }
 
   Future<String> persistToken(String token) async {

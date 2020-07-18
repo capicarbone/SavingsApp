@@ -46,17 +46,57 @@ class _LoginFormState extends State<LoginForm> {
   }
 */
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildForm(){
 
     _onLoginButtonPressed() {
       BlocProvider.of<LoginBloc>(context).add(
         LoginButtonPressed(
-          username: _usernameController.text,
-          password: _passwordController.text
+            username: _usernameController.text,
+            password: _passwordController.text
         ),
       );
     }
+
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: <Widget>[
+          SizedBox(
+            height: 20,
+          ),
+          TextFormField(
+            decoration: InputDecoration(labelText: 'E-mail'),
+            keyboardType: TextInputType.emailAddress,
+            controller: _usernameController,
+          ),
+          TextFormField(
+            decoration: InputDecoration(labelText: 'Password'),
+            obscureText: true,
+            controller: _passwordController,
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          RaisedButton(
+            child: Text("Sign in"),
+            color: Theme
+                .of(context)
+                .primaryColor,
+            textColor: Theme
+                .of(context)
+                .primaryTextTheme
+                .button
+                .color,
+            onPressed: _onLoginButtonPressed,
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
 
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
@@ -71,44 +111,13 @@ class _LoginFormState extends State<LoginForm> {
       },
       child: BlocBuilder<LoginBloc, LoginState>(
         builder: (context, state) {
-          return Form(
-            key: _formKey,
-            child: Column(
-              children: <Widget>[
-                SizedBox(
-                  height: 20,
-                ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'E-mail'),
-                  keyboardType: TextInputType.emailAddress,
-                  controller: _usernameController,
-                ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Password'),
-                  obscureText: true,
-                  controller: _passwordController,
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                RaisedButton(
-                  child: Text("Sign in"),
-                  color: Theme
-                      .of(context)
-                      .primaryColor,
-                  textColor: Theme
-                      .of(context)
-                      .primaryTextTheme
-                      .button
-                      .color,
-                  onPressed: state is! LoginInProgress ? _onLoginButtonPressed : null,
-                ),
-                Container(
-                  child: state is LoginInProgress ? CircularProgressIndicator() : null,
-                )
-              ],
-            ),
-          );
+          if (state is LoginInProgress) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+            return _buildForm();
+
         },
       ),
     );
