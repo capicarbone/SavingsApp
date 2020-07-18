@@ -8,12 +8,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:savings_app/repositories/user_repository.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../lib/blocs/authentication/authentication_bloc.dart';
+import 'package:savings_app/blocs/authentication/authentication_events.dart';
 import 'package:savings_app/main.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp());
+    final userRepository = UserRepository();
+    await tester.pumpWidget(BlocProvider<AuthenticationBloc>(
+      create: (context) {
+        return AuthenticationBloc(userRepository: userRepository)..add(AuthenticationStarted());
+      },
+      child: MyApp(userRepository: userRepository),
+    ));
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);
