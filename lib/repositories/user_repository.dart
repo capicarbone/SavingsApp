@@ -52,4 +52,9 @@ class UserRepository {
     return prefs.getKeys().contains("token");
   }
 
+  Future<String> getPersistedToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return await prefs.get("token");
+  }
+
 }

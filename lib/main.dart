@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
         builder: (context, state) {
 
           if (state is AuthenticationSuccess) {
-            return HomeScreen();
+            return HomeScreen(authToken: state.token,);
           }
 
           if (state is AuthenticationFailure) {

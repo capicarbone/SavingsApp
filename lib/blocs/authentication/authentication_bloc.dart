@@ -19,7 +19,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       final bool hasToken = await userRepository.hastToken();
 
       if (hasToken){
-        yield AuthenticationSuccess();
+        var token = await userRepository.getPersistedToken();
+        yield AuthenticationSuccess(token: token);
       }else {
         yield AuthenticationFailure();
       }
@@ -28,7 +29,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     if (event is AuthenticationLoggedIn) {
       yield AuthenticationInProgress();
       await userRepository.persistToken(event.token);
-      yield AuthenticationSuccess();
+      yield AuthenticationSuccess(token: event.token);
     }
 
     if (event is AuthenticationLoggedOut) {
