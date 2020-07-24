@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:flutter/material.dart';
+import 'package:savings_app/blocs/settings_syncer/settings_syncer_bloc.dart';
+import 'package:savings_app/blocs/settings_syncer/settings_syncer_states.dart';
 import 'package:savings_app/blocs/summary/summary_bloc.dart';
 import 'package:savings_app/blocs/summary/summary_events.dart';
 import 'package:savings_app/blocs/summary/summary_states.dart';
@@ -52,17 +54,27 @@ class _MySummaryState extends State<MySummary> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SummaryBloc, SummaryState>(
-      bloc: widget._summaryBloc,
-      builder: (context, state) {
-        return Container(
-            child: Column(
-          children: <Widget>[
-            _fundsSetionWidget(state),
-            _accountsSetionWidget(state)
-          ],
-        ));
+    return BlocListener<SettingsSyncerBloc, SettingsSyncState>(
+      listenWhen: (previous, current) {
+        return current is SettingsUpdated;
       },
+      listener: (context, state) {
+        // No estoy seguro si esto deberia estar aqui, quizas deberia estar despues
+        // bloc builder
+        widget._summaryBloc.add(LoadDataEvent());
+      },
+      child: BlocBuilder<SummaryBloc, SummaryState>(
+        bloc: widget._summaryBloc,
+        builder: (context, state) {
+          return Container(
+              child: Column(
+            children: <Widget>[
+              _fundsSetionWidget(state),
+              _accountsSetionWidget(state)
+            ],
+          ));
+        },
+      ),
     );
   }
 
