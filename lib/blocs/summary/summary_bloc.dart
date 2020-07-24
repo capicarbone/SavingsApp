@@ -17,11 +17,13 @@ class SummaryBloc extends Bloc<SummaryEvent, SummaryState> {
     if (event is LoadDataEvent) {
       yield SummaryLoadingData();
 
+      // TODO: Should call method for get from the database
       String funds = await fundsRepository.getUserFunds();
       Future.delayed(Duration(seconds: 5));
 
       yield SummaryDataLoaded(funds: funds, accounts: null);
 
+      // TODO: Should call method for get from the database
       String accounts = await accountsRepository.getUserAccounts();
 
       yield SummaryDataLoaded(funds: funds, accounts: accounts);
