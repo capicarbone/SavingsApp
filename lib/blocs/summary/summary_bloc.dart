@@ -2,6 +2,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:savings_app/blocs/summary/summary_events.dart';
 import 'package:savings_app/blocs/summary/summary_states.dart';
+import 'package:savings_app/models/account.dart';
 import 'package:savings_app/repositories/accounts_repository.dart';
 import 'package:savings_app/repositories/funds_repository.dart';
 
@@ -24,7 +25,7 @@ class SummaryBloc extends Bloc<SummaryEvent, SummaryState> {
       yield SummaryDataLoaded(funds: funds, accounts: null);
 
       // TODO: Should call method for get from the database
-      String accounts = await accountsRepository.getUserAccounts();
+      List<Account> accounts = await accountsRepository.getUserAccounts();
 
       yield SummaryDataLoaded(funds: funds, accounts: accounts);
     }

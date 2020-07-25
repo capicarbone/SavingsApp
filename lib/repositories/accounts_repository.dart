@@ -1,21 +1,28 @@
 
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
+import 'package:savings_app/models/account.dart';
 
 class AccountsRepository {
   String authToken;
+  List<Account> _accounts = [];
 
   AccountsRepository({this.authToken});
 
-  Future<String> getUserAccounts() async {
+  Future<List<Account>> getUserAccounts() async {
 
     print("Bearer $authToken");
 
     final response = await http.get("https://flask-mymoney.herokuapp.com/api/accounts",
       headers: {"Authorization": "Bearer $authToken"});
 
+    List<dynamic> objects = json.decode((response.body));
+    _accounts.addAll(objects.map((map) => Account.fromMap(map)));
+
     print (response.body);
 
-    return response.body;
+    return _accounts;
 
   }
 }
