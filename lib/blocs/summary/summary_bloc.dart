@@ -19,14 +19,11 @@ class SummaryBloc extends Bloc<SummaryEvent, SummaryState> {
     if (event is LoadDataEvent) {
       yield SummaryLoadingData();
 
-      // TODO: Should call method for get from the database
-      List<Fund> funds = await fundsRepository.fetchUserFunds();
-      Future.delayed(Duration(seconds: 5));
+      List<Fund> funds = fundsRepository.recoverUserFunds();
 
       yield SummaryDataLoaded(funds: funds, accounts: null);
 
-      // TODO: Should call method for get from the database
-      List<Account> accounts = await accountsRepository.fetchUserAccounts();
+      List<Account> accounts = accountsRepository.recoverUserAccounts();
 
       yield SummaryDataLoaded(funds: funds, accounts: accounts);
     }

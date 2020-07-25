@@ -32,7 +32,7 @@ class MySummary extends StatefulWidget {
 }
 
 class _MySummaryState extends State<MySummary> {
-  Widget _fundsSetionWidget(SummaryState state) {
+  Widget _fundsSectionWidget(SummaryState state) {
     if (state is SummaryDataLoaded && state.funds != null) {
       return Container(
         child: Column(
@@ -62,7 +62,7 @@ class _MySummaryState extends State<MySummary> {
     }
   }
 
-  Widget _accountsSetionWidget(SummaryState state) {
+  Widget _accountsSectionWidget(SummaryState state) {
     if (state is SummaryDataLoaded && state.accounts != null) {
       return Container(
         child: Column(
@@ -110,8 +110,8 @@ class _MySummaryState extends State<MySummary> {
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
             children: <Widget>[
-                _fundsSetionWidget(state),
-                _accountsSetionWidget(state)
+                _fundsSectionWidget(state),
+                _accountsSectionWidget(state)
             ],
           ),
               ));

@@ -1,23 +1,25 @@
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:savings_app/blocs/settings_syncer/settings_syncer_events.dart';
 import 'package:savings_app/blocs/settings_syncer/settings_syncer_states.dart';
 import 'package:savings_app/repositories/accounts_repository.dart';
+import 'package:savings_app/repositories/funds_repository.dart';
+import 'package:meta/meta.dart';
 
 class SettingsSyncerBloc extends Bloc<SettingsSyncerEvent, SettingsSyncState> {
-
   AccountsRepository accountsRepository;
+  FundsRepository fundsRepository;
 
-  SettingsSyncerBloc({this.accountsRepository}) : super(SyncInitial());
+  SettingsSyncerBloc(
+      {@required this.accountsRepository, @required this.fundsRepository})
+      : super(SyncInitial());
 
   @override
   Stream<SettingsSyncState> mapEventToState(SettingsSyncerEvent event) async* {
-
     if (event is SettingsSyncerUpdateRequested) {
-      yield SyncingSettings(initial: false);
+      yield SyncingSettings(initial: true);
       await accountsRepository.fetchUserAccounts();
+      await fundsRepository.fetchUserFunds();
       yield SettingsUpdated();
     }
   }
-
 }

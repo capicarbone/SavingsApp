@@ -36,36 +36,41 @@ class HomeScreen extends StatelessWidget {
       ),
       body: BlocProvider(
         create: (context) {
-          return SettingsSyncerBloc(accountsRepository: accountsRepository);
+          return SettingsSyncerBloc(accountsRepository: accountsRepository, fundsRepository: fundsRepository);
         },
         child: BlocBuilder<SettingsSyncerBloc, SettingsSyncState>(
             builder: (context, state) {
+          // TODO: Improvable
           if (state is SyncInitial)
             BlocProvider.of<SettingsSyncerBloc>(context)
                 .add(SettingsSyncerUpdateRequested());
 
-          if (state is SyncInitial ||
-              (state is SyncingSettings && state.initial)) {
-            return Container(
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    children: <Widget>[
-                      CircularProgressIndicator(),
-                      Text("Syncing")
-                    ],
-                  ),
-                ),
-              ),
+
+          if (state is SettingsUpdated || (state is SyncingSettings && !state.initial) ) {
+            var bloc = BlocProvider.of<SettingsSyncerBloc>(context);
+            return MySummary(
+              token: authToken,
+              fundsRepository: bloc.fundsRepository,
+              accountsRepository: bloc.accountsRepository,
             );
           }
 
-          return MySummary(
-            token: authToken,
-            fundsRepository: fundsRepository,
-            accountsRepository: accountsRepository,
+          return Container(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  children: <Widget>[
+                    CircularProgressIndicator(),
+                    Text("Syncing")
+                  ],
+                ),
+              ),
+            ),
           );
+
+
+
         }),
       ),
     );

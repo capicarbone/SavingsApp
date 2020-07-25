@@ -27,4 +27,8 @@ class AccountsRepository {
     return _accounts;
 
   }
+
+  List<Account> recoverUserAccounts() {
+    return _accounts;
+  }
 }

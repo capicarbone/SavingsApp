@@ -27,4 +27,9 @@ class FundsRepository {
     return _funds;
 
   }
+
+  List<Fund> recoverUserFunds() {
+    return _funds;
+  }
+
 }
