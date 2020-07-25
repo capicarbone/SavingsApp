@@ -6,7 +6,6 @@ import 'package:savings_app/blocs/settings_syncer/settings_syncer_states.dart';
 import 'package:savings_app/blocs/summary/summary_bloc.dart';
 import 'package:savings_app/blocs/summary/summary_events.dart';
 import 'package:savings_app/blocs/summary/summary_states.dart';
-import 'package:savings_app/models/account.dart';
 import 'package:savings_app/repositories/accounts_repository.dart';
 import 'package:savings_app/repositories/funds_repository.dart';
 
@@ -36,7 +35,27 @@ class _MySummaryState extends State<MySummary> {
   Widget _fundsSetionWidget(SummaryState state) {
     if (state is SummaryDataLoaded && state.funds != null) {
       return Container(
-        child: Text("Funds loaded"),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              "Funds",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20,
+                  color: Theme.of(context).primaryColor),
+            ),
+            Column(
+              children: state.funds
+                  .map((e) => ListTile(
+                title: Text(
+                  e.name,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                trailing: Text(e.balance.toString()),
+              ))
+                  .toList(),
+            )
+          ],
+        ),
       );
     } else {
       return CircularProgressIndicator();
@@ -51,7 +70,7 @@ class _MySummaryState extends State<MySummary> {
           children: <Widget>[
             Text(
               "Accounts",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Theme.of(context).primaryColor),
             ),
             Column(
               children: state.accounts
@@ -87,12 +106,15 @@ class _MySummaryState extends State<MySummary> {
         bloc: widget._summaryBloc,
         builder: (context, state) {
           return Container(
-              child: Column(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
             children: <Widget>[
-              _fundsSetionWidget(state),
-              _accountsSetionWidget(state)
+                _fundsSetionWidget(state),
+                _accountsSetionWidget(state)
             ],
-          ));
+          ),
+              ));
         },
       ),
     );
