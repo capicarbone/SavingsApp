@@ -6,6 +6,7 @@ import 'package:savings_app/blocs/settings_syncer/settings_syncer_states.dart';
 import 'package:savings_app/blocs/summary/summary_bloc.dart';
 import 'package:savings_app/blocs/summary/summary_events.dart';
 import 'package:savings_app/blocs/summary/summary_states.dart';
+import 'package:savings_app/models/account.dart';
 import 'package:savings_app/repositories/accounts_repository.dart';
 import 'package:savings_app/repositories/funds_repository.dart';
 
@@ -45,7 +46,26 @@ class _MySummaryState extends State<MySummary> {
   Widget _accountsSetionWidget(SummaryState state) {
     if (state is SummaryDataLoaded && state.accounts != null) {
       return Container(
-        child: Text("Accounts loaded"),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              "Accounts",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            ),
+            Column(
+              children: state.accounts
+                  .map((e) => ListTile(
+                        title: Text(
+                          e.name,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        trailing: Text(e.balance.toString()),
+                      ))
+                  .toList(),
+            )
+          ],
+        ),
       );
     } else {
       return CircularProgressIndicator();

@@ -10,7 +10,7 @@ class AccountsRepository {
 
   AccountsRepository({this.authToken});
 
-  Future<List<Account>> getUserAccounts() async {
+  Future<List<Account>> fetchUserAccounts() async {
 
     print("Bearer $authToken");
 
@@ -18,6 +18,8 @@ class AccountsRepository {
       headers: {"Authorization": "Bearer $authToken"});
 
     List<dynamic> objects = json.decode((response.body));
+
+    _accounts.clear();
     _accounts.addAll(objects.map((map) => Account.fromMap(map)));
 
     print (response.body);

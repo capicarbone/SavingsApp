@@ -25,7 +25,7 @@ class SummaryBloc extends Bloc<SummaryEvent, SummaryState> {
       yield SummaryDataLoaded(funds: funds, accounts: null);
 
       // TODO: Should call method for get from the database
-      List<Account> accounts = await accountsRepository.getUserAccounts();
+      List<Account> accounts = await accountsRepository.fetchUserAccounts();
 
       yield SummaryDataLoaded(funds: funds, accounts: accounts);
     }

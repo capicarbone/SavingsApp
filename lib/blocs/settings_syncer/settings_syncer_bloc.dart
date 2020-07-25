@@ -15,7 +15,7 @@ class SettingsSyncerBloc extends Bloc<SettingsSyncerEvent, SettingsSyncState> {
 
     if (event is SettingsSyncerUpdateRequested) {
       yield SyncingSettings(initial: false);
-      await accountsRepository.getUserAccounts();
+      await accountsRepository.fetchUserAccounts();
       yield SettingsUpdated();
     }
   }
