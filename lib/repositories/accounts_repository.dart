@@ -17,7 +17,7 @@ class AccountsRepository {
     final response = await http.get("https://flask-mymoney.herokuapp.com/api/accounts",
       headers: {"Authorization": "Bearer $authToken"});
 
-    List<dynamic> objects = json.decode((response.body));
+    List<dynamic> objects = json.decode(response.body);
 
     _accounts.clear();
     _accounts.addAll(objects.map((map) => Account.fromMap(map)));
