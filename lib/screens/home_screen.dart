@@ -18,8 +18,9 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: Move to initialState
-    var accountsRepository = AccountsRepository(authToken: authToken);
-    var fundsRepository = FundsRepository(authToken: authToken);
+
+    var bloc = SettingsSyncerBloc(accountsRepository: AccountsRepository(authToken: authToken),
+    fundsRepository: FundsRepository(authToken: authToken));
 
     return Scaffold(
       appBar: AppBar(
@@ -36,7 +37,7 @@ class HomeScreen extends StatelessWidget {
       ),
       body: BlocProvider(
         create: (context) {
-          return SettingsSyncerBloc(accountsRepository: accountsRepository, fundsRepository: fundsRepository);
+          return bloc;
         },
         child: BlocBuilder<SettingsSyncerBloc, SettingsSyncState>(
             builder: (context, state) {
