@@ -35,6 +35,11 @@ class HomeScreen extends StatelessWidget {
           )
         ],
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {},
+      ),
       body: BlocProvider(
         create: (context) {
           return bloc;
