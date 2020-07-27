@@ -8,6 +8,7 @@ import 'package:savings_app/blocs/settings_syncer/settings_syncer_states.dart';
 import 'package:savings_app/blocs/settings_syncer/settings_syncer_events.dart';
 import 'package:savings_app/repositories/accounts_repository.dart';
 import 'package:savings_app/repositories/funds_repository.dart';
+import 'package:savings_app/screens/new_transaction_screen.dart';
 import 'package:savings_app/widgets/my_summary.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -38,7 +39,9 @@ class HomeScreen extends StatelessWidget {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).pushNamed(NewTransactionScreen.routeName);
+        },
       ),
       body: BlocProvider(
         create: (context) {

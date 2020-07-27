@@ -5,6 +5,7 @@ import 'package:savings_app/blocs/authentication/authentication_events.dart';
 import 'package:savings_app/blocs/authentication/authentication_states.dart';
 import 'package:savings_app/repositories/user_repository.dart';
 import 'package:savings_app/screens/home_screen.dart';
+import 'package:savings_app/screens/new_transaction_screen.dart';
 import 'package:savings_app/screens/splash_screen.dart';
 import 'screens/login_screen.dart';
 
@@ -77,7 +78,10 @@ class MyApp extends StatelessWidget {
             return SplashScreen();
           //}
         },
-      )
+      ),
+      routes: {
+        NewTransactionScreen.routeName: (context) => NewTransactionScreen(),
+      },
     );
   }
 }
