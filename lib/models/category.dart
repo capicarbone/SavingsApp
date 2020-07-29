@@ -1,6 +1,8 @@
 
 import 'package:meta/meta.dart';
 
+// Categories for transactions
+
 class Category {
   String id;
   String name;

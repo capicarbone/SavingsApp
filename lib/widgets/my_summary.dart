@@ -8,6 +8,7 @@ import 'package:savings_app/blocs/summary/summary_events.dart';
 import 'package:savings_app/blocs/summary/summary_states.dart';
 import 'package:savings_app/repositories/accounts_repository.dart';
 import 'package:savings_app/repositories/funds_repository.dart';
+import 'package:savings_app/widgets/in_out_form.dart';
 
 class MySummary extends StatefulWidget {
   // Maybe unnecesary
@@ -38,6 +39,15 @@ class _MySummaryState extends State<MySummary> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            Container(
+              width: double.infinity,
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: InOutForm(),
+                ),
+              ),
+            ),
             Text(
               "Funds",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20,
@@ -93,29 +103,31 @@ class _MySummaryState extends State<MySummary> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<SettingsSyncerBloc, SettingsSyncState>(
-      listenWhen: (previous, current) {
-        return current is SettingsUpdated;
-      },
-      listener: (context, state) {
-        // No estoy seguro si esto deberia estar aqui, quizas deberia estar despues
-        // bloc builder
-        widget._summaryBloc.add(LoadDataEvent());
-      },
-      child: BlocBuilder<SummaryBloc, SummaryState>(
-        bloc: widget._summaryBloc,
-        builder: (context, state) {
-          return Container(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-            children: <Widget>[
-                _fundsSectionWidget(state),
-                _accountsSectionWidget(state)
-            ],
-          ),
-              ));
+    return SingleChildScrollView(
+      child: BlocListener<SettingsSyncerBloc, SettingsSyncState>(
+        listenWhen: (previous, current) {
+          return current is SettingsUpdated;
         },
+        listener: (context, state) {
+          // No estoy seguro si esto deberia estar aqui, quizas deberia estar despues
+          // bloc builder
+          widget._summaryBloc.add(LoadDataEvent());
+        },
+        child: BlocBuilder<SummaryBloc, SummaryState>(
+          bloc: widget._summaryBloc,
+          builder: (context, state) {
+            return Container(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+              children: <Widget>[
+                  _fundsSectionWidget(state),
+                  _accountsSectionWidget(state)
+              ],
+            ),
+                ));
+          },
+        ),
       ),
     );
   }

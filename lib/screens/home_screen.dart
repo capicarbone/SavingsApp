@@ -37,12 +37,14 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      /*
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
           Navigator.of(context).pushNamed(NewTransactionScreen.routeName);
         },
       ),
+       */
       body: BlocProvider(
         create: (context) {
           return bloc;
