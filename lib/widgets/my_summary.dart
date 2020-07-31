@@ -39,15 +39,7 @@ class _MySummaryState extends State<MySummary> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Container(
-              width: double.infinity,
-              child: Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: InOutForm(),
-                ),
-              ),
-            ),
+
             Text(
               "Funds",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20,
@@ -121,6 +113,20 @@ class _MySummaryState extends State<MySummary> {
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
               children: <Widget>[
+                if (state is SummaryDataLoaded && state.funds != null && state.accounts != null)
+                Container(
+                  width: double.infinity,
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: InOutForm(
+                        funds: state.funds,
+                        accounts: state.accounts,
+                      ),
+                    ),
+                  ),
+                ),
+                  SizedBox(height: 18,),
                   _fundsSectionWidget(state),
                   _accountsSectionWidget(state)
               ],

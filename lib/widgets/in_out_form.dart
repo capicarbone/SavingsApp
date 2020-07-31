@@ -1,6 +1,22 @@
+
+import 'package:meta/meta.dart';
 import 'package:flutter/material.dart';
+import 'package:savings_app/models/account.dart';
+import 'package:savings_app/models/category.dart';
+import 'package:savings_app/models/fund.dart';
 
 class InOutForm extends StatefulWidget {
+
+  List<Fund> funds;
+  List<Account> accounts;
+  List<Category> categories;
+
+  InOutForm({@required this.funds, @required this.accounts}){
+    categories = [];
+
+    funds.forEach((element) {categories.addAll(element.categories);});
+  }
+
   @override
   _InOutFormState createState() => _InOutFormState();
 }
@@ -24,20 +40,18 @@ class _InOutFormState extends State<InOutForm> {
               hintText: "Category"
             ),
             items: [
-              DropdownMenuItem(
-                child: const Text("Option 1"),
-                value: "Option 1",
-              ),
-              DropdownMenuItem(
-                child: const Text("Option 2"),
-                value: "Option 2"
-              ),
-              DropdownMenuItem(
-                  child: const Text("Option 3"),
-                  value: "Option 3"
-              )
+              ...widget.categories.map((e) => DropdownMenuItem(
+                child: Text(e.name),
+                value: e.id,
+              ))
             ],
           ),
+          TextFormField(
+            decoration: const InputDecoration(
+              hintText: "Description"
+            ),
+          ),
+
           RaisedButton(
             child: Text("Save"),
             onPressed: () {},
