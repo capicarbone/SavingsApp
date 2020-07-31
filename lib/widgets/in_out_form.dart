@@ -39,6 +39,16 @@ class _InOutFormState extends State<InOutForm> {
           ),
           DropdownButtonFormField(
             onChanged: (s) {},
+            decoration: const InputDecoration(hintText: "Account"),
+            items: [
+              ...widget.accounts.map((e) => DropdownMenuItem(
+                child: Text(e.name),
+                value: e.id,
+              ))
+            ],
+          ),
+          DropdownButtonFormField(
+            onChanged: (s) {},
             decoration: const InputDecoration(hintText: "Category"),
             items: [
               ...widget.categories.map((e) => DropdownMenuItem(
