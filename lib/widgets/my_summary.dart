@@ -8,6 +8,7 @@ import 'package:savings_app/blocs/summary/summary_events.dart';
 import 'package:savings_app/blocs/summary/summary_states.dart';
 import 'package:savings_app/repositories/accounts_repository.dart';
 import 'package:savings_app/repositories/funds_repository.dart';
+import 'package:savings_app/repositories/transactions_repository.dart';
 import 'package:savings_app/widgets/in_out_form.dart';
 
 class MySummary extends StatefulWidget {
@@ -16,15 +17,18 @@ class MySummary extends StatefulWidget {
 
   AccountsRepository accountsRepository;
   FundsRepository fundsRepository;
+  TransactionsRepository transactionsRepository;
+
   final SummaryBloc _summaryBloc;
 
   MySummary(
       {@required this.token,
       @required this.fundsRepository,
-      this.accountsRepository})
+      this.accountsRepository,
+      this.transactionsRepository})
       : this._summaryBloc = SummaryBloc(
             accountsRepository: accountsRepository,
-            fundsRepository: fundsRepository) {
+            fundsRepository: fundsRepository,) {
     _summaryBloc.add(LoadDataEvent());
   }
 
@@ -122,6 +126,7 @@ class _MySummaryState extends State<MySummary> {
                       child: InOutForm(
                         funds: state.funds,
                         accounts: state.accounts,
+                        transactionsRepository: widget.transactionsRepository,
                       ),
                     ),
                   ),

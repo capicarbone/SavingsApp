@@ -8,6 +8,7 @@ import 'package:savings_app/blocs/settings_syncer/settings_syncer_states.dart';
 import 'package:savings_app/blocs/settings_syncer/settings_syncer_events.dart';
 import 'package:savings_app/repositories/accounts_repository.dart';
 import 'package:savings_app/repositories/funds_repository.dart';
+import 'package:savings_app/repositories/transactions_repository.dart';
 import 'package:savings_app/screens/new_transaction_screen.dart';
 import 'package:savings_app/widgets/my_summary.dart';
 
@@ -63,6 +64,7 @@ class HomeScreen extends StatelessWidget {
               token: authToken,
               fundsRepository: bloc.fundsRepository,
               accountsRepository: bloc.accountsRepository,
+              transactionsRepository: new TransactionsRepository(authToken: authToken),
             );
           }
 

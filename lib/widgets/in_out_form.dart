@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:savings_app/models/account.dart';
 import 'package:savings_app/models/category.dart';
 import 'package:savings_app/models/fund.dart';
+import 'package:savings_app/repositories/transactions_repository.dart';
 
 class InOutForm extends StatefulWidget {
   List<Fund> funds;
   List<Account> accounts;
   List<Category> categories;
+  TransactionsRepository transactionsRepository;
 
-  InOutForm({@required this.funds, @required this.accounts}) {
+  InOutForm({@required this.funds, @required this.accounts, this.transactionsRepository}) {
     categories = [];
 
     funds.forEach((element) {
@@ -62,7 +64,9 @@ class _InOutFormState extends State<InOutForm> {
           ),
           RaisedButton(
             child: Text("Save"),
-            onPressed: () {},
+            onPressed: () {
+              widget.transactionsRepository.postTransaction(2000.00, "5efbfe37e2996331f717f175", "5ec74376192cf1720a170384", DateTime.now(), "from application");
+            },
           )
         ],
       ),
