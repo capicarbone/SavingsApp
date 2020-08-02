@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:meta/meta.dart';
 import 'package:flutter/material.dart';
 import 'package:savings_app/models/account.dart';
@@ -26,6 +28,22 @@ class InOutForm extends StatefulWidget {
 class _InOutFormState extends State<InOutForm> {
   final _formKey = GlobalKey<FormState>();
 
+  final amountController = TextEditingController();
+  final descriptionController = TextEditingController();
+  String _selectedCategory = null;
+  String _selectedAccount = null;
+
+  void _submitForm() {
+    if (_formKey.currentState.validate()) {
+      widget.transactionsRepository.postTransaction( double.parse(amountController.text),
+          _selectedAccount,
+          _selectedCategory,
+          DateTime.now(),
+          descriptionController.text);
+    }
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -34,13 +52,16 @@ class _InOutFormState extends State<InOutForm> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           TextFormField(
+            controller: amountController,
             keyboardType: TextInputType.number,
             decoration: const InputDecoration(
               hintText: "Amount",
             ),
           ),
           DropdownButtonFormField(
-            onChanged: (s) {},
+            onChanged: (accountId) {
+              _selectedAccount = accountId;
+            },
             decoration: const InputDecoration(hintText: "Account"),
             items: [
               ...widget.accounts.map((e) => DropdownMenuItem(
@@ -50,7 +71,9 @@ class _InOutFormState extends State<InOutForm> {
             ],
           ),
           DropdownButtonFormField(
-            onChanged: (s) {},
+            onChanged: (categoryId) {
+              _selectedCategory =  categoryId;
+            },
             decoration: const InputDecoration(hintText: "Category"),
             items: [
               ...widget.categories.map((e) => DropdownMenuItem(
@@ -60,12 +83,13 @@ class _InOutFormState extends State<InOutForm> {
             ],
           ),
           TextFormField(
+            controller: descriptionController,
             decoration: const InputDecoration(hintText: "Description"),
           ),
           RaisedButton(
             child: Text("Save"),
             onPressed: () {
-              widget.transactionsRepository.postTransaction(2000.00, "5efbfe37e2996331f717f175", "5ec74376192cf1720a170384", DateTime.now(), "from application");
+              _submitForm();
             },
           )
         ],

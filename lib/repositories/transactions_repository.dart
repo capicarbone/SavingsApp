@@ -1,5 +1,6 @@
 
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class TransactionsRepository {
   String authToken;
@@ -15,7 +16,7 @@ class TransactionsRepository {
         "description": description,
         "change": change.toString(),
         "account_id": accountId,
-        "date_accomplished": "2020-02-21",
+        "date_accomplished": DateFormat.yMd().format(accomplishedAt),
         "category": categoryId
       };
       var response = await http.post(url, body: body, headers: headers );
