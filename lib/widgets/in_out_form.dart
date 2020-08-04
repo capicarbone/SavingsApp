@@ -44,6 +44,21 @@ class _InOutFormState extends State<InOutForm> {
 
   }
 
+  String _validateAmount(String val) {
+    try{
+      var value = double.parse(val);
+
+      if (value == 0) {
+        return "Must be different than 0";
+      }
+    }
+    catch (e) {
+      return "Invalid value.";
+    }
+
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -54,6 +69,7 @@ class _InOutFormState extends State<InOutForm> {
           TextFormField(
             controller: amountController,
             keyboardType: TextInputType.number,
+            validator: _validateAmount,
             decoration: const InputDecoration(
               hintText: "Amount",
             ),
