@@ -78,6 +78,14 @@ class _InOutFormState extends State<InOutForm> {
             onChanged: (accountId) {
               _selectedAccount = accountId;
             },
+            validator: (value){
+              if (value == null){
+                return "Required";
+              }
+
+              return null;
+
+            },
             decoration: const InputDecoration(hintText: "Account"),
             items: [
               ...widget.accounts.map((e) => DropdownMenuItem(
@@ -89,6 +97,13 @@ class _InOutFormState extends State<InOutForm> {
           DropdownButtonFormField(
             onChanged: (categoryId) {
               _selectedCategory =  categoryId;
+            },
+            validator: (value) {
+              if (value == null){
+                return "Required";
+              }
+
+              return null;
             },
             decoration: const InputDecoration(hintText: "Category"),
             items: [
