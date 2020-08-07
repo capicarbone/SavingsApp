@@ -24,10 +24,14 @@ class InOutFormBloc extends Bloc<InOutFormEvent, InOutFormState> {
   Stream<InOutFormState> mapEventToState(InOutFormEvent event) async* {
 
     if (event is InOutFormSubmitEvent) {
+
+      // TODO: Submitting event
       var errors = _validateForm(event);
 
       if (errors != null){
         yield errors;
+      }else {
+        // TODO: Post to server
       }
 
     }
@@ -42,6 +46,26 @@ class InOutFormBloc extends Bloc<InOutFormEvent, InOutFormState> {
       errors.amountErrorMessage = "Required";
       return errors;
     }
+
+    var amount = 0.0;
+
+    try {
+      amount = double.parse(event.amount);
+    }catch(e) {
+      errors.amountErrorMessage = "Not a number.";
+      return errors;
+    }
+
+    if (amount == 0) {
+      errors.amountErrorMessage = "Must be different than 0.";
+      return errors;
+    }
+
+    if (event.accountId == null){
+      errors.accountErrorMessage = "Required";
+      return errors;
+    }
+
 
     return null;
   }

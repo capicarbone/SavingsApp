@@ -12,6 +12,8 @@ import 'package:savings_app/models/category.dart';
 import 'package:savings_app/models/fund.dart';
 import 'package:savings_app/repositories/transactions_repository.dart';
 
+import '../blocs/in_out_form/in_out_form_states.dart';
+
 class InOutForm extends StatefulWidget {
   List<Fund> funds;
   List<Account> accounts;
@@ -84,7 +86,7 @@ class _InOutFormState extends State<InOutForm> {
                   keyboardType: TextInputType.number,
                   autovalidate: true,
                   validator: (v) {
-                    if (state is InOutFormInvalidState && state.amountErrorMessage != null) {
+                    if (state is InOutFormInvalidState && state.hasAmountError) {
                       return state.amountErrorMessage;
                     }
 
@@ -98,9 +100,10 @@ class _InOutFormState extends State<InOutForm> {
                   onChanged: (accountId) {
                     _selectedAccount = accountId;
                   },
+                  autovalidate: true,
                   validator: (value) {
-                    if (value == null) {
-                      return "Required";
+                    if (state is InOutFormInvalidState && state.hasAccountError) {
+                      return state.accountErrorMessage;
                     }
 
                     return null;

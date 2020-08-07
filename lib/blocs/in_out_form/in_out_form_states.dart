@@ -9,6 +9,10 @@ class InOutFormInvalidState extends InOutFormState {
   String accountErrorMessage;
   String categoryErrorMessage;
   String descriptionErrorMessage;
+
+  get hasAmountError => amountErrorMessage != null;
+  get hasAccountError => accountErrorMessage != null;
+
 }
 
 class InOutFormSubmittingState extends InOutFormState {}
