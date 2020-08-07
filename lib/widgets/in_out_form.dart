@@ -13,6 +13,7 @@ import 'package:savings_app/models/fund.dart';
 import 'package:savings_app/repositories/transactions_repository.dart';
 
 import '../blocs/in_out_form/in_out_form_states.dart';
+import '../blocs/in_out_form/in_out_form_states.dart';
 
 class InOutForm extends StatefulWidget {
   List<Fund> funds;
@@ -40,33 +41,22 @@ class _InOutFormState extends State<InOutForm> {
   String _selectedCategory = null;
   String _selectedAccount = null;
 
-  void _submitForm() {
-/*    if (_formKey.currentState.validate()) {
-      widget.transactionsRepository.postTransaction( double.parse(amountController.text),
-          _selectedAccount,
-          _selectedCategory,
-          DateTime.now(),
-          descriptionController.text);
-    }*/
+  void _submitForm(ctx) {
 
+    var bloc = BlocProvider.of<InOutFormBloc>(ctx);
 
+    var event = InOutFormSubmitEvent(
+        amount: amountController.text,
+        accountId: _selectedAccount,
+        categoryId: _selectedCategory,
+        description: descriptionController.text
+    );
+
+    bloc.add(event);
 
   }
 
-  String _validateAmount(String val) {
-    try{
-      var value = double.parse(val);
 
-      if (value == 0) {
-        return "Must be different than 0";
-      }
-    }
-    catch (e) {
-      return "Invalid value.";
-    }
-
-    return null;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -143,18 +133,8 @@ class _InOutFormState extends State<InOutForm> {
                 ),
                 RaisedButton(
                   child: Text("Save"),
-                  onPressed: () {
-
-                    var bloc = BlocProvider.of<InOutFormBloc>(ctx);
-
-                    var event = InOutFormSubmitEvent(
-                      amount: amountController.text,
-                      accountId: _selectedAccount,
-                      categoryId: _selectedCategory,
-                      description: descriptionController.text
-                    );
-
-                    bloc.add(event);
+                  onPressed: (state is InOutFormSubmittingState) ? null : () {
+                    _submitForm(ctx);
                   },
                 )
               ],

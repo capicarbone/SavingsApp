@@ -17,6 +17,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:savings_app/blocs/in_out_form/in_out_form_events.dart';
 import 'package:savings_app/blocs/in_out_form/in_out_form_states.dart';
 
+import 'in_out_form_states.dart';
+import 'in_out_form_states.dart';
+
 class InOutFormBloc extends Bloc<InOutFormEvent, InOutFormState> {
   InOutFormBloc() : super(InOutFormInitialState());
 
@@ -25,13 +28,16 @@ class InOutFormBloc extends Bloc<InOutFormEvent, InOutFormState> {
 
     if (event is InOutFormSubmitEvent) {
 
-      // TODO: Submitting event
-      var errors = _validateForm(event);
+      yield InOutFormSubmittingState();
 
-      if (errors != null){
-        yield errors;
+      var invalidState = _validateForm(event);
+
+      if (invalidState != null){
+        yield invalidState;
       }else {
         // TODO: Post to server
+
+        yield InOutFormSubmittedState();
       }
 
     }
