@@ -44,8 +44,12 @@ class InOutFormBloc extends Bloc<InOutFormEvent, InOutFormState> {
         var transaction = _createTransactionPost(event);
         var response = await transactionsRepository.postTransaction(transaction);
   
+        if (response.statusCode == 200){
+          yield InOutFormSubmittedState();
+        }else{
+          yield InOutFormSubmitFailedState();
+        }
 
-        yield InOutFormSubmittedState();
       }
 
     }

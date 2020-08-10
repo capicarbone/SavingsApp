@@ -63,82 +63,94 @@ class _InOutFormState extends State<InOutForm> {
         return InOutFormBloc(
             transactionsRepository: widget.transactionsRepository);
       },
-      child: BlocBuilder<InOutFormBloc, InOutFormState>(builder: (ctx, state) {
-        return Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              TextFormField(
-                controller: amountController,
-                keyboardType: TextInputType.number,
-                autovalidate: true,
-                validator: (v) {
-                  if (state is InOutFormInvalidState && state.hasAmountError) {
-                    return state.amountErrorMessage;
-                  }
+      child: BlocListener<InOutFormBloc, InOutFormState>(
+        listener: (context, state) {
+          if (state is InOutFormSubmitFailedState) {
+            Scaffold.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('An error has ocurred.'),
+                  backgroundColor: Colors.red,
+                )
+            );
+          }
+        },
+        child: BlocBuilder<InOutFormBloc, InOutFormState>(builder: (ctx, state) {
+          return Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                TextFormField(
+                  controller: amountController,
+                  keyboardType: TextInputType.number,
+                  autovalidate: true,
+                  validator: (v) {
+                    if (state is InOutFormInvalidState && state.hasAmountError) {
+                      return state.amountErrorMessage;
+                    }
 
-                  return null;
-                },
-                decoration: const InputDecoration(
-                  hintText: "Amount",
+                    return null;
+                  },
+                  decoration: const InputDecoration(
+                    hintText: "Amount",
+                  ),
                 ),
-              ),
-              DropdownButtonFormField(
-                onChanged: (accountId) {
-                  _selectedAccount = accountId;
-                },
-                autovalidate: true,
-                validator: (value) {
-                  if (state is InOutFormInvalidState && state.hasAccountError) {
-                    return state.accountErrorMessage;
-                  }
+                DropdownButtonFormField(
+                  onChanged: (accountId) {
+                    _selectedAccount = accountId;
+                  },
+                  autovalidate: true,
+                  validator: (value) {
+                    if (state is InOutFormInvalidState && state.hasAccountError) {
+                      return state.accountErrorMessage;
+                    }
 
-                  return null;
-                },
-                decoration: const InputDecoration(hintText: "Account"),
-                items: [
-                  ...widget.accounts.map((e) => DropdownMenuItem(
-                        child: Text(e.name),
-                        value: e.id,
-                      ))
-                ],
-              ),
-              DropdownButtonFormField(
-                onChanged: (categoryId) {
-                  _selectedCategory = categoryId;
-                },
-                validator: (value) {
-                  if (value == null) {
-                    return "Required";
-                  }
+                    return null;
+                  },
+                  decoration: const InputDecoration(hintText: "Account"),
+                  items: [
+                    ...widget.accounts.map((e) => DropdownMenuItem(
+                          child: Text(e.name),
+                          value: e.id,
+                        ))
+                  ],
+                ),
+                DropdownButtonFormField(
+                  onChanged: (categoryId) {
+                    _selectedCategory = categoryId;
+                  },
+                  validator: (value) {
+                    if (value == null) {
+                      return "Required";
+                    }
 
-                  return null;
-                },
-                decoration: const InputDecoration(hintText: "Category"),
-                items: [
-                  ...widget.categories.map((e) => DropdownMenuItem(
-                        child: Text(e.name),
-                        value: e.id,
-                      ))
-                ],
-              ),
-              TextFormField(
-                controller: descriptionController,
-                decoration: const InputDecoration(hintText: "Description"),
-              ),
-              RaisedButton(
-                child: Text("Save"),
-                onPressed: (state is InOutFormSubmittingState)
-                    ? null
-                    : () {
-                        _submitForm(ctx);
-                      },
-              )
-            ],
-          ),
-        );
-      }),
+                    return null;
+                  },
+                  decoration: const InputDecoration(hintText: "Category"),
+                  items: [
+                    ...widget.categories.map((e) => DropdownMenuItem(
+                          child: Text(e.name),
+                          value: e.id,
+                        ))
+                  ],
+                ),
+                TextFormField(
+                  controller: descriptionController,
+                  decoration: const InputDecoration(hintText: "Description"),
+                ),
+                RaisedButton(
+                  child: Text("Save"),
+                  onPressed: (state is InOutFormSubmittingState)
+                      ? null
+                      : () {
+                          _submitForm(ctx);
+                        },
+                )
+              ],
+            ),
+          );
+        }),
+      ),
     );
   }
 }

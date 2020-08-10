@@ -8,7 +8,7 @@ class TransactionsRepository {
 
   TransactionsRepository({this.authToken});
 
-  Future<String> postTransaction(TransactionPost transactionData) async{
+  Future<http.Response> postTransaction(TransactionPost transactionData) async{
 
       var url = "https://flask-mymoney.herokuapp.com/api/transactions";
       var headers = {"Authorization": "Bearer $authToken"};
@@ -27,6 +27,6 @@ class TransactionsRepository {
 
       print(response.body);
 
-      return response.body;
+      return response;
   }
 }
