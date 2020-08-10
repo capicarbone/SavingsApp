@@ -21,7 +21,10 @@ class InOutForm extends StatefulWidget {
   List<Category> categories;
   TransactionsRepository transactionsRepository;
 
-  InOutForm({@required this.funds, @required this.accounts, this.transactionsRepository}) {
+  InOutForm(
+      {@required this.funds,
+      @required this.accounts,
+      this.transactionsRepository}) {
     categories = [];
 
     funds.forEach((element) {
@@ -42,106 +45,100 @@ class _InOutFormState extends State<InOutForm> {
   String _selectedAccount = null;
 
   void _submitForm(ctx) {
-
     var bloc = BlocProvider.of<InOutFormBloc>(ctx);
 
     var event = InOutFormSubmitEvent(
         amount: amountController.text,
         accountId: _selectedAccount,
         categoryId: _selectedCategory,
-        description: descriptionController.text
-    );
+        description: descriptionController.text);
 
     bloc.add(event);
-
   }
-
-
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) {
-        return InOutFormBloc();
+        return InOutFormBloc(
+            transactionsRepository: widget.transactionsRepository);
       },
-      child: BlocBuilder<InOutFormBloc, InOutFormState>(
-        builder: (ctx, state) {
-          return Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                TextFormField(
-                  controller: amountController,
-                  keyboardType: TextInputType.number,
-                  autovalidate: true,
-                  validator: (v) {
-                    if (state is InOutFormInvalidState && state.hasAmountError) {
-                      return state.amountErrorMessage;
-                    }
+      child: BlocBuilder<InOutFormBloc, InOutFormState>(builder: (ctx, state) {
+        return Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              TextFormField(
+                controller: amountController,
+                keyboardType: TextInputType.number,
+                autovalidate: true,
+                validator: (v) {
+                  if (state is InOutFormInvalidState && state.hasAmountError) {
+                    return state.amountErrorMessage;
+                  }
 
-                    return null;
-                  },
-                  decoration: const InputDecoration(
-                    hintText: "Amount",
-                  ),
+                  return null;
+                },
+                decoration: const InputDecoration(
+                  hintText: "Amount",
                 ),
-                DropdownButtonFormField(
-                  onChanged: (accountId) {
-                    _selectedAccount = accountId;
-                  },
-                  autovalidate: true,
-                  validator: (value) {
-                    if (state is InOutFormInvalidState && state.hasAccountError) {
-                      return state.accountErrorMessage;
-                    }
+              ),
+              DropdownButtonFormField(
+                onChanged: (accountId) {
+                  _selectedAccount = accountId;
+                },
+                autovalidate: true,
+                validator: (value) {
+                  if (state is InOutFormInvalidState && state.hasAccountError) {
+                    return state.accountErrorMessage;
+                  }
 
-                    return null;
-                  },
-                  decoration: const InputDecoration(hintText: "Account"),
-                  items: [
-                    ...widget.accounts.map((e) =>
-                        DropdownMenuItem(
-                          child: Text(e.name),
-                          value: e.id,
-                        ))
-                  ],
-                ),
-                DropdownButtonFormField(
-                  onChanged: (categoryId) {
-                    _selectedCategory = categoryId;
-                  },
-                  validator: (value) {
-                    if (value == null) {
-                      return "Required";
-                    }
+                  return null;
+                },
+                decoration: const InputDecoration(hintText: "Account"),
+                items: [
+                  ...widget.accounts.map((e) => DropdownMenuItem(
+                        child: Text(e.name),
+                        value: e.id,
+                      ))
+                ],
+              ),
+              DropdownButtonFormField(
+                onChanged: (categoryId) {
+                  _selectedCategory = categoryId;
+                },
+                validator: (value) {
+                  if (value == null) {
+                    return "Required";
+                  }
 
-                    return null;
-                  },
-                  decoration: const InputDecoration(hintText: "Category"),
-                  items: [
-                    ...widget.categories.map((e) =>
-                        DropdownMenuItem(
-                          child: Text(e.name),
-                          value: e.id,
-                        ))
-                  ],
-                ),
-                TextFormField(
-                  controller: descriptionController,
-                  decoration: const InputDecoration(hintText: "Description"),
-                ),
-                RaisedButton(
-                  child: Text("Save"),
-                  onPressed: (state is InOutFormSubmittingState) ? null : () {
-                    _submitForm(ctx);
-                  },
-                )
-              ],
-            ),
-          );
-        }
-      ),
+                  return null;
+                },
+                decoration: const InputDecoration(hintText: "Category"),
+                items: [
+                  ...widget.categories.map((e) => DropdownMenuItem(
+                        child: Text(e.name),
+                        value: e.id,
+                      ))
+                ],
+              ),
+              TextFormField(
+                controller: descriptionController,
+                decoration: const InputDecoration(hintText: "Description"),
+              ),
+              RaisedButton(
+                child: Text("Save"),
+                onPressed: (state is InOutFormSubmittingState)
+                    ? null
+                    : () {
+                        _submitForm(ctx);
+                      },
+              )
+            ],
+          ),
+        );
+      }),
     );
   }
 }

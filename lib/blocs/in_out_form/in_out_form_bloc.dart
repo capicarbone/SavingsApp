@@ -13,15 +13,21 @@
 // InOutFormSubmitEvent
 // InOutFormFieldsUpdatedEvent
 
+import 'package:meta/meta.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:savings_app/blocs/in_out_form/in_out_form_events.dart';
 import 'package:savings_app/blocs/in_out_form/in_out_form_states.dart';
+import 'package:savings_app/models/transaction_post.dart';
+import 'package:savings_app/repositories/transactions_repository.dart';
 
 import 'in_out_form_states.dart';
 import 'in_out_form_states.dart';
 
 class InOutFormBloc extends Bloc<InOutFormEvent, InOutFormState> {
-  InOutFormBloc() : super(InOutFormInitialState());
+
+  TransactionsRepository transactionsRepository;
+
+  InOutFormBloc({@required this.transactionsRepository}) : super(InOutFormInitialState());
 
   @override
   Stream<InOutFormState> mapEventToState(InOutFormEvent event) async* {
@@ -35,12 +41,24 @@ class InOutFormBloc extends Bloc<InOutFormEvent, InOutFormState> {
       if (invalidState != null){
         yield invalidState;
       }else {
-        // TODO: Post to server
+        var transaction = _createTransactionPost(event);
+        var response = await transactionsRepository.postTransaction(transaction);
+  
 
         yield InOutFormSubmittedState();
       }
 
     }
+
+  }
+
+  TransactionPost _createTransactionPost(InOutFormSubmitEvent event){
+
+    var amount = double.parse(event.amount);
+
+    return TransactionPost(amount: amount, accomplishedAt: DateTime.now(),
+    accountId: event.accountId, categoryId: event.categoryId,
+    description: event.description);
 
   }
 

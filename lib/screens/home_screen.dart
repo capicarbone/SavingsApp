@@ -21,6 +21,8 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: Move to initialState
 
+    var transactionsRepository = TransactionsRepository(authToken: authToken);
+
     var bloc = SettingsSyncerBloc(accountsRepository: AccountsRepository(authToken: authToken),
     fundsRepository: FundsRepository(authToken: authToken));
 
@@ -64,7 +66,7 @@ class HomeScreen extends StatelessWidget {
               token: authToken,
               fundsRepository: bloc.fundsRepository,
               accountsRepository: bloc.accountsRepository,
-              transactionsRepository: new TransactionsRepository(authToken: authToken),
+              transactionsRepository: transactionsRepository
             );
           }
 
