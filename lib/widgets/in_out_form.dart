@@ -43,12 +43,14 @@ class _InOutFormState extends State<InOutForm> {
   final descriptionController = TextEditingController();
   String _selectedCategory = null;
   String _selectedAccount = null;
+  DateTime _selectedDate = DateTime.now();
 
   void _submitForm(ctx) {
     var bloc = BlocProvider.of<InOutFormBloc>(ctx);
 
     var event = InOutFormSubmitEvent(
         amount: amountController.text,
+        accomplishedAt: _selectedDate,
         accountId: _selectedAccount,
         categoryId: _selectedCategory,
         description: descriptionController.text);
@@ -66,15 +68,14 @@ class _InOutFormState extends State<InOutForm> {
       child: BlocListener<InOutFormBloc, InOutFormState>(
         listener: (context, state) {
           if (state is InOutFormSubmitFailedState) {
-            Scaffold.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('An error has ocurred.'),
-                  backgroundColor: Colors.red,
-                )
-            );
+            Scaffold.of(context).showSnackBar(SnackBar(
+              content: Text('An error has ocurred.'),
+              backgroundColor: Colors.red,
+            ));
           }
         },
-        child: BlocBuilder<InOutFormBloc, InOutFormState>(builder: (ctx, state) {
+        child:
+            BlocBuilder<InOutFormBloc, InOutFormState>(builder: (ctx, state) {
           return Form(
             key: _formKey,
             child: Column(
@@ -85,7 +86,8 @@ class _InOutFormState extends State<InOutForm> {
                   keyboardType: TextInputType.number,
                   autovalidate: true,
                   validator: (v) {
-                    if (state is InOutFormInvalidState && state.hasAmountError) {
+                    if (state is InOutFormInvalidState &&
+                        state.hasAmountError) {
                       return state.amountErrorMessage;
                     }
 
@@ -95,13 +97,26 @@ class _InOutFormState extends State<InOutForm> {
                     hintText: "Amount",
                   ),
                 ),
+                RaisedButton(
+                  child: Text("Pick a date"),
+                  onPressed: () {
+                    var now = DateTime.now();
+                    showDatePicker(
+                        context: ctx,
+                        firstDate: DateTime(now.year - 1, 1, 1),
+                        initialDate: _selectedDate,
+                        lastDate: DateTime(now.year + 1, 1, 1))
+                    .then((value) => _selectedDate = value);
+                  },
+                ),
                 DropdownButtonFormField(
                   onChanged: (accountId) {
                     _selectedAccount = accountId;
                   },
                   autovalidate: true,
                   validator: (value) {
-                    if (state is InOutFormInvalidState && state.hasAccountError) {
+                    if (state is InOutFormInvalidState &&
+                        state.hasAccountError) {
                       return state.accountErrorMessage;
                     }
 

@@ -60,7 +60,7 @@ class InOutFormBloc extends Bloc<InOutFormEvent, InOutFormState> {
 
     var amount = double.parse(event.amount);
 
-    return TransactionPost(amount: amount, accomplishedAt: DateTime.now(),
+    return TransactionPost(amount: amount, accomplishedAt: event.accomplishedAt,
     accountId: event.accountId, categoryId: event.categoryId,
     description: event.description);
 

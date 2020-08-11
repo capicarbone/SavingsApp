@@ -1,3 +1,6 @@
+
+import 'package:meta/meta.dart';
+
 class InOutFormEvent {}
 
 class InOutFormSubmitEvent extends InOutFormEvent {
@@ -5,9 +8,10 @@ class InOutFormSubmitEvent extends InOutFormEvent {
   String accountId;
   String categoryId;
   String description;
+  DateTime accomplishedAt;
 
   InOutFormSubmitEvent(
-      {this.amount, this.accountId, this.categoryId, this.description});
+      {@required this.amount, @required this.accountId, @required this.accomplishedAt, this.categoryId, this.description});
 }
 
 //class InOutFormFieldsUpdatedEvent extends InOutFormEvent {}
