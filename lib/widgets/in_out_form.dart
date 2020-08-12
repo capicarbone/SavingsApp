@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
 import 'package:flutter/material.dart';
 import 'package:savings_app/blocs/in_out_form/in_out_form_bloc.dart';
@@ -73,6 +74,13 @@ class _InOutFormState extends State<InOutForm> {
               backgroundColor: Colors.red,
             ));
           }
+
+          if (state is InOutFormSubmittedState) {
+            Scaffold.of(context).showSnackBar(SnackBar(
+              content: Text("Transaction Saved"),
+              backgroundColor: Colors.green,
+            ));
+          }
         },
         child:
             BlocBuilder<InOutFormBloc, InOutFormState>(builder: (ctx, state) {
@@ -97,17 +105,31 @@ class _InOutFormState extends State<InOutForm> {
                     hintText: "Amount",
                   ),
                 ),
-                RaisedButton(
-                  child: Text("Pick a date"),
-                  onPressed: () {
-                    var now = DateTime.now();
-                    showDatePicker(
-                        context: ctx,
-                        firstDate: DateTime(now.year - 1, 1, 1),
-                        initialDate: _selectedDate,
-                        lastDate: DateTime(now.year + 1, 1, 1))
-                    .then((value) => _selectedDate = value);
-                  },
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      child: Text(
+                        DateFormat.yMd().format(_selectedDate),
+                      ),
+                    ),
+                    RaisedButton(
+                      child: Text("Pick a date"),
+                      onPressed: () {
+                        var now = DateTime.now();
+                        showDatePicker(
+                                context: ctx,
+                                firstDate: DateTime(now.year - 1, 1, 1),
+                                initialDate: _selectedDate,
+                                lastDate: DateTime(now.year + 1, 1, 1))
+                            .then((value) {
+                          setState(() {
+                            _selectedDate = value;
+                          });
+                        });
+                      },
+                    ),
+                  ],
                 ),
                 DropdownButtonFormField(
                   onChanged: (accountId) {
