@@ -42,9 +42,20 @@ class _InOutFormState extends State<InOutForm> {
 
   final amountController = TextEditingController();
   final descriptionController = TextEditingController();
+
   String _selectedCategory = null;
   String _selectedAccount = null;
   DateTime _selectedDate = DateTime.now();
+
+  void _cleanForm() {
+    setState(() {
+      _selectedDate = DateTime.now();
+      amountController.text = "";
+      descriptionController.text = "";
+      _selectedAccount = null;
+      _selectedCategory = null;
+    });
+  }
 
   void _submitForm(ctx) {
     var bloc = BlocProvider.of<InOutFormBloc>(ctx);
@@ -76,6 +87,7 @@ class _InOutFormState extends State<InOutForm> {
           }
 
           if (state is InOutFormSubmittedState) {
+            _cleanForm();
             Scaffold.of(context).showSnackBar(SnackBar(
               content: Text("Transaction Saved"),
               backgroundColor: Colors.green,
@@ -135,6 +147,7 @@ class _InOutFormState extends State<InOutForm> {
                   onChanged: (accountId) {
                     _selectedAccount = accountId;
                   },
+                  value: _selectedAccount,
                   autovalidate: true,
                   validator: (value) {
                     if (state is InOutFormInvalidState &&
@@ -156,6 +169,7 @@ class _InOutFormState extends State<InOutForm> {
                   onChanged: (categoryId) {
                     _selectedCategory = categoryId;
                   },
+                  value: _selectedCategory,
                   validator: (value) {
                     if (value == null) {
                       return "Required";
