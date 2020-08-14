@@ -10,6 +10,9 @@ class AccountsRepository {
 
   AccountsRepository({this.authToken});
 
+  // TODO: Remove
+  get accounts => _accounts;
+
   Future<List<Account>> fetchUserAccounts() async {
 
     print("Bearer $authToken");

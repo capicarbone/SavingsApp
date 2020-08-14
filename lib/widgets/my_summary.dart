@@ -117,20 +117,8 @@ class _MySummaryState extends State<MySummary> {
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
               children: <Widget>[
-                if (state is SummaryDataLoaded && state.funds != null && state.accounts != null)
-                Container(
-                  width: double.infinity,
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: InOutForm(
-                        funds: state.funds,
-                        accounts: state.accounts,
-                        transactionsRepository: widget.transactionsRepository,
-                      ),
-                    ),
-                  ),
-                ),
+                //if (state is SummaryDataLoaded && state.funds != null && state.accounts != null)
+
                   SizedBox(height: 18,),
                   _fundsSectionWidget(state),
                   _accountsSectionWidget(state)

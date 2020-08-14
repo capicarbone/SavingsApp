@@ -10,6 +10,9 @@ class FundsRepository {
 
   FundsRepository({this.authToken});
 
+  // TODO: Remove, should not accesed directly.
+  get funds => _funds;
+
   Future<List<Fund>> fetchUserFunds() async {
 
     print("Bearer $authToken");

@@ -10,21 +10,104 @@ import 'package:savings_app/repositories/accounts_repository.dart';
 import 'package:savings_app/repositories/funds_repository.dart';
 import 'package:savings_app/repositories/transactions_repository.dart';
 import 'package:savings_app/screens/new_transaction_screen.dart';
+import 'package:savings_app/widgets/in_out_form.dart';
 import 'package:savings_app/widgets/my_summary.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   String authToken;
 
   HomeScreen({@required this.authToken});
 
   @override
-  Widget build(BuildContext context) {
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+
+  var _selectedPageIndex = 1;
+
+  Widget _body() {
+
     // TODO: Move to initialState
 
-    var transactionsRepository = TransactionsRepository(authToken: authToken);
+    var transactionsRepository = TransactionsRepository(authToken: widget.authToken);
 
-    var bloc = SettingsSyncerBloc(accountsRepository: AccountsRepository(authToken: authToken),
-    fundsRepository: FundsRepository(authToken: authToken));
+    var bloc = SettingsSyncerBloc(accountsRepository: AccountsRepository(authToken: widget.authToken),
+        fundsRepository: FundsRepository(authToken: widget.authToken));
+
+    return BlocProvider(
+      create: (context) {
+        return bloc;
+      },
+      child: BlocBuilder<SettingsSyncerBloc, SettingsSyncState>(
+          builder: (context, state) {
+            // TODO: Improvable
+            if (state is SyncInitial)
+              BlocProvider.of<SettingsSyncerBloc>(context)
+                  .add(SettingsSyncerUpdateRequested());
+
+
+            if (state is SettingsUpdated || (state is SyncingSettings && !state.initial) ) {
+              var bloc = BlocProvider.of<SettingsSyncerBloc>(context);
+              return IndexedStack(
+                index: _selectedPageIndex,
+                children: [MySummary(
+                    token: widget.authToken,
+                    fundsRepository: bloc.fundsRepository,
+                    accountsRepository: bloc.accountsRepository,
+                    transactionsRepository: transactionsRepository
+                ),
+                  // TODO: Move container to the widget.
+                  Container(
+                    width: double.infinity,
+                    child: Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: InOutForm(
+                          funds: bloc.fundsRepository.funds,
+                          accounts: bloc.accountsRepository.accounts,
+                          transactionsRepository: transactionsRepository,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    child: Center(
+                      child: Text("Settings"),
+                    ),
+                  )
+              ],
+              );
+            }
+
+            return Container(
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    children: <Widget>[
+                      CircularProgressIndicator(),
+                      Text("Syncing")
+                    ],
+                  ),
+                ),
+              ),
+            );
+
+
+
+          }),
+    );
+  }
+
+  void _onTabSelected(int pageIndex){
+    setState(() {
+      _selectedPageIndex = pageIndex;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
 
     return Scaffold(
       appBar: AppBar(
@@ -48,45 +131,24 @@ class HomeScreen extends StatelessWidget {
         },
       ),
        */
-      body: BlocProvider(
-        create: (context) {
-          return bloc;
-        },
-        child: BlocBuilder<SettingsSyncerBloc, SettingsSyncState>(
-            builder: (context, state) {
-          // TODO: Improvable
-          if (state is SyncInitial)
-            BlocProvider.of<SettingsSyncerBloc>(context)
-                .add(SettingsSyncerUpdateRequested());
-
-
-          if (state is SettingsUpdated || (state is SyncingSettings && !state.initial) ) {
-            var bloc = BlocProvider.of<SettingsSyncerBloc>(context);
-            return MySummary(
-              token: authToken,
-              fundsRepository: bloc.fundsRepository,
-              accountsRepository: bloc.accountsRepository,
-              transactionsRepository: transactionsRepository
-            );
-          }
-
-          return Container(
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  children: <Widget>[
-                    CircularProgressIndicator(),
-                    Text("Syncing")
-                  ],
-                ),
-              ),
-            ),
-          );
-
-
-
-        }),
+      body: _body(),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedPageIndex,
+        onTap: _onTabSelected,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.dashboard),
+            title: Text("Dashboard")
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add),
+            title: Text("New Transaction")
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            title: Text("Settings")
+          )
+        ],
       ),
     );
   }
