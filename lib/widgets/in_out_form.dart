@@ -72,135 +72,141 @@ class _InOutFormState extends State<InOutForm> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) {
-        return InOutFormBloc(
-            transactionsRepository: widget.transactionsRepository);
-      },
-      child: BlocListener<InOutFormBloc, InOutFormState>(
-        listener: (context, state) {
-          if (state is InOutFormSubmitFailedState) {
-            Scaffold.of(context).showSnackBar(SnackBar(
-              content: Text('An error has ocurred.'),
-              backgroundColor: Colors.red,
-            ));
-          }
+    return Container(
+      width: double.infinity,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: BlocProvider(
+          create: (_) {
+            return InOutFormBloc(
+                transactionsRepository: widget.transactionsRepository);
+          },
+          child: BlocListener<InOutFormBloc, InOutFormState>(
+            listener: (context, state) {
+              if (state is InOutFormSubmitFailedState) {
+                Scaffold.of(context).showSnackBar(SnackBar(
+                  content: Text('An error has ocurred.'),
+                  backgroundColor: Colors.red,
+                ));
+              }
 
-          if (state is InOutFormSubmittedState) {
-            _cleanForm();
-            Scaffold.of(context).showSnackBar(SnackBar(
-              content: Text("Transaction Saved"),
-              backgroundColor: Colors.green,
-            ));
-          }
-        },
-        child:
-            BlocBuilder<InOutFormBloc, InOutFormState>(builder: (ctx, state) {
-          return Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                TextFormField(
-                  controller: amountController,
-                  keyboardType: TextInputType.number,
-                  autovalidate: true,
-                  validator: (v) {
-                    if (state is InOutFormInvalidState &&
-                        state.hasAmountError) {
-                      return state.amountErrorMessage;
-                    }
+              if (state is InOutFormSubmittedState) {
+                _cleanForm();
+                Scaffold.of(context).showSnackBar(SnackBar(
+                  content: Text("Transaction Saved"),
+                  backgroundColor: Colors.green,
+                ));
+              }
+            },
+            child:
+                BlocBuilder<InOutFormBloc, InOutFormState>(builder: (ctx, state) {
+              return Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    TextFormField(
+                      controller: amountController,
+                      keyboardType: TextInputType.number,
+                      autovalidate: true,
+                      validator: (v) {
+                        if (state is InOutFormInvalidState &&
+                            state.hasAmountError) {
+                          return state.amountErrorMessage;
+                        }
 
-                    return null;
-                  },
-                  decoration: const InputDecoration(
-                    hintText: "Amount",
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      child: Text(
-                        DateFormat.yMd().format(_selectedDate),
+                        return null;
+                      },
+                      decoration: const InputDecoration(
+                        hintText: "Amount",
                       ),
                     ),
-                    RaisedButton(
-                      child: Text("Pick a date"),
-                      onPressed: () {
-                        var now = DateTime.now();
-                        showDatePicker(
-                                context: ctx,
-                                firstDate: DateTime(now.year - 1, 1, 1),
-                                initialDate: _selectedDate,
-                                lastDate: DateTime(now.year + 1, 1, 1))
-                            .then((value) {
-                          setState(() {
-                            _selectedDate = value;
-                          });
-                        });
-                      },
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          child: Text(
+                            DateFormat.yMd().format(_selectedDate),
+                          ),
+                        ),
+                        RaisedButton(
+                          child: Text("Pick a date"),
+                          onPressed: () {
+                            var now = DateTime.now();
+                            showDatePicker(
+                                    context: ctx,
+                                    firstDate: DateTime(now.year - 1, 1, 1),
+                                    initialDate: _selectedDate,
+                                    lastDate: DateTime(now.year + 1, 1, 1))
+                                .then((value) {
+                              setState(() {
+                                _selectedDate = value;
+                              });
+                            });
+                          },
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                DropdownButtonFormField(
-                  onChanged: (accountId) {
-                    _selectedAccount = accountId;
-                  },
-                  value: _selectedAccount,
-                  autovalidate: true,
-                  validator: (value) {
-                    if (state is InOutFormInvalidState &&
-                        state.hasAccountError) {
-                      return state.accountErrorMessage;
-                    }
+                    DropdownButtonFormField(
+                      onChanged: (accountId) {
+                        _selectedAccount = accountId;
+                      },
+                      value: _selectedAccount,
+                      autovalidate: true,
+                      validator: (value) {
+                        if (state is InOutFormInvalidState &&
+                            state.hasAccountError) {
+                          return state.accountErrorMessage;
+                        }
 
-                    return null;
-                  },
-                  decoration: const InputDecoration(hintText: "Account"),
-                  items: [
-                    ...widget.accounts.map((e) => DropdownMenuItem(
-                          child: Text(e.name),
-                          value: e.id,
-                        ))
-                  ],
-                ),
-                DropdownButtonFormField(
-                  onChanged: (categoryId) {
-                    _selectedCategory = categoryId;
-                  },
-                  value: _selectedCategory,
-                  validator: (value) {
-                    if (value == null) {
-                      return "Required";
-                    }
+                        return null;
+                      },
+                      decoration: const InputDecoration(hintText: "Account"),
+                      items: [
+                        ...widget.accounts.map((e) => DropdownMenuItem(
+                              child: Text(e.name),
+                              value: e.id,
+                            ))
+                      ],
+                    ),
+                    DropdownButtonFormField(
+                      onChanged: (categoryId) {
+                        _selectedCategory = categoryId;
+                      },
+                      value: _selectedCategory,
+                      validator: (value) {
+                        if (value == null) {
+                          return "Required";
+                        }
 
-                    return null;
-                  },
-                  decoration: const InputDecoration(hintText: "Category"),
-                  items: [
-                    ...widget.categories.map((e) => DropdownMenuItem(
-                          child: Text(e.name),
-                          value: e.id,
-                        ))
+                        return null;
+                      },
+                      decoration: const InputDecoration(hintText: "Category"),
+                      items: [
+                        ...widget.categories.map((e) => DropdownMenuItem(
+                              child: Text(e.name),
+                              value: e.id,
+                            ))
+                      ],
+                    ),
+                    TextFormField(
+                      controller: descriptionController,
+                      decoration: const InputDecoration(hintText: "Description"),
+                    ),
+                    RaisedButton(
+                      child: Text("Save"),
+                      onPressed: (state is InOutFormSubmittingState)
+                          ? null
+                          : () {
+                              _submitForm(ctx);
+                            },
+                    )
                   ],
                 ),
-                TextFormField(
-                  controller: descriptionController,
-                  decoration: const InputDecoration(hintText: "Description"),
-                ),
-                RaisedButton(
-                  child: Text("Save"),
-                  onPressed: (state is InOutFormSubmittingState)
-                      ? null
-                      : () {
-                          _submitForm(ctx);
-                        },
-                )
-              ],
-            ),
-          );
-        }),
+              );
+            }),
+          ),
+        ),
       ),
     );
   }

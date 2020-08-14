@@ -23,16 +23,16 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   var _selectedPageIndex = 1;
 
   Widget _body() {
-
     // TODO: Move to initialState
 
-    var transactionsRepository = TransactionsRepository(authToken: widget.authToken);
+    var transactionsRepository =
+        TransactionsRepository(authToken: widget.authToken);
 
-    var bloc = SettingsSyncerBloc(accountsRepository: AccountsRepository(authToken: widget.authToken),
+    var bloc = SettingsSyncerBloc(
+        accountsRepository: AccountsRepository(authToken: widget.authToken),
         fundsRepository: FundsRepository(authToken: widget.authToken));
 
     return BlocProvider(
@@ -41,66 +41,54 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       child: BlocBuilder<SettingsSyncerBloc, SettingsSyncState>(
           builder: (context, state) {
-            // TODO: Improvable
-            if (state is SyncInitial)
-              BlocProvider.of<SettingsSyncerBloc>(context)
-                  .add(SettingsSyncerUpdateRequested());
+        // TODO: Improvable
+        if (state is SyncInitial)
+          BlocProvider.of<SettingsSyncerBloc>(context)
+              .add(SettingsSyncerUpdateRequested());
 
-
-            if (state is SettingsUpdated || (state is SyncingSettings && !state.initial) ) {
-              var bloc = BlocProvider.of<SettingsSyncerBloc>(context);
-              return IndexedStack(
-                index: _selectedPageIndex,
-                children: [MySummary(
-                    token: widget.authToken,
-                    fundsRepository: bloc.fundsRepository,
-                    accountsRepository: bloc.accountsRepository,
-                    transactionsRepository: transactionsRepository
-                ),
-                  // TODO: Move container to the widget.
-                  Container(
-                    width: double.infinity,
-                    child: Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: InOutForm(
-                          funds: bloc.fundsRepository.funds,
-                          accounts: bloc.accountsRepository.accounts,
-                          transactionsRepository: transactionsRepository,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    child: Center(
-                      child: Text("Settings"),
-                    ),
-                  )
-              ],
-              );
-            }
-
-            return Container(
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    children: <Widget>[
-                      CircularProgressIndicator(),
-                      Text("Syncing")
-                    ],
-                  ),
-                ),
+        if (state is SettingsUpdated ||
+            (state is SyncingSettings && !state.initial)) {
+          var bloc = BlocProvider.of<SettingsSyncerBloc>(context);
+          return IndexedStack(
+            index: _selectedPageIndex,
+            children: [
+              MySummary(
+                  token: widget.authToken,
+                  fundsRepository: bloc.fundsRepository,
+                  accountsRepository: bloc.accountsRepository,
+                  transactionsRepository: transactionsRepository),
+              InOutForm(
+                funds: bloc.fundsRepository.funds,
+                accounts: bloc.accountsRepository.accounts,
+                transactionsRepository: transactionsRepository,
               ),
-            );
+              Container(
+                child: Center(
+                  child: Text("Settings"),
+                ),
+              )
+            ],
+          );
+        }
 
-
-
-          }),
+        return Container(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: <Widget>[
+                  CircularProgressIndicator(),
+                  Text("Syncing")
+                ],
+              ),
+            ),
+          ),
+        );
+      }),
     );
   }
 
-  void _onTabSelected(int pageIndex){
+  void _onTabSelected(int pageIndex) {
     setState(() {
       _selectedPageIndex = pageIndex;
     });
@@ -108,7 +96,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text("Home"),
@@ -122,32 +109,17 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ],
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      /*
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () {
-          Navigator.of(context).pushNamed(NewTransactionScreen.routeName);
-        },
-      ),
-       */
       body: _body(),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedPageIndex,
         onTap: _onTabSelected,
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard),
-            title: Text("Dashboard")
-          ),
+              icon: Icon(Icons.dashboard), title: Text("Dashboard")),
           BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            title: Text("New Transaction")
-          ),
+              icon: Icon(Icons.add), title: Text("New Transaction")),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            title: Text("Settings")
-          )
+              icon: Icon(Icons.settings), title: Text("Settings"))
         ],
       ),
     );
