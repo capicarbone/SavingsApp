@@ -56,7 +56,7 @@ class _MySummaryState extends State<MySummary> {
                   e.name,
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                trailing: Text(e.balance.toString()),
+                trailing: Text('\$${e.balance.toString()}'),
               ))
                   .toList(),
             )
@@ -85,7 +85,7 @@ class _MySummaryState extends State<MySummary> {
                           e.name,
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        trailing: Text(e.balance.toString()),
+                        trailing: Text('\$${e.balance.toString()}'),
                       ))
                   .toList(),
             )
