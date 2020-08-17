@@ -13,12 +13,14 @@
 // InOutFormSubmitEvent
 // InOutFormFieldsUpdatedEvent
 
+import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:savings_app/blocs/in_out_form/in_out_form_events.dart';
 import 'package:savings_app/blocs/in_out_form/in_out_form_states.dart';
 import 'package:savings_app/models/transaction_post.dart';
 import 'package:savings_app/repositories/transactions_repository.dart';
+import 'dart:developer';
 
 import 'in_out_form_states.dart';
 import 'in_out_form_states.dart';
@@ -42,13 +44,23 @@ class InOutFormBloc extends Bloc<InOutFormEvent, InOutFormState> {
         yield invalidState;
       }else {
         var transaction = _createTransactionPost(event);
-        var response = await transactionsRepository.postTransaction(transaction);
-  
-        if (response.statusCode == 200){
-          yield InOutFormSubmittedState();
-        }else{
+        Response response;
+        try {
+          response = await transactionsRepository.postTransaction(
+              transaction);
+        }catch(e, trace) {
           yield InOutFormSubmitFailedState();
+         log("InOutFormBlock", error: e, stackTrace: trace);
         }
+
+        if (response != null){
+          if (response.statusCode == 200){
+            yield InOutFormSubmittedState();
+          }else{
+            yield InOutFormSubmitFailedState();
+          }
+        }
+
 
       }
 

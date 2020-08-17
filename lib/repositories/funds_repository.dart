@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
@@ -14,25 +13,36 @@ class FundsRepository {
   get funds => _funds;
 
   Future<List<Fund>> fetchUserFunds() async {
-
     print("Bearer $authToken");
 
-    final response = await http.get("https://flask-mymoney.herokuapp.com/api/funds",
+    final response = await http.get(
+        "https://flask-mymoney.herokuapp.com/api/funds",
         headers: {"Authorization": "Bearer $authToken"});
 
     List<dynamic> objects = json.decode(response.body);
 
     _funds.clear();
-    _funds.addAll(objects.map((map) => Fund.fromMap(map) ));
+    _funds.addAll(objects.map((map) => Fund.fromMap(map)));
 
-    print (response.body);
+    print(response.body);
 
     return _funds;
+  }
 
+  Future<Fund> updateBalance(String fundId, double change) async {
+    var fund = _funds.firstWhere((element) => element.id == fundId);
+
+    // TODO: Update database.
+
+    fund.balance += change;
+    return fund;
+  }
+
+  Fund fundForCategory(String categoryId) {
+    return _funds.firstWhere((element) => element.categories.map((e) => e.id).contains(categoryId));
   }
 
   List<Fund> recoverUserFunds() {
     return _funds;
   }
-
 }

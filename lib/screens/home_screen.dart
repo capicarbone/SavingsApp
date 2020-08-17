@@ -28,12 +28,17 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _body() {
     // TODO: Move to initialState
 
+    var fundsRepository = FundsRepository(authToken: widget.authToken);
+    var accountsRepository = AccountsRepository(authToken: widget.authToken);
+
     var transactionsRepository =
-        TransactionsRepository(authToken: widget.authToken);
+        TransactionsRepository(authToken: widget.authToken, fundsRepository: fundsRepository);
+
+
 
     var bloc = SettingsSyncerBloc(
-        accountsRepository: AccountsRepository(authToken: widget.authToken),
-        fundsRepository: FundsRepository(authToken: widget.authToken));
+        accountsRepository: accountsRepository,
+        fundsRepository: fundsRepository);
 
     return BlocProvider(
       create: (context) {
