@@ -45,12 +45,8 @@ class FundsRepository {
       throw Exception("No cached funds");
     }
 
-    try{
-      return _funds.firstWhere((element) => element.categories.map((e) => e.id).contains(categoryId));
-    }catch (e, trace) {
-      log("FundsRepository", error: e, stackTrace: trace);
-      log("categoryId is " + categoryId);
-    }
+    return _funds.firstWhere((element) => element.categories.map((e) => e.id).contains(categoryId));
+
 
   }
 
