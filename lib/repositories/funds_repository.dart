@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 import 'package:savings_app/models/fund.dart';
@@ -24,7 +25,7 @@ class FundsRepository {
     _funds.clear();
     _funds.addAll(objects.map((map) => Fund.fromMap(map)));
 
-    print(response.body);
+    print("from /api/funds/ : " + response.body);
 
     return _funds;
   }
@@ -39,7 +40,18 @@ class FundsRepository {
   }
 
   Fund fundForCategory(String categoryId) {
-    return _funds.firstWhere((element) => element.categories.map((e) => e.id).contains(categoryId));
+
+    if (_funds.length == 0) {
+      throw Exception("No cached funds");
+    }
+
+    try{
+      return _funds.firstWhere((element) => element.categories.map((e) => e.id).contains(categoryId));
+    }catch (e, trace) {
+      log("FundsRepository", error: e, stackTrace: trace);
+      log("categoryId is " + categoryId);
+    }
+
   }
 
   List<Fund> recoverUserFunds() {

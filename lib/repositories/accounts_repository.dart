@@ -34,4 +34,22 @@ class AccountsRepository {
   List<Account> recoverUserAccounts() {
     return _accounts;
   }
+
+  Future<Account> updateBalance(String accountId, double change) async{
+    var account = _accounts.firstWhere((element) => element.id == accountId);
+
+    // TODO: update database
+
+    account.balance += change;
+
+    return account;
+  }
+
+  Account getAccountById(String accountId) {
+    if (_accounts.length > 0) {
+      return _accounts.firstWhere((element) => element.id == accountId);
+    }else{
+      throw Exception("Accounts not loaded yet");
+    }
+  }
 }

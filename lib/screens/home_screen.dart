@@ -25,24 +25,32 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   var _selectedPageIndex = 1;
 
+  FundsRepository _fundsRepository;
+  AccountsRepository _accountsRepository;
+  TransactionsRepository _transactionsRepository;
+  SettingsSyncerBloc _syncerBloc;
+
+  initState(){
+    super.initState();
+
+    _fundsRepository = FundsRepository(authToken: widget.authToken);
+    _accountsRepository = AccountsRepository(authToken: widget.authToken);
+
+    _transactionsRepository = TransactionsRepository(
+        authToken: widget.authToken,
+        fundsRepository: _fundsRepository,
+        accountsRepository: _accountsRepository);
+
+    _syncerBloc = SettingsSyncerBloc(
+        accountsRepository: _accountsRepository,
+        fundsRepository: _fundsRepository);
+  }
+
   Widget _body() {
-    // TODO: Move to initialState
-
-    var fundsRepository = FundsRepository(authToken: widget.authToken);
-    var accountsRepository = AccountsRepository(authToken: widget.authToken);
-
-    var transactionsRepository =
-        TransactionsRepository(authToken: widget.authToken, fundsRepository: fundsRepository);
-
-
-
-    var bloc = SettingsSyncerBloc(
-        accountsRepository: accountsRepository,
-        fundsRepository: fundsRepository);
 
     return BlocProvider(
       create: (context) {
-        return bloc;
+        return _syncerBloc;
       },
       child: BlocBuilder<SettingsSyncerBloc, SettingsSyncState>(
           builder: (context, state) {
@@ -61,11 +69,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   token: widget.authToken,
                   fundsRepository: bloc.fundsRepository,
                   accountsRepository: bloc.accountsRepository,
-                  transactionsRepository: transactionsRepository),
+                  transactionsRepository: _transactionsRepository),
               InOutForm(
                 funds: bloc.fundsRepository.funds,
                 accounts: bloc.accountsRepository.accounts,
-                transactionsRepository: transactionsRepository,
+                transactionsRepository: _transactionsRepository,
               ),
               Container(
                 child: Center(
