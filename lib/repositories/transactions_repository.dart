@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 import 'package:intl/intl.dart';
 import 'package:savings_app/models/fund.dart';
+import 'package:savings_app/models/transaction.dart';
 import 'package:savings_app/models/transaction_post.dart';
 import 'package:savings_app/repositories/accounts_repository.dart';
 import 'package:savings_app/repositories/funds_repository.dart';
@@ -35,6 +38,8 @@ class TransactionsRepository {
       fund = fundsRepository.fundForCategory(transactionData.categoryId);
     }
     var response = await http.post(url, body: body, headers: headers);
+
+    Transaction transaction  = Transaction.fromMap(json.decode(response.body));
 
     // Updating cached account balance
 
