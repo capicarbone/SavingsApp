@@ -9,7 +9,7 @@ class AccountTransaction{
 
   factory AccountTransaction.fromMap(Map<String, dynamic> map) {
     return AccountTransaction(
-        accountId: map['fund'],
+        accountId: map['account'],
         change: map['change']
     );
   }

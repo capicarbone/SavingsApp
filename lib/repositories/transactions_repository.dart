@@ -41,16 +41,13 @@ class TransactionsRepository {
 
     Transaction transaction  = Transaction.fromMap(json.decode(response.body));
 
-    // Updating cached account balance
+    transaction.accountTransactions.forEach((element) {
+      accountsRepository.updateBalance(element.accountId, element.change);
+    });
 
-    accountsRepository.updateBalance(
-        transactionData.accountId, transactionData.amount);
-
-    // Updating cached fund balance.
-
-    if (fund != null) {
-      fundsRepository.updateBalance(fund.id, transactionData.amount);
-    }
+    transaction.fundTransactions.forEach((element) {
+      fundsRepository.updateBalance(element.fundId, element.change);
+    });
 
     print(response.body);
 
