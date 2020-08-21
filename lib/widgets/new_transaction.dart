@@ -27,43 +27,45 @@ class _NewTransactionState extends State<NewTransaction> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Card(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            NestedTabBar(
-              onTap: (position) {
-                setState(() {
-                  _selectedTab = position;
-                });
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Card(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              NestedTabBar(
+                onTap: (position) {
+                  setState(() {
+                    _selectedTab = position;
+                  });
 
-              },
-              tabs: [
-                NestedTab(
-                  text: "Income/Expense",
-                ),
-                NestedTab(text: "Account transfer"),
-                NestedTab(text: "Fund        transfer"),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: IndexedStack(
-                index: _selectedTab,
-                children: [
-                  InOutForm(
-                    funds: widget.funds,
-                    accounts: widget.accounts,
-                    transactionsRepository: widget.transactionsRepository,
+                },
+                tabs: [
+                  NestedTab(
+                    text: "Income/Expense",
                   ),
-                  Center(child: Text("Account transfer"),),
-                  Center(child: Text("Fund transfer"),)
+                  NestedTab(text: "Account transfer"),
+                  NestedTab(text: "Fund        transfer"),
                 ],
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: IndexedStack(
+                  index: _selectedTab,
+                  children: [
+                    InOutForm(
+                      funds: widget.funds,
+                      accounts: widget.accounts,
+                      transactionsRepository: widget.transactionsRepository,
+                    ),
+                    Center(child: Text("Account transfer"),),
+                    Center(child: Text("Fund transfer"),)
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
