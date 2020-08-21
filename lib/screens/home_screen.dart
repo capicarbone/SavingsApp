@@ -9,9 +9,9 @@ import 'package:savings_app/blocs/settings_syncer/settings_syncer_events.dart';
 import 'package:savings_app/repositories/accounts_repository.dart';
 import 'package:savings_app/repositories/funds_repository.dart';
 import 'package:savings_app/repositories/transactions_repository.dart';
-import 'package:savings_app/screens/new_transaction_screen.dart';
 import 'package:savings_app/widgets/in_out_form.dart';
 import 'package:savings_app/widgets/my_summary.dart';
+import 'package:savings_app/widgets/new_transaction.dart';
 
 class HomeScreen extends StatefulWidget {
   String authToken;
@@ -70,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   fundsRepository: bloc.fundsRepository,
                   accountsRepository: bloc.accountsRepository,
                   transactionsRepository: _transactionsRepository),
-              InOutForm(
+              NewTransaction(
                 funds: bloc.fundsRepository.funds,
                 accounts: bloc.accountsRepository.accounts,
                 transactionsRepository: _transactionsRepository,

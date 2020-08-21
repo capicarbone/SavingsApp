@@ -41,6 +41,16 @@ class TransactionsRepository {
 
     Transaction transaction  = Transaction.fromMap(json.decode(response.body));
 
+    _updateBalances(transaction);
+
+    // TODO: Save transactions in cache and database.
+
+    print(response.body);
+
+    return response;
+  }
+
+  void _updateBalances(Transaction transaction){
     transaction.accountTransactions.forEach((element) {
       accountsRepository.updateBalance(element.accountId, element.change);
     });
@@ -48,9 +58,5 @@ class TransactionsRepository {
     transaction.fundTransactions.forEach((element) {
       fundsRepository.updateBalance(element.fundId, element.change);
     });
-
-    print(response.body);
-
-    return response;
   }
 }
