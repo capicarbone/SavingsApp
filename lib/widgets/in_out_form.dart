@@ -137,7 +137,7 @@ class _InOutFormState extends State<InOutForm> {
                                 lastDate: DateTime(now.year + 1, 1, 1))
                             .then((value) {
                           setState(() {
-                            _selectedDate = value;
+                            _selectedDate = value != null ? value : _selectedDate;
                           });
                         });
                       },
