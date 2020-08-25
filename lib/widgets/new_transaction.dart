@@ -3,6 +3,7 @@ import 'package:savings_app/models/account.dart';
 import 'package:savings_app/models/category.dart';
 import 'package:savings_app/models/fund.dart';
 import 'package:savings_app/repositories/transactions_repository.dart';
+import 'package:savings_app/widgets/account_transfer_form.dart';
 import 'package:savings_app/widgets/in_out_form.dart';
 import 'package:savings_app/widgets/nested_tabs/nested_tab_bar.dart';
 import 'package:savings_app/widgets/nested_tabs/tab.dart';
@@ -59,7 +60,10 @@ class _NewTransactionState extends State<NewTransaction> {
                       accounts: widget.accounts,
                       transactionsRepository: widget.transactionsRepository,
                     ),
-                    Center(child: Text("Account transfer"),),
+                    AccountTransferForm(
+                        accounts: widget.accounts,
+                      transactionsRepository: widget.transactionsRepository,
+                    ),
                     Center(child: Text("Fund transfer"),)
                   ],
                 ),
