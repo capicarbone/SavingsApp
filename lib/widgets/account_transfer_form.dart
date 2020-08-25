@@ -48,7 +48,7 @@ class AccountTransferForm extends StatelessWidget {
                   onChanged: (accountId) {
                     toAccountsId = accountId;
                   },
-                  value: toAccountsId,
+                  value: state.accountsTo == null ? null : state.accountsTo[0].id,
                   decoration: const InputDecoration(hintText: "To"),
                   autovalidate: true,
                   items: state.accountsTo == null ? null : [

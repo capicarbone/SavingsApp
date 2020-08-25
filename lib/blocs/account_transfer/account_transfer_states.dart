@@ -34,7 +34,7 @@ class AccountTransferState {
         errors: null);
   }
 
-  factory AccountTransferState.fromSelected(List<Account> accounts, List<Account> accountsTo) {
+  factory AccountTransferState.withAccountsTo(List<Account> accounts, List<Account> accountsTo) {
     return AccountTransferState(
       accountsFrom: accounts,
       accountsTo: accountsTo,

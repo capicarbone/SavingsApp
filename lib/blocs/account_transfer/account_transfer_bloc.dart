@@ -16,10 +16,12 @@ class AccountTransferBloc
   Stream<AccountTransferState> mapEventToState(
       AccountTransferEvent event) async* {
     if (event is AccountTransferFromSelectedEvent) {
+      yield AccountTransferState.withAccountsTo(accounts, null);
+      //var toAccounts = [];
       var toAccounts = accounts
           .where((element) => element.id != event.accountFromId)
           .toList();
-      yield AccountTransferState.fromSelected(accounts, toAccounts);
+      yield AccountTransferState.withAccountsTo(accounts, toAccounts);
     }
   }
 }
