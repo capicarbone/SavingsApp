@@ -21,19 +21,40 @@ class _AccountTransferFormState extends State<AccountTransferForm> {
   final amountController = TextEditingController();
   final descriptionController = TextEditingController();
 
-  String fromAccountId = null;
+  AccountTransferBloc _bloc;
 
-  String toAccountsId = null;
+  String accountFromId = null;
+
+  String accountToId = null;
 
   DateTime _selectedDate = DateTime.now();
 
   @override
-  Widget build(BuildContext context) {
-    var bloc = AccountTransferBloc(
+  void initState() {
+    super.initState();
+
+    _bloc = AccountTransferBloc(
         accounts: widget.accounts, transactionsRepository: widget.transactionsRepository);
+  }
+
+  void _submitForm(){
+    var event = AccountTransferSubmitFormEvent(
+      amount: amountController.text,
+      description: descriptionController.text,
+      accountFromId: accountFromId,
+      accountToId: accountToId,
+      accomplishedAt: _selectedDate
+    );
+
+    _bloc.add(event);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
 
     return BlocBuilder<AccountTransferBloc, AccountTransferState>(
-        bloc: bloc,
+        bloc: _bloc,
         builder: (context, state) {
           return Form(
             child: Column(
@@ -69,11 +90,11 @@ class _AccountTransferFormState extends State<AccountTransferForm> {
                 ),
                 DropdownButtonFormField(
                   onChanged: (accountId) {
-                    fromAccountId = accountId;
-                    toAccountsId = null;
+                    accountFromId = accountId;
+                    accountToId = null;
                     var event = AccountTransferFromSelectedEvent(
                         accountFromId: accountId);
-                    bloc.add(event);
+                    _bloc.add(event);
                   },
                   decoration: const InputDecoration(hintText: "From"),
                   autovalidate: true,
@@ -86,7 +107,7 @@ class _AccountTransferFormState extends State<AccountTransferForm> {
                 ),
                 DropdownButtonFormField(
                   onChanged: (accountId) {
-                    toAccountsId = accountId;
+                    accountToId = accountId;
                   },
                   value:
                       state.accountsTo == null ? null : state.accountsTo[0].id,
@@ -107,7 +128,9 @@ class _AccountTransferFormState extends State<AccountTransferForm> {
                 ),
                 RaisedButton(
                   child: Text("Save"),
-                  onPressed: () {},
+                  onPressed: state.isSubmitting ? null : () {
+                    _submitForm();
+                  },
                 )
               ],
             ),

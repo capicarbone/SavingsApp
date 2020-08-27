@@ -8,6 +8,7 @@ class AccountTransferBloc
     extends Bloc<AccountTransferEvent, AccountTransferState> {
   TransactionsRepository transactionsRepository;
   List<Account> accounts;
+  AccountTransferState state;
 
   AccountTransferBloc({this.transactionsRepository, this.accounts})
       : super(AccountTransferState.initial(accounts));
@@ -16,12 +17,16 @@ class AccountTransferBloc
   Stream<AccountTransferState> mapEventToState(
       AccountTransferEvent event) async* {
     if (event is AccountTransferFromSelectedEvent) {
-      yield AccountTransferState.withAccountsTo(accounts, null);
       //var toAccounts = [];
       var toAccounts = accounts
           .where((element) => element.id != event.accountFromId)
           .toList();
-      yield AccountTransferState.withAccountsTo(accounts, toAccounts);
+      state = AccountTransferState.withAccountsTo(accounts, toAccounts);
+      yield state;
+    }
+
+    if (event is AccountTransferSubmitFormEvent) {
+
     }
   }
 }
