@@ -6,7 +6,11 @@
 
 class AccountTransferEvent {}
 
-class AccountTransferSubmitFormEvent extends AccountTransferEvent {}
+class AccountTransferSubmitFormEvent extends AccountTransferEvent {
+  String amount;
+  String accountFromId;
+  String accountToId;
+}
 
 class AccountTransferFromSelectedEvent extends AccountTransferEvent{
   String accountFromId;
