@@ -28,8 +28,9 @@ import 'in_out_form_states.dart';
 class InOutFormBloc extends Bloc<InOutFormEvent, InOutFormState> {
 
   TransactionsRepository transactionsRepository;
+  bool expenseMode = false;
 
-  InOutFormBloc({@required this.transactionsRepository}) : super(InOutFormInitialState());
+  InOutFormBloc({@required this.transactionsRepository, this.expenseMode: false}) : super(InOutFormInitialState());
 
   @override
   Stream<InOutFormState> mapEventToState(InOutFormEvent event) async* {
@@ -43,9 +44,12 @@ class InOutFormBloc extends Bloc<InOutFormEvent, InOutFormState> {
       if (invalidState != null){
         yield invalidState;
       }else {
-        var transaction = _createTransactionPost(event);
         Response response;
+
         try {
+          var transaction = _createTransactionPost(event);
+
+
           response = await transactionsRepository.postTransaction(
               transaction);
         }catch(e, trace) {
@@ -61,7 +65,6 @@ class InOutFormBloc extends Bloc<InOutFormEvent, InOutFormState> {
           }
         }
 
-
       }
 
     }
@@ -71,6 +74,8 @@ class InOutFormBloc extends Bloc<InOutFormEvent, InOutFormState> {
   TransactionPost _createTransactionPost(InOutFormSubmitEvent event){
 
     var amount = double.parse(event.amount);
+
+    amount = expenseMode ? -amount : amount;
 
     return TransactionPost(amount: amount, accomplishedAt: event.accomplishedAt,
     accountId: event.accountId, categoryId: event.categoryId,
@@ -99,6 +104,10 @@ class InOutFormBloc extends Bloc<InOutFormEvent, InOutFormState> {
     if (amount == 0) {
       errors.amountErrorMessage = "Must be different than 0.";
       return errors;
+    }
+
+    if (amount < 0) {
+      errors.amountErrorMessage = "Invalid value";
     }
 
     if (event.accountId == null){

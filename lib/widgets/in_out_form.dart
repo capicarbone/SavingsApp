@@ -17,6 +17,7 @@ import '../blocs/in_out_form/in_out_form_states.dart';
 import '../blocs/in_out_form/in_out_form_states.dart';
 
 class InOutForm extends StatefulWidget {
+  bool expenseMode = false;
   List<Fund> funds;
   List<Account> accounts;
   List<Category> categories;
@@ -25,7 +26,8 @@ class InOutForm extends StatefulWidget {
   InOutForm(
       {@required this.funds,
       @required this.accounts,
-      this.transactionsRepository}) {
+      @required this.transactionsRepository,
+      this.expenseMode: false}) {
     categories = [];
 
     funds.forEach((element) {
@@ -39,6 +41,7 @@ class InOutForm extends StatefulWidget {
 
 class _InOutFormState extends State<InOutForm> {
   final _formKey = GlobalKey<FormState>();
+  InOutFormBloc _bloc;
 
   final amountController = TextEditingController();
   final descriptionController = TextEditingController();
@@ -71,11 +74,18 @@ class _InOutFormState extends State<InOutForm> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _bloc = InOutFormBloc(
+      expenseMode: widget.expenseMode,
+        transactionsRepository: widget.transactionsRepository);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) {
-        return InOutFormBloc(
-            transactionsRepository: widget.transactionsRepository);
+        return _bloc;
       },
       child: BlocListener<InOutFormBloc, InOutFormState>(
         listener: (context, state) {

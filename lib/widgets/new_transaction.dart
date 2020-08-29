@@ -40,13 +40,15 @@ class _NewTransactionState extends State<NewTransaction> {
                   setState(() {
                     _selectedTab = position;
                   });
-
                 },
                 tabs: [
                   NestedTab(
-                    text: "Income/Expense",
+                    text: "Income",
                   ),
-                  NestedTab(text: "Account transfer"),
+                  NestedTab(
+                    text: "Expense",
+                  ),
+                  NestedTab(text: "Transfer"),
                 ],
               ),
               Padding(
@@ -55,6 +57,12 @@ class _NewTransactionState extends State<NewTransaction> {
                   index: _selectedTab,
                   children: [
                     InOutForm(
+                      funds: widget.funds,
+                      accounts: widget.accounts,
+                      transactionsRepository: widget.transactionsRepository,
+                    ),
+                    InOutForm(
+                      expenseMode: true,
                       funds: widget.funds,
                       accounts: widget.accounts,
                       transactionsRepository: widget.transactionsRepository,
