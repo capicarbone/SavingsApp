@@ -38,6 +38,15 @@ class _AccountTransferFormState extends State<AccountTransferForm> {
         transactionsRepository: widget.transactionsRepository);
   }
 
+  void _clearForm() {
+    setState(() {
+      descriptionController.text = "";
+      amountController.text = "";
+      accountFromId = null;
+      accountToId = null;
+    });
+  }
+
   void _submitForm() {
     var event = AccountTransferSubmitFormEvent(
         amount: amountController.text,
@@ -104,6 +113,7 @@ class _AccountTransferFormState extends State<AccountTransferForm> {
                 return state.errors.accountFromMessage;
               return null;
             },
+            value: accountFromId,
             items: [
               ...state.accountsFrom.map((e) => DropdownMenuItem(
                 child: Text(e.name),
@@ -162,6 +172,8 @@ class _AccountTransferFormState extends State<AccountTransferForm> {
               content: Text("Transfer saved"),
               backgroundColor: Colors.green,
             ));
+
+            _clearForm();
           }
 
           if (state.errors != null && state.errors.submitError != null) {
