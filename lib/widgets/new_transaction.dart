@@ -47,7 +47,6 @@ class _NewTransactionState extends State<NewTransaction> {
                     text: "Income/Expense",
                   ),
                   NestedTab(text: "Account transfer"),
-                  NestedTab(text: "Fund        transfer"),
                 ],
               ),
               Padding(
@@ -64,7 +63,6 @@ class _NewTransactionState extends State<NewTransaction> {
                         accounts: widget.accounts,
                       transactionsRepository: widget.transactionsRepository,
                     ),
-                    Center(child: Text("Fund transfer"),)
                   ],
                 ),
               ),
