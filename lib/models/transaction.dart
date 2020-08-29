@@ -52,13 +52,17 @@ class Transaction {
    List<dynamic> fund_trasactions = map['fund_transactions'];
    List<dynamic> account_transactions = map['account_transactions'];
 
-   transaction.fundTransactions.addAll(
-      fund_trasactions.map((e) => FundTransaction.fromMap(e))
-   );
+   if (fund_trasactions != null){
+     transaction.fundTransactions.addAll(
+         fund_trasactions.map((e) => FundTransaction.fromMap(e))
+     );
+   }
 
-   transaction.accountTransactions.addAll(
-     account_transactions.map((e) => AccountTransaction.fromMap(e))
-   );
+   if (account_transactions != null) {
+     transaction.accountTransactions.addAll(
+         account_transactions.map((e) => AccountTransaction.fromMap(e))
+     );
+   }
 
    return transaction;
   }

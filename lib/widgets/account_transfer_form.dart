@@ -56,6 +56,9 @@ class _AccountTransferFormState extends State<AccountTransferForm> {
     return BlocBuilder<AccountTransferBloc, AccountTransferState>(
         bloc: _bloc,
         builder: (context, state) {
+
+          accountToId = state.accountsTo == null ? null : state.accountsTo[0].id;
+
           return Form(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -65,6 +68,13 @@ class _AccountTransferFormState extends State<AccountTransferForm> {
                   keyboardType: TextInputType.number,
                   autovalidate: true,
                   decoration: const InputDecoration(hintText: "Amount"),
+                  validator: (_) {
+                    if (state.errors != null){
+                      return state.errors.amountErrorMessage;
+                    }
+
+                    return null;
+                  },
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -91,13 +101,17 @@ class _AccountTransferFormState extends State<AccountTransferForm> {
                 DropdownButtonFormField(
                   onChanged: (accountId) {
                     accountFromId = accountId;
-                    accountToId = null;
                     var event = AccountTransferFromSelectedEvent(
                         accountFromId: accountId);
                     _bloc.add(event);
                   },
                   decoration: const InputDecoration(hintText: "From"),
                   autovalidate: true,
+                    validator: (_) {
+                      if (state.errors != null)
+                        return state.errors.accountFromMessage;
+                      return null;
+                    },
                   items: [
                     ...state.accountsFrom.map((e) => DropdownMenuItem(
                           child: Text(e.name),
@@ -109,10 +123,14 @@ class _AccountTransferFormState extends State<AccountTransferForm> {
                   onChanged: (accountId) {
                     accountToId = accountId;
                   },
-                  value:
-                      state.accountsTo == null ? null : state.accountsTo[0].id,
+                  value: accountToId,
                   decoration: const InputDecoration(hintText: "To"),
                   autovalidate: true,
+                  validator: (_) {
+                    if (state.errors != null)
+                      return state.errors.accountToMessage;
+                    return null;
+                  },
                   items: state.accountsTo == null
                       ? null
                       : [

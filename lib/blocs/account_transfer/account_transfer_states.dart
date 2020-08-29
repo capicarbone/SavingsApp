@@ -43,17 +43,17 @@ class AccountTransferState {
     );
   }
 
-  AccountTransferState copyWith(
-  List<Account> accountsFrom,
-  List<Account> accountsTo,
-  bool isSubmitting,
-  AccountTransferFormErrors errors
-      ){
+  AccountTransferState copyWith({
+    List<Account> accountsFrom,
+    List<Account> accountsTo,
+    bool isSubmitting,
+    AccountTransferFormErrors errors
+  }){
     return AccountTransferState(
-      accountsTo: accountsTo,
-      accountsFrom: accountsFrom,
-      isSubmitting: isSubmitting,
-      errors: errors
+      accountsTo: accountsTo ?? this.accountsTo,
+      accountsFrom: accountsFrom ?? this.accountsFrom,
+      isSubmitting: isSubmitting ?? this.isSubmitting,
+      errors: errors ?? this.errors
     );
   }
 }
