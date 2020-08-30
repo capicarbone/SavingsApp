@@ -9,6 +9,7 @@ import 'package:savings_app/blocs/summary/summary_states.dart';
 import 'package:savings_app/repositories/accounts_repository.dart';
 import 'package:savings_app/repositories/funds_repository.dart';
 import 'package:savings_app/repositories/transactions_repository.dart';
+import 'package:savings_app/screens/account_transactions_screen.dart';
 import 'package:savings_app/widgets/in_out_form.dart';
 
 class MySummary extends StatefulWidget {
@@ -27,8 +28,9 @@ class MySummary extends StatefulWidget {
       this.accountsRepository,
       this.transactionsRepository})
       : this._summaryBloc = SummaryBloc(
-            accountsRepository: accountsRepository,
-            fundsRepository: fundsRepository,) {
+          accountsRepository: accountsRepository,
+          fundsRepository: fundsRepository,
+        ) {
     _summaryBloc.add(LoadDataEvent());
   }
 
@@ -43,21 +45,22 @@ class _MySummaryState extends State<MySummary> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-
             Text(
               "Funds",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20,
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
                   color: Theme.of(context).primaryColor),
             ),
             Column(
               children: state.funds
                   .map((e) => ListTile(
-                title: Text(
-                  e.name,
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                trailing: Text('\$${e.balance.toStringAsFixed(2)}'),
-              ))
+                        title: Text(
+                          e.name,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        trailing: Text('\$${e.balance.toStringAsFixed(2)}'),
+                      ))
                   .toList(),
             )
           ],
@@ -76,16 +79,26 @@ class _MySummaryState extends State<MySummary> {
           children: <Widget>[
             Text(
               "Accounts",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Theme.of(context).primaryColor),
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  color: Theme.of(context).primaryColor),
             ),
             Column(
               children: state.accounts
-                  .map((e) => ListTile(
-                        title: Text(
-                          e.name,
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                  .map((e) => InkWell(
+                        onTap: () {
+                          Navigator.of(context)
+                              .pushNamed(AccountTransactionsScreen.routeName,
+                          arguments: {'account': e});
+                        },
+                        child: ListTile(
+                          title: Text(
+                            e.name,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          trailing: Text('\$${e.balance.toStringAsFixed(2)}'),
                         ),
-                        trailing: Text('\$${e.balance.toStringAsFixed(2)}'),
                       ))
                   .toList(),
             )
@@ -114,17 +127,19 @@ class _MySummaryState extends State<MySummary> {
           builder: (context, state) {
             return Container(
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-              children: <Widget>[
-                //if (state is SummaryDataLoaded && state.funds != null && state.accounts != null)
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: <Widget>[
+                  //if (state is SummaryDataLoaded && state.funds != null && state.accounts != null)
 
-                  SizedBox(height: 18,),
+                  SizedBox(
+                    height: 18,
+                  ),
+                  _accountsSectionWidget(state),
                   _fundsSectionWidget(state),
-                  _accountsSectionWidget(state)
-              ],
-            ),
-                ));
+                ],
+              ),
+            ));
           },
         ),
       ),
