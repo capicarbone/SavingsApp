@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 import 'package:intl/intl.dart';
@@ -80,6 +81,35 @@ class TransactionsRepository {
     print(response.body);
 
     return response;
+  }
+
+  Future<List<Transaction>> getTransactions(String accountId, String fundId) async {
+    var url = "https://flask-mymoney.herokuapp.com/api/transactions?";
+
+    if (accountId != null){
+      url += "account_id=$accountId";
+    }
+
+    if (fundId != null){
+      url += "fund_id=$fundId";
+    }
+
+    var header = _getAuthenticatedHeader();
+
+    var response = await http.get(url, headers: header);
+
+    print(response.body);
+
+    if (response.statusCode == 200){
+      var jsonMap = json.decode(response.body) as List<dynamic>;
+
+      return jsonMap.map((e) => Transaction.fromMap(e)).toList();
+    }
+
+  }
+
+  Future<List<Transaction>> getAccountTransactions(String accountId) async {
+    return await getTransactions(accountId, null);
   }
 
   void _updateBalances(Transaction transaction){

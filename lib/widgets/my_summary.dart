@@ -90,7 +90,7 @@ class _MySummaryState extends State<MySummary> {
                         onTap: () {
                           Navigator.of(context)
                               .pushNamed(AccountTransactionsScreen.routeName,
-                          arguments: {'account': e});
+                          arguments: {'account': e, 'authToken': widget.token});
                         },
                         child: ListTile(
                           title: Text(
