@@ -19,11 +19,18 @@ class AccountTransactionsBloc extends Bloc<AccountTransactionsEvent, AccountTran
     if (event is AccountTransactionsLoad) {
       yield AccountTransactionsLoading();
 
-      //await Future.delayed(Duration(seconds: 1));
+      var transactions;
 
-      var transactions = await transactionsRepository.getAccountTransactions(accountId);
+      try{
+        transactions = await transactionsRepository.getAccountTransactions(accountId);
+      }catch (e) {
+        yield AccountTransactionsLoadingFailed();
+      }
 
-      yield AccountTransactionsUpdated(transactions: transactions);
+      if (transactions != null){
+        yield AccountTransactionsUpdated(transactions: transactions);
+      }
+
 
     }
 

@@ -12,3 +12,7 @@ class AccountTransactionsUpdated extends AccountTransactionsState{
 
   AccountTransactionsUpdated({this.transactions});
 }
+
+class AccountTransactionsLoadingFailed extends AccountTransactionsState {
+  String message;
+}

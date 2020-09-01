@@ -104,6 +104,8 @@ class TransactionsRepository {
       var jsonMap = json.decode(response.body) as List<dynamic>;
 
       return jsonMap.map((e) => Transaction.fromMap(e)).toList();
+    }else {
+      throw Exception("Error on request: " + response.statusCode.toString());
     }
 
   }

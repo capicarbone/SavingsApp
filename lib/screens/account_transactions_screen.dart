@@ -23,6 +23,39 @@ class AccountTransactionsScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildAccountSummary(Account account){
+    return Container(
+      width: double.infinity,
+      color: Colors.blueGrey,
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: <Widget>[
+            Text("Balance", style: TextStyle(color: Colors.white),),
+            Text("\$${account.balance}", style: TextStyle(fontSize: 32, color: Colors.white, fontWeight: FontWeight.bold),)
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAccountTransactionsList() {
+    return Container(
+      child: BlocBuilder<AccountTransactionsBloc, AccountTransactionsState>(
+        builder: (ctx, state) {
+
+
+          if (state is AccountTransactionsUpdated) {
+            return _buildAccountView(ctx);
+          }
+
+          return _buildLoadingView();
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var args =
@@ -52,15 +85,12 @@ class AccountTransactionsScreen extends StatelessWidget {
         create: (_) {
           return bloc;
         },
-        child: BlocBuilder<AccountTransactionsBloc, AccountTransactionsState>(
-          builder: (ctx, state) {
-            if (state is AccountTransactionsUpdated) {
-              return _buildAccountView(context);
-            }
-
-            return _buildLoadingView();
-          },
-        ),
+        child: Column(
+          children: <Widget>[
+            _buildAccountSummary(account),
+            Flexible(child: _buildAccountTransactionsList())
+          ],
+        ) ,
       ),
     );
   }
