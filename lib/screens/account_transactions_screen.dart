@@ -4,6 +4,7 @@ import 'package:savings_app/blocs/account_transactions/account_transactions_bloc
 import 'package:savings_app/blocs/account_transactions/account_transactions_events.dart';
 import 'package:savings_app/blocs/account_transactions/account_transactions_state.dart';
 import 'package:savings_app/models/account.dart';
+import 'package:savings_app/models/transaction.dart';
 import 'package:savings_app/repositories/accounts_repository.dart';
 import 'package:savings_app/repositories/funds_repository.dart';
 import 'package:savings_app/repositories/transactions_repository.dart';
@@ -11,10 +12,52 @@ import 'package:savings_app/repositories/transactions_repository.dart';
 class AccountTransactionsScreen extends StatelessWidget {
   static const routeName = '/transactions';
 
-  Widget _buildAccountView(context) {
-    return Center(
-      child: Text("Transactions loaded"),
-    );
+  String _getShortDescription(Transaction transaction, String accountId) {
+
+    if (transaction.isAccountTransfer) {
+      var receiver = transaction.getAccountTransferReceiver();
+      var source = transaction.getAccountTransferSource();
+
+      if (receiver.accountId == accountId){
+        return "Transfer from " + source.accountId;
+      }else{
+        return "Transfer to " + receiver.accountId;
+      }
+    }
+
+    if (transaction.isIncome){
+      return "Income";
+    }
+
+    if (transaction.isExpense) {
+      return transaction.category.name;
+    }
+
+    return "";
+  }
+
+  Widget _buildTransactionsList(
+      Account account, List<Transaction> transactions) {
+    return ListView.builder(
+        itemCount: transactions.length,
+        itemBuilder: (_, index) {
+          var transaction = transactions[index];
+          var accountTransaction =
+              transaction.transactionForAccount(account.id);
+
+          return ListTile(
+            title: Text(_getShortDescription(transaction, account.id)),
+            subtitle: Text(transaction.description),
+            trailing: Text(
+              "\$${accountTransaction.change}",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                  color: (accountTransaction.change) < 0
+                      ? Colors.red
+                      : Colors.green),
+            ),
+          );
+        });
   }
 
   Widget _buildLoadingView() {
@@ -23,7 +66,7 @@ class AccountTransactionsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAccountSummary(Account account){
+  Widget _buildAccountSummary(Account account) {
     return Container(
       width: double.infinity,
       color: Colors.blueGrey,
@@ -32,24 +75,30 @@ class AccountTransactionsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
-            Text("Balance", style: TextStyle(color: Colors.white),),
-            Text("\$${account.balance}", style: TextStyle(fontSize: 32, color: Colors.white, fontWeight: FontWeight.bold),)
+            Text(
+              "Balance",
+              style: TextStyle(color: Colors.white),
+            ),
+            Text(
+              "\$${account.balance}",
+              style: TextStyle(
+                  fontSize: 32,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold),
+            )
           ],
         ),
       ),
     );
   }
 
-  Widget _buildAccountTransactionsList() {
+  Widget _buildAccountTransactionsList(Account account) {
     return Container(
       child: BlocBuilder<AccountTransactionsBloc, AccountTransactionsState>(
         builder: (ctx, state) {
-
-
           if (state is AccountTransactionsUpdated) {
-            return _buildAccountView(ctx);
+            return _buildTransactionsList(account, state.transactions);
           }
-
           return _buildLoadingView();
         },
       ),
@@ -88,9 +137,9 @@ class AccountTransactionsScreen extends StatelessWidget {
         child: Column(
           children: <Widget>[
             _buildAccountSummary(account),
-            Flexible(child: _buildAccountTransactionsList())
+            Flexible(child: _buildAccountTransactionsList(account))
           ],
-        ) ,
+        ),
       ),
     );
   }

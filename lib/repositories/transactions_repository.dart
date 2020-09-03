@@ -6,6 +6,7 @@ import 'package:meta/meta.dart';
 import 'package:intl/intl.dart';
 import 'package:savings_app/models/account_transfer_post.dart';
 import 'package:savings_app/models/fund.dart';
+import 'package:savings_app/models/category.dart' as transactionCategory;
 import 'package:savings_app/models/transaction.dart';
 import 'package:savings_app/models/transaction_post.dart';
 import 'package:savings_app/repositories/accounts_repository.dart';
@@ -83,7 +84,7 @@ class TransactionsRepository {
     return response;
   }
 
-  Future<List<Transaction>> getTransactions(String accountId, String fundId) async {
+  Future<List<Transaction>> fetchTransactions(String accountId, String fundId) async {
     var url = "https://flask-mymoney.herokuapp.com/api/transactions?";
 
     if (accountId != null){
@@ -98,12 +99,23 @@ class TransactionsRepository {
 
     var response = await http.get(url, headers: header);
 
+    var funds = await fundsRepository.fetchUserFunds( );
+
+    List<transactionCategory.Category> categories = [];
+
+    funds.forEach((element) {
+      categories.addAll(element.categories);
+    });
+
     print(response.body);
 
     if (response.statusCode == 200){
       var jsonMap = json.decode(response.body) as List<dynamic>;
 
-      return jsonMap.map((e) => Transaction.fromMap(e)).toList();
+      // TODO: Order by date
+      var transactions = jsonMap.map((e) => Transaction.fromMap(e, categories)).toList();
+
+      return transactions;
     }else {
       throw Exception("Error on request: " + response.statusCode.toString());
     }
@@ -111,7 +123,7 @@ class TransactionsRepository {
   }
 
   Future<List<Transaction>> getAccountTransactions(String accountId) async {
-    return await getTransactions(accountId, null);
+    return await fetchTransactions(accountId, null);
   }
 
   void _updateBalances(Transaction transaction){

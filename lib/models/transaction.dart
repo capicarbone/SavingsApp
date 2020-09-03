@@ -1,5 +1,6 @@
 
 import 'package:meta/meta.dart';
+import 'package:savings_app/models/category.dart';
 
 class AccountTransaction{
   final String accountId;
@@ -33,20 +34,33 @@ class Transaction {
   final String id;
   final String description;
   final String categoryId;
+  final Category category;
   final String dateAccomplished;
   final List<AccountTransaction> accountTransactions = [];
   final List<FundTransaction> fundTransactions = [];
 
+  Transaction({this.id, this.description, this.categoryId, this.dateAccomplished, this.category : null});
 
-  Transaction({this.id, this.description, this.categoryId, this.dateAccomplished});
+  get isAccountTransfer => accountTransactions.length == 2;
 
-  factory Transaction.fromMap(Map<String, dynamic> map){
+  get isIncome => accountTransactions.length == 1 && accountTransactions[0].change > 0;
+
+  get isExpense => accountTransactions.length == 1 && accountTransactions[0].change < 0;
+
+  factory Transaction.fromMap(Map<String, dynamic> map, [List<Category> categories]){
+
+    var category = null;
+
+    if (categories != null && map['category'] != null){
+      category = categories.firstWhere((element) => element.id == map['category']);
+    }
 
    var transaction = Transaction(
      id: map['id'],
      description: map['description'],
      dateAccomplished: map['date_accomplished'],
-     categoryId: map['category']
+     categoryId: map['category'],
+       category: category
    );
 
    List<dynamic> fund_trasactions = map['fund_transactions'];
@@ -66,4 +80,26 @@ class Transaction {
 
    return transaction;
   }
+
+  AccountTransaction transactionForAccount(String accountId){
+    // TODO: Return null if not found
+    return accountTransactions.firstWhere((element) => element.accountId == accountId);
+  }
+
+  AccountTransaction getAccountTransferReceiver(){
+    if (isAccountTransfer){
+      return accountTransactions.firstWhere((element) => element.change > 0);
+    }
+    return null;
+  }
+
+  AccountTransaction getAccountTransferSource(){
+    if (isAccountTransfer){
+      return accountTransactions.firstWhere((element) => element.change < 0);
+    }
+
+    return null;
+  }
+
+
 }

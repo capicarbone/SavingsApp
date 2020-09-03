@@ -1,4 +1,6 @@
 
+import 'dart:developer';
+
 import 'package:meta/meta.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:savings_app/blocs/account_transactions/account_transactions_events.dart';
@@ -23,7 +25,8 @@ class AccountTransactionsBloc extends Bloc<AccountTransactionsEvent, AccountTran
 
       try{
         transactions = await transactionsRepository.getAccountTransactions(accountId);
-      }catch (e) {
+      }catch (e, trace) {
+        log(e.toString(), error: e, stackTrace: trace);
         yield AccountTransactionsLoadingFailed();
       }
 
