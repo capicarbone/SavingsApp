@@ -9,7 +9,7 @@ import 'package:savings_app/blocs/summary/summary_states.dart';
 import 'package:savings_app/repositories/accounts_repository.dart';
 import 'package:savings_app/repositories/funds_repository.dart';
 import 'package:savings_app/repositories/transactions_repository.dart';
-import 'package:savings_app/screens/account_transactions_screen.dart';
+import 'package:savings_app/screens/account_details_screen.dart';
 import 'package:savings_app/widgets/in_out_form.dart';
 
 class MySummary extends StatefulWidget {
@@ -89,7 +89,7 @@ class _MySummaryState extends State<MySummary> {
                   .map((e) => InkWell(
                         onTap: () {
                           Navigator.of(context)
-                              .pushNamed(AccountTransactionsScreen.routeName,
+                              .pushNamed(AccountDetailsScreen.routeName,
                           arguments: {'account': e, 'authToken': widget.token});
                         },
                         child: ListTile(

@@ -4,7 +4,7 @@ import 'package:savings_app/blocs/authentication/authentication_bloc.dart';
 import 'package:savings_app/blocs/authentication/authentication_events.dart';
 import 'package:savings_app/blocs/authentication/authentication_states.dart';
 import 'package:savings_app/repositories/user_repository.dart';
-import 'package:savings_app/screens/account_transactions_screen.dart';
+import 'package:savings_app/screens/account_details_screen.dart';
 import 'package:savings_app/screens/home_screen.dart';
 import 'package:savings_app/screens/new_transaction_screen.dart';
 import 'package:savings_app/screens/splash_screen.dart';
@@ -81,7 +81,7 @@ class MyApp extends StatelessWidget {
         },
       ),
       routes: {
-        AccountTransactionsScreen.routeName: (context) => AccountTransactionsScreen(),
+        AccountDetailsScreen.routeName: (context) => AccountDetailsScreen(),
       },
     );
   }
