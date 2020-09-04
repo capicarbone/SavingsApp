@@ -10,6 +10,7 @@ import 'package:savings_app/repositories/accounts_repository.dart';
 import 'package:savings_app/repositories/funds_repository.dart';
 import 'package:savings_app/repositories/transactions_repository.dart';
 import 'package:savings_app/screens/account_details_screen.dart';
+import 'package:savings_app/screens/fund_details_screen.dart';
 import 'package:savings_app/widgets/in_out_form.dart';
 
 class MySummary extends StatefulWidget {
@@ -54,13 +55,20 @@ class _MySummaryState extends State<MySummary> {
             ),
             Column(
               children: state.funds
-                  .map((e) => ListTile(
-                        title: Text(
-                          e.name,
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                  .map((e) => InkWell(
+                onTap: () {
+                  Navigator.of(context)
+                      .pushNamed(FundDetailsScreen.routeName,
+                      arguments: {'fund': e, 'authToken': widget.token});
+                },
+                    child: ListTile(
+                          title: Text(
+                            e.name,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          trailing: Text('\$${e.balance.toStringAsFixed(2)}'),
                         ),
-                        trailing: Text('\$${e.balance.toStringAsFixed(2)}'),
-                      ))
+                  ))
                   .toList(),
             )
           ],
