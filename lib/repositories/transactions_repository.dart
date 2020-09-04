@@ -116,10 +116,13 @@ class TransactionsRepository {
     if (response.statusCode == 200) {
       var jsonMap = json.decode(response.body) as List<dynamic>;
 
-      // TODO: Order by date
       var transactions = jsonMap
           .map((e) => Transaction.fromMap(e, categories, accounts))
           .toList();
+
+      transactions.sort((left, right) =>
+          right.dateAccomplished.millisecondsSinceEpoch -
+              left.dateAccomplished.millisecondsSinceEpoch);
 
       return transactions;
     } else {
