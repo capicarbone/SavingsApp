@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:savings_app/blocs/account_transactions/account_transactions_bloc.dart';
 import 'package:savings_app/blocs/account_transactions/account_transactions_events.dart';
 import 'package:savings_app/blocs/account_transactions/account_transactions_state.dart';
@@ -19,9 +20,9 @@ class AccountTransactionsScreen extends StatelessWidget {
       var source = transaction.getAccountTransferSource();
 
       if (receiver.accountId == accountId){
-        return "Transfer from " + source.accountId;
+        return "Transfer from " + source.account.name;
       }else{
-        return "Transfer to " + receiver.accountId;
+        return "Transfer to " + receiver.account.name;
       }
     }
 
@@ -36,6 +37,15 @@ class AccountTransactionsScreen extends StatelessWidget {
     return "";
   }
 
+  Widget _buildTileDate(DateTime date){
+    return Column(
+      children: <Widget>[
+        Text(date.day.toString(), style: TextStyle(fontSize: 18),),
+        Text(DateFormat.MMM().format(date).toUpperCase()),
+      ],
+    );
+  }
+
   Widget _buildTransactionsList(
       Account account, List<Transaction> transactions) {
     return ListView.builder(
@@ -46,6 +56,7 @@ class AccountTransactionsScreen extends StatelessWidget {
               transaction.transactionForAccount(account.id);
 
           return ListTile(
+            leading: _buildTileDate(transaction.dateAccomplished),
             title: Text(_getShortDescription(transaction, account.id)),
             subtitle: Text(transaction.description),
             trailing: Text(

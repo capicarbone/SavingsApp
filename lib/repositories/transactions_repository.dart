@@ -22,8 +22,7 @@ class TransactionsRepository {
       @required this.fundsRepository,
       @required this.accountsRepository});
 
-
-  Map<String, String> _getAuthenticatedHeader(){
+  Map<String, String> _getAuthenticatedHeader() {
     return {"Authorization": "Bearer $authToken"};
   }
 
@@ -48,7 +47,7 @@ class TransactionsRepository {
     var response = await http.post(url, body: body, headers: headers);
 
     if (response.statusCode == 200) {
-      Transaction transaction  = Transaction.fromMap(json.decode(response.body));
+      Transaction transaction = Transaction.fromMap(json.decode(response.body));
       _updateBalances(transaction);
     }
 
@@ -59,21 +58,24 @@ class TransactionsRepository {
     return response;
   }
 
-  Future<http.Response> postAccountTransfer(AccountTransferPost transferData) async {
-    var url = "https://flask-mymoney.herokuapp.com/api/transaction/account-transfer";
+  Future<http.Response> postAccountTransfer(
+      AccountTransferPost transferData) async {
+    var url =
+        "https://flask-mymoney.herokuapp.com/api/transaction/account-transfer";
 
     var body = {
       'description': transferData.description,
       'amount': transferData.amount.toString(),
       'to': transferData.accountToId,
       'from': transferData.accountFromId,
-      'date_accomplished': DateFormat.yMd().format(transferData.dateAccomplished)
+      'date_accomplished':
+          DateFormat.yMd().format(transferData.dateAccomplished)
     };
     var headers = _getAuthenticatedHeader();
 
     var response = await http.post(url, body: body, headers: headers);
 
-    Transaction transaction  = Transaction.fromMap(json.decode(response.body));
+    Transaction transaction = Transaction.fromMap(json.decode(response.body));
 
     _updateBalances(transaction);
 
@@ -84,14 +86,15 @@ class TransactionsRepository {
     return response;
   }
 
-  Future<List<Transaction>> fetchTransactions(String accountId, String fundId) async {
+  Future<List<Transaction>> fetchTransactions(
+      String accountId, String fundId) async {
     var url = "https://flask-mymoney.herokuapp.com/api/transactions?";
 
-    if (accountId != null){
+    if (accountId != null) {
       url += "account_id=$accountId";
     }
 
-    if (fundId != null){
+    if (fundId != null) {
       url += "fund_id=$fundId";
     }
 
@@ -99,7 +102,8 @@ class TransactionsRepository {
 
     var response = await http.get(url, headers: header);
 
-    var funds = await fundsRepository.fetchUserFunds( );
+    var funds = await fundsRepository.fetchUserFunds();
+    var accounts = await accountsRepository.fetchUserAccounts();
 
     List<transactionCategory.Category> categories = [];
 
@@ -109,24 +113,25 @@ class TransactionsRepository {
 
     print(response.body);
 
-    if (response.statusCode == 200){
+    if (response.statusCode == 200) {
       var jsonMap = json.decode(response.body) as List<dynamic>;
 
       // TODO: Order by date
-      var transactions = jsonMap.map((e) => Transaction.fromMap(e, categories)).toList();
+      var transactions = jsonMap
+          .map((e) => Transaction.fromMap(e, categories, accounts))
+          .toList();
 
       return transactions;
-    }else {
+    } else {
       throw Exception("Error on request: " + response.statusCode.toString());
     }
-
   }
 
   Future<List<Transaction>> getAccountTransactions(String accountId) async {
     return await fetchTransactions(accountId, null);
   }
 
-  void _updateBalances(Transaction transaction){
+  void _updateBalances(Transaction transaction) {
     transaction.accountTransactions.forEach((element) {
       accountsRepository.updateBalance(element.accountId, element.change);
     });
