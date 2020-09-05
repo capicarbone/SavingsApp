@@ -95,7 +95,12 @@ class AccountDetailsScreen extends StatelessWidget {
       child: BlocBuilder<AccountTransactionsBloc, AccountTransactionsState>(
         builder: (ctx, state) {
           if (state is AccountTransactionsUpdated) {
-            return _buildTransactionsList(account, state.transactions);
+            if (state.transactions.length > 0){
+              return _buildTransactionsList(account, state.transactions);
+            }else{
+              return Center(child: Text("No transactions"),);
+            }
+
           }
           return _buildLoadingView();
         },

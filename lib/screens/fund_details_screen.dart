@@ -87,7 +87,12 @@ class FundDetailsScreen extends StatelessWidget {
       child: BlocBuilder<FundTransactionsBloc, FundTransactionsState >(
         builder: (ctx, state) {
           if (state is FundTransactionsUpdatedState) {
-            return _buildTransactionsList(fund, state.transactions);
+            if (state.transactions.length > 0){
+              return _buildTransactionsList(fund, state.transactions);
+            }else{
+              return Center(child: Text("No transactions"),);
+            }
+
           }
 
           return _buildLoadingView();
