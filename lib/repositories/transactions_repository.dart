@@ -107,6 +107,7 @@ class TransactionsRepository {
 
     List<transactionCategory.Category> categories = [];
 
+    // Getting categories, change for call to endpoint.
     funds.forEach((element) {
       categories.addAll(element.categories);
     });
@@ -117,7 +118,7 @@ class TransactionsRepository {
       var jsonMap = json.decode(response.body) as List<dynamic>;
 
       var transactions = jsonMap
-          .map((e) => Transaction.fromMap(e, categories, accounts))
+          .map((e) => Transaction.fromMap(e, categories, accounts, funds))
           .toList();
 
       transactions.sort((left, right) =>
@@ -128,6 +129,10 @@ class TransactionsRepository {
     } else {
       throw Exception("Error on request: " + response.statusCode.toString());
     }
+  }
+
+  Future<List<Transaction>> getFundTransactions(String fundId) async {
+    return await fetchTransactions(null, fundId);
   }
 
   Future<List<Transaction>> getAccountTransactions(String accountId) async {

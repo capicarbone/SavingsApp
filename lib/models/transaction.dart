@@ -24,10 +24,10 @@ class FundTransaction {
   final double change;
 
   FundTransaction(
-      {@required this.fundId, @required this.change, this.fund: null});
+      {@required this.fundId, @required this.change, this.fund});
 
-  factory FundTransaction.fromMap(Map<String, dynamic> map) {
-    return FundTransaction(fundId: map['fund'], change: map['change']);
+  factory FundTransaction.fromMap(Map<String, dynamic> map, [Fund fund]) {
+    return FundTransaction(fundId: map['fund'], change: map['change'], fund: fund);
   }
 }
 
@@ -56,7 +56,7 @@ class Transaction {
       accountTransactions.length == 1 && accountTransactions[0].change < 0;
 
   factory Transaction.fromMap(Map<String, dynamic> map,
-      [List<Category> categories, List<Account> accounts]) {
+      [List<Category> categories, List<Account> accounts, List<Fund> funds]) {
     var category = null;
 
     if (categories != null && map['category'] != null) {
@@ -78,7 +78,13 @@ class Transaction {
 
     if (fund_trasactions != null) {
       transaction.fundTransactions
-          .addAll(fund_trasactions.map((e) => FundTransaction.fromMap(e)));
+          .addAll(fund_trasactions.map((e) {
+            Fund fund = funds != null
+                ? funds.firstWhere((element) => element.id == e['fund'],
+            orElse: () => null)
+            : null;
+            return FundTransaction.fromMap(e, fund);
+      }));
     }
 
     if (account_transactions != null) {

@@ -1,5 +1,8 @@
 
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:savings_app/blocs/fund_transactions/fund_transactions_events.dart';
 import 'package:savings_app/blocs/fund_transactions/fund_transactions_states.dart';
@@ -17,9 +20,20 @@ class FundTransactionsBloc extends Bloc<FundTransactionsEvent, FundTransactionsS
     if (event is FundTransactionsLoadEvent) {
       yield FundTransactionsLoadingState();
 
-      await Future.delayed(Duration(seconds: 1));
+      var transactions;
 
-      yield FundTransactionsUpdatedState(transactions: null);
+      try{
+        transactions = await transactionsRepository.getFundTransactions(fundId);
+      }catch(e, trace) {
+        log(e.toString(), error: e, stackTrace: trace);
+        yield FundTransactionsLoadingFailed();
+      }
+
+      if (transactions != null){
+        yield FundTransactionsUpdatedState(transactions: transactions);
+      }
+
+
     }
   }
 
