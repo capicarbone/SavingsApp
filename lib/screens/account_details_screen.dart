@@ -9,6 +9,7 @@ import 'package:savings_app/models/transaction.dart';
 import 'package:savings_app/repositories/accounts_repository.dart';
 import 'package:savings_app/repositories/funds_repository.dart';
 import 'package:savings_app/repositories/transactions_repository.dart';
+import 'package:savings_app/widgets/transaction_tile.dart';
 
 class AccountDetailsScreen extends StatelessWidget {
   static const routeName = '/account-details';
@@ -16,8 +17,8 @@ class AccountDetailsScreen extends StatelessWidget {
   String _getShortDescription(Transaction transaction, String accountId) {
 
     if (transaction.isAccountTransfer) {
-      var receiver = transaction.getAccountTransferReceiver();
-      var source = transaction.getAccountTransferSource();
+      var receiver = transaction.getAccountReceiver();
+      var source = transaction.getAccountSource();
 
       if (receiver.accountId == accountId){
         return "Transfer from " + source.account.name;
@@ -37,14 +38,7 @@ class AccountDetailsScreen extends StatelessWidget {
     return "";
   }
 
-  Widget _buildTileDate(DateTime date){
-    return Column(
-      children: <Widget>[
-        Text(date.day.toString(), style: TextStyle(fontSize: 18),),
-        Text(DateFormat.MMM().format(date).toUpperCase()),
-      ],
-    );
-  }
+
 
   Widget _buildTransactionsList(
       Account account, List<Transaction> transactions) {
@@ -55,18 +49,11 @@ class AccountDetailsScreen extends StatelessWidget {
           var accountTransaction =
               transaction.transactionForAccount(account.id);
 
-          return ListTile(
-            leading: _buildTileDate(transaction.dateAccomplished),
-            title: Text(_getShortDescription(transaction, account.id)),
-            subtitle: Text(transaction.description),
-            trailing: Text(
-              "\$${accountTransaction.change}",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                  color: (accountTransaction.change) < 0
-                      ? Colors.red
-                      : Colors.green),
-            ),
+          return TransactionTile(
+            title: _getShortDescription(transaction, account.id),
+            description: transaction.description,
+            date: transaction.dateAccomplished,
+            change: accountTransaction.change,
           );
         });
   }

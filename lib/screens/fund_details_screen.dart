@@ -5,14 +5,35 @@ import 'package:savings_app/blocs/fund_transactions/fund_transactions_bloc.dart'
 import 'package:savings_app/blocs/fund_transactions/fund_transactions_events.dart';
 import 'package:savings_app/blocs/fund_transactions/fund_transactions_states.dart';
 import 'package:savings_app/models/fund.dart';
+import 'package:savings_app/models/transaction.dart';
 import 'package:savings_app/repositories/accounts_repository.dart';
 import 'package:savings_app/repositories/funds_repository.dart';
 import 'package:savings_app/repositories/transactions_repository.dart';
+import 'package:savings_app/widgets/transaction_tile.dart';
 
 class FundDetailsScreen extends StatelessWidget {
   static const routeName = '/fund-details';
 
   FundTransactionsBloc _bloc;
+
+  String _getShortDescription(Transaction transaction, String fundId){
+    if (transaction.isFundTransfer){
+      var receiver = transaction.getFundReceiver();
+      var source = transaction.getFundSource();
+
+      if (receiver.fundId == fundId){
+        return "Transfer from " + source.fund.name;
+      }else{
+        return "Transfer to " + source.fund.name;
+      }
+    }
+
+    if (transaction.isIncome) {
+      return "Income in " + transaction.getAccountReceiver().account.name;
+    }else{
+      return transaction.category.name;
+    }
+  }
 
   Widget _buildLoadingView() {
     return Center(
@@ -20,7 +41,7 @@ class FundDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFundSummay(Fund fund){
+  Widget _buildFundSummary(Fund fund){
     return Container(
       width: double.infinity,
       color: Colors.blueGrey,
@@ -46,12 +67,27 @@ class FundDetailsScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildTransactionsList(Fund fund, List<Transaction> transactions) {
+    return ListView.builder(
+      itemCount: transactions.length,
+        itemBuilder: (_, index) {
+          var transaction = transactions[index];
+          var fundTransaction = transaction.transactionForFund(fund.id);
+          return TransactionTile(
+            title: _getShortDescription(transaction, fund.id),
+            description: transaction.description,
+            date: transaction.dateAccomplished,
+            change: fundTransaction.change,
+          );
+        });
+  }
+
   Widget _buildFundTransactionsList(Fund fund) {
     return Container(
       child: BlocBuilder<FundTransactionsBloc, FundTransactionsState >(
         builder: (ctx, state) {
           if (state is FundTransactionsUpdatedState) {
-            return Text("Funds list");
+            return _buildTransactionsList(fund, state.transactions);
           }
 
           return _buildLoadingView();
@@ -92,7 +128,7 @@ class FundDetailsScreen extends StatelessWidget {
           return _bloc;
         },
         child: Column(children: <Widget>[
-          _buildFundSummay(fund),
+          _buildFundSummary(fund),
           Flexible(child: _buildFundTransactionsList(fund),)
         ],),
       ),

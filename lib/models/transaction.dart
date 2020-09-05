@@ -23,11 +23,11 @@ class FundTransaction {
   final Fund fund;
   final double change;
 
-  FundTransaction(
-      {@required this.fundId, @required this.change, this.fund});
+  FundTransaction({@required this.fundId, @required this.change, this.fund});
 
   factory FundTransaction.fromMap(Map<String, dynamic> map, [Fund fund]) {
-    return FundTransaction(fundId: map['fund'], change: map['change'], fund: fund);
+    return FundTransaction(
+        fundId: map['fund'], change: map['change'], fund: fund);
   }
 }
 
@@ -48,6 +48,8 @@ class Transaction {
       this.category: null});
 
   get isAccountTransfer => accountTransactions.length == 2;
+
+  get isFundTransfer => fundTransactions.length == 2;
 
   get isIncome =>
       accountTransactions.length == 1 && accountTransactions[0].change > 0;
@@ -77,13 +79,12 @@ class Transaction {
     List<dynamic> account_transactions = map['account_transactions'];
 
     if (fund_trasactions != null) {
-      transaction.fundTransactions
-          .addAll(fund_trasactions.map((e) {
-            Fund fund = funds != null
-                ? funds.firstWhere((element) => element.id == e['fund'],
-            orElse: () => null)
+      transaction.fundTransactions.addAll(fund_trasactions.map((e) {
+        Fund fund = funds != null
+            ? funds.firstWhere((element) => element.id == e['fund'],
+                orElse: () => null)
             : null;
-            return FundTransaction.fromMap(e, fund);
+        return FundTransaction.fromMap(e, fund);
       }));
     }
 
@@ -101,20 +102,39 @@ class Transaction {
     return transaction;
   }
 
-  AccountTransaction transactionForAccount(String accountId) {
-    // TODO: Return null if not found
-    return accountTransactions
-        .firstWhere((element) => element.accountId == accountId);
+  FundTransaction transactionForFund(String fundId) {
+    return fundTransactions.firstWhere((element) => element.fundId == fundId,
+        orElse: () => null);
   }
 
-  AccountTransaction getAccountTransferReceiver() {
-    if (isAccountTransfer) {
-      return accountTransactions.firstWhere((element) => element.change > 0);
+  AccountTransaction transactionForAccount(String accountId) {
+    // TODO: Return null if not found
+    return accountTransactions.firstWhere(
+        (element) => element.accountId == accountId,
+        orElse: () => null);
+  }
+
+  FundTransaction getFundReceiver() {
+    if (isFundTransfer){
+      return fundTransactions.firstWhere((element) => element.change > 0);
     }
     return null;
   }
 
-  AccountTransaction getAccountTransferSource() {
+  FundTransaction getFundSource() {
+    if (isFundTransfer){
+      return fundTransactions.firstWhere((element) => element.change < 0);
+    }
+    return null;
+  }
+
+  AccountTransaction getAccountReceiver() {
+
+    return accountTransactions.firstWhere((element) => element.change > 0);
+
+  }
+
+  AccountTransaction getAccountSource() {
     if (isAccountTransfer) {
       return accountTransactions.firstWhere((element) => element.change < 0);
     }
