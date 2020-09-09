@@ -18,22 +18,33 @@ class AccountTransactionsBloc extends Bloc<AccountTransactionsEvent, AccountTran
   @override
   Stream<AccountTransactionsState> mapEventToState(AccountTransactionsEvent event) async* {
 
-    if (event is AccountTransactionsLoad) {
+    var transactionDeleted = false;
+
+    if (event is AccountTransactionsDeleteEvent) {
+      try {
+        transactionsRepository.deleteTransaction(accountId, event.transactionId);
+        transactionDeleted = true;
+      }catch(e, trace) {
+        log(e.toString(), error: e, stackTrace: trace);
+
+      }
+    }
+
+    if (event is AccountTransactionsLoad || event is AccountTransactionsDeleteEvent) {
       yield AccountTransactionsLoading();
 
       var transactions;
 
       try{
-        transactions = await transactionsRepository.getAccountTransactions(accountId);
+        transactions = await transactionsRepository.fetchAccountTransactions(accountId);
       }catch (e, trace) {
         log(e.toString(), error: e, stackTrace: trace);
         yield AccountTransactionsLoadingFailed();
       }
 
       if (transactions != null){
-        yield AccountTransactionsUpdated(transactions: transactions);
+        yield AccountTransactionsUpdated(transactions: transactions, transactionDeleted: transactionDeleted);
       }
-
 
     }
 

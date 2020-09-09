@@ -1,15 +1,19 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:savings_app/models/transaction.dart';
 
 class TransactionTile extends StatelessWidget {
 
+
+  Transaction transaction;
   DateTime date;
   String title;
   String description;
   double change;
+  Function onTap;
 
-  TransactionTile({this.title, this.description, this.date, this.change});
+  TransactionTile({this.transaction, this.title, this.description, this.date, this.change, this.onTap});
 
   Widget _buildTileDate(DateTime date){
     return Column(
@@ -23,6 +27,9 @@ class TransactionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap: (){
+        onTap(transaction);
+      },
       leading: _buildTileDate(date),
       title: Text(title),
       subtitle: Text(description),

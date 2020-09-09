@@ -14,6 +14,8 @@ import 'package:savings_app/widgets/transaction_tile.dart';
 class AccountDetailsScreen extends StatelessWidget {
   static const routeName = '/account-details';
 
+  AccountTransactionsBloc _bloc;
+
   String _getShortDescription(Transaction transaction, String accountId) {
 
     if (transaction.isAccountTransfer) {
@@ -41,7 +43,7 @@ class AccountDetailsScreen extends StatelessWidget {
 
 
   Widget _buildTransactionsList(
-      Account account, List<Transaction> transactions) {
+      BuildContext ctx, Account account, List<Transaction> transactions) {
     return ListView.builder(
         itemCount: transactions.length,
         itemBuilder: (_, index) {
@@ -50,10 +52,30 @@ class AccountDetailsScreen extends StatelessWidget {
               transaction.transactionForAccount(account.id);
 
           return TransactionTile(
+            transaction: transaction,
             title: _getShortDescription(transaction, account.id),
             description: transaction.description,
             date: transaction.dateAccomplished,
             change: accountTransaction.change,
+            onTap: (Transaction transaction) {
+              showModalBottomSheet(
+                  context: ctx, builder: (_) {
+                return Container(
+                  child: Wrap(
+                    children: <Widget>[
+                    ListTile(
+                      onTap: (){
+                        var event = AccountTransactionsDeleteEvent(account.id, transaction.id);
+                        _bloc.add(event);
+
+                      },
+                      leading: Icon(Icons.delete),
+                      title: Text("Delete", style: TextStyle(color: Colors.red),),
+                    ),
+                  ],),
+                );
+              });
+            },
           );
         });
   }
@@ -96,7 +118,7 @@ class AccountDetailsScreen extends StatelessWidget {
         builder: (ctx, state) {
           if (state is AccountTransactionsUpdated) {
             if (state.transactions.length > 0){
-              return _buildTransactionsList(account, state.transactions);
+              return _buildTransactionsList(ctx, account, state.transactions);
             }else{
               return Center(child: Text("No transactions"),);
             }
@@ -125,9 +147,12 @@ class AccountDetailsScreen extends StatelessWidget {
         accountsRepository: accountsRepo,
         fundsRepository: fundsRepo);
 
-    var bloc = AccountTransactionsBloc(
-        accountId: account.id, transactionsRepository: transactionsRepo);
-    bloc.add(AccountTransactionsLoad());
+    if (_bloc == null){
+      _bloc = AccountTransactionsBloc(
+          accountId: account.id, transactionsRepository: transactionsRepo);
+    }
+
+    _bloc.add(AccountTransactionsLoad());
 
     return Scaffold(
       appBar: AppBar(
@@ -135,7 +160,7 @@ class AccountDetailsScreen extends StatelessWidget {
       ),
       body: BlocProvider(
         create: (_) {
-          return bloc;
+          return _bloc;
         },
         child: Column(
           children: <Widget>[

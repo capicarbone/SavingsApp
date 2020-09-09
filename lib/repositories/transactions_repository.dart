@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 import 'package:intl/intl.dart';
+import 'package:savings_app/app_settings.dart';
 import 'package:savings_app/models/account_transfer_post.dart';
 import 'package:savings_app/models/fund.dart';
 import 'package:savings_app/models/category.dart' as transactionCategory;
@@ -86,6 +87,26 @@ class TransactionsRepository {
     return response;
   }
 
+  /**
+   * Send delete request for a transaction entity.
+   */
+  Future<bool> deleteTransaction(String accountId, String transactionId) async{
+    var url = "${AppSettings.getAPIHost()}account/$accountId/transaction/$transactionId}";
+
+    // TODO: Save delete action in database
+
+    print(url);
+    var response = await http.delete(url, headers: _getAuthenticatedHeader());
+
+    print(response.body);
+
+    if (response.statusCode == 204) {
+      return true;
+    }else {
+      throw Exception(response.body);
+    }
+  }
+
   Future<List<Transaction>> fetchTransactions(
       String accountId, String fundId) async {
     var url = "https://flask-mymoney.herokuapp.com/api/transactions?";
@@ -131,13 +152,15 @@ class TransactionsRepository {
     }
   }
 
-  Future<List<Transaction>> getFundTransactions(String fundId) async {
+  Future<List<Transaction>> fetchFundTransactions(String fundId) async {
     return await fetchTransactions(null, fundId);
   }
 
-  Future<List<Transaction>> getAccountTransactions(String accountId) async {
+  Future<List<Transaction>> fetchAccountTransactions(String accountId) async {
     return await fetchTransactions(accountId, null);
   }
+
+
 
   void _updateBalances(Transaction transaction) {
     transaction.accountTransactions.forEach((element) {

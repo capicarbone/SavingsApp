@@ -23,7 +23,7 @@ class FundTransactionsBloc extends Bloc<FundTransactionsEvent, FundTransactionsS
       var transactions;
 
       try{
-        transactions = await transactionsRepository.getFundTransactions(fundId);
+        transactions = await transactionsRepository.fetchFundTransactions(fundId);
       }catch(e, trace) {
         log(e.toString(), error: e, stackTrace: trace);
         yield FundTransactionsLoadingFailed();

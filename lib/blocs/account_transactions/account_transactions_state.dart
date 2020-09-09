@@ -9,8 +9,9 @@ class AccountTransactionsLoading extends AccountTransactionsState {}
 
 class AccountTransactionsUpdated extends AccountTransactionsState{
   List<Transaction> transactions;
+  bool transactionDeleted;
 
-  AccountTransactionsUpdated({this.transactions});
+  AccountTransactionsUpdated({this.transactions, this.transactionDeleted});
 }
 
 class AccountTransactionsLoadingFailed extends AccountTransactionsState {
