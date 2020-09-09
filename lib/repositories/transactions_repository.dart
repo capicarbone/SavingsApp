@@ -108,15 +108,15 @@ class TransactionsRepository {
   }
 
   Future<List<Transaction>> fetchTransactions(
-      String accountId, String fundId) async {
-    var url = "https://flask-mymoney.herokuapp.com/api/transactions?";
+      String accountId, String fundId, {int pageSize:100}) async {
+    var url = "https://flask-mymoney.herokuapp.com/api/transactions?page_size=$pageSize";
 
     if (accountId != null) {
-      url += "account_id=$accountId";
+      url += "&account_id=$accountId";
     }
 
     if (fundId != null) {
-      url += "fund_id=$fundId";
+      url += "&fund_id=$fundId";
     }
 
     var header = _getAuthenticatedHeader();
