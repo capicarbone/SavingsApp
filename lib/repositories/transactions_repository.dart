@@ -91,7 +91,7 @@ class TransactionsRepository {
    * Send delete request for a transaction entity.
    */
   Future<bool> deleteTransaction(String accountId, String transactionId) async{
-    var url = "${AppSettings.getAPIHost()}account/$accountId/transaction/$transactionId}";
+    var url = "${AppSettings.getAPIHost()}transaction/$transactionId";
 
     // TODO: Save delete action in database
 
