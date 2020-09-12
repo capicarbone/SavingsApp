@@ -43,10 +43,10 @@ class _NewTransactionState extends State<NewTransaction> {
                 },
                 tabs: [
                   NestedTab(
-                    text: "Income",
+                    text: "Expense",
                   ),
                   NestedTab(
-                    text: "Expense",
+                    text: "Income",
                   ),
                   NestedTab(text: "Transfer"),
                 ],
@@ -57,12 +57,12 @@ class _NewTransactionState extends State<NewTransaction> {
                   index: _selectedTab,
                   children: [
                     InOutForm(
+                      expenseMode: true,
                       funds: widget.funds,
                       accounts: widget.accounts,
                       transactionsRepository: widget.transactionsRepository,
                     ),
                     InOutForm(
-                      expenseMode: true,
                       funds: widget.funds,
                       accounts: widget.accounts,
                       transactionsRepository: widget.transactionsRepository,

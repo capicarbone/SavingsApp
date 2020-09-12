@@ -7,7 +7,6 @@ import 'package:savings_app/repositories/user_repository.dart';
 import 'package:savings_app/screens/account_details_screen.dart';
 import 'package:savings_app/screens/fund_details_screen.dart';
 import 'package:savings_app/screens/home_screen.dart';
-import 'package:savings_app/screens/new_transaction_screen.dart';
 import 'package:savings_app/screens/splash_screen.dart';
 import 'screens/login_screen.dart';
 
