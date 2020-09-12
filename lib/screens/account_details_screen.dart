@@ -68,6 +68,8 @@ class AccountDetailsScreen extends StatelessWidget {
                         var event = AccountTransactionsDeleteEvent(account.id, transaction.id);
                         _bloc.add(event);
 
+                        Navigator.pop(ctx);
+
                       },
                       leading: Icon(Icons.delete),
                       title: Text("Delete", style: TextStyle(color: Colors.red),),
