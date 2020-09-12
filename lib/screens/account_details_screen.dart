@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:savings_app/blocs/account_summary/account_summary_bloc.dart';
+import 'package:savings_app/blocs/account_summary/account_summary_event.dart';
+import 'package:savings_app/blocs/account_summary/account_summary_state.dart';
 import 'package:savings_app/blocs/account_transactions/account_transactions_bloc.dart';
 import 'package:savings_app/blocs/account_transactions/account_transactions_events.dart';
 import 'package:savings_app/blocs/account_transactions/account_transactions_state.dart';
@@ -15,6 +18,7 @@ class AccountDetailsScreen extends StatelessWidget {
   static const routeName = '/account-details';
 
   AccountTransactionsBloc _bloc;
+  Account account;
 
   String _getShortDescription(Transaction transaction, String accountId) {
 
@@ -40,7 +44,33 @@ class AccountDetailsScreen extends StatelessWidget {
     return "";
   }
 
+  void _onTransactionTap(BuildContext ctx, Transaction transaction) {
+    showModalBottomSheet(
+        context: ctx, builder: (_) {
+      return Container(
+        child: Wrap(
+          children: <Widget>[
+            ListTile(
+              onTap: (){
+                var event = AccountTransactionsDeleteEvent(account.id, transaction.id);
+                _bloc.add(event);
 
+                var accountTransaction = transaction.transactionForAccount(account.id);
+
+                BlocProvider.of<AccountSummaryBloc>(ctx).add(
+                  AccountSummaryBalanceUpdateEvent(accountTransaction.change)
+                );
+
+                Navigator.pop(ctx);
+
+              },
+              leading: Icon(Icons.delete),
+              title: Text("Delete", style: TextStyle(color: Colors.red),),
+            ),
+          ],),
+      );
+    });
+  }
 
   Widget _buildTransactionsList(
       BuildContext ctx, Account account, List<Transaction> transactions) {
@@ -57,26 +87,8 @@ class AccountDetailsScreen extends StatelessWidget {
             description: transaction.description,
             date: transaction.dateAccomplished,
             change: accountTransaction.change,
-            onTap: (Transaction transaction) {
-              showModalBottomSheet(
-                  context: ctx, builder: (_) {
-                return Container(
-                  child: Wrap(
-                    children: <Widget>[
-                    ListTile(
-                      onTap: (){
-                        var event = AccountTransactionsDeleteEvent(account.id, transaction.id);
-                        _bloc.add(event);
-
-                        Navigator.pop(ctx);
-
-                      },
-                      leading: Icon(Icons.delete),
-                      title: Text("Delete", style: TextStyle(color: Colors.red),),
-                    ),
-                  ],),
-                );
-              });
+            onTap: (transaction) {
+              _onTransactionTap(ctx, transaction);
             },
           );
         });
@@ -97,16 +109,21 @@ class AccountDetailsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
+
             Text(
               "Balance",
               style: TextStyle(color: Colors.white),
             ),
-            Text(
-              "\$${account.balance}",
-              style: TextStyle(
-                  fontSize: 32,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold),
+            BlocBuilder<AccountSummaryBloc, AccountSummaryState>(
+              builder: (_, state) {
+                return Text(
+                  "\$${state.balance}",
+                  style: TextStyle(
+                      fontSize: 32,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
+                );
+              },
             )
           ],
         ),
@@ -136,7 +153,7 @@ class AccountDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var args =
         ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
-    Account account = args['account'];
+    account = args['account'];
     String authToken = args['authToken'];
 
     assert(authToken != null);
@@ -161,14 +178,19 @@ class AccountDetailsScreen extends StatelessWidget {
         title: Text(account.name),
       ),
       body: BlocProvider(
-        create: (_) {
-          return _bloc;
+        create: (_){
+          return AccountSummaryBloc(account.balance);
         },
-        child: Column(
-          children: <Widget>[
-            _buildAccountSummary(account),
-            Flexible(child: _buildAccountTransactionsList(account))
-          ],
+        child: BlocProvider(
+          create: (_) {
+            return _bloc;
+          },
+          child: Column(
+            children: <Widget>[
+              _buildAccountSummary(account),
+              Flexible(child: _buildAccountTransactionsList(account))
+            ],
+          ),
         ),
       ),
     );
