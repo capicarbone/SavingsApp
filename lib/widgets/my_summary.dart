@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:flutter/material.dart';
 import 'package:savings_app/blocs/settings_syncer/settings_syncer_bloc.dart';
+import 'package:savings_app/blocs/settings_syncer/settings_syncer_events.dart';
 import 'package:savings_app/blocs/settings_syncer/settings_syncer_states.dart';
 import 'package:savings_app/blocs/summary/summary_bloc.dart';
 import 'package:savings_app/blocs/summary/summary_events.dart';
@@ -40,6 +41,13 @@ class MySummary extends StatefulWidget {
 }
 
 class _MySummaryState extends State<MySummary> {
+
+  void _refresh(BuildContext ctx){
+    //TODO: I should update from the database and not from the server
+    // so, calling the SummaryBloc it should be the right choice.
+    BlocProvider.of<SettingsSyncerBloc>(ctx).add(SettingsSyncerUpdateRequested());
+    //BlocProvider.of<SummaryBloc>(ctx).add(LoadDataEvent());
+  }
   Widget _fundsSectionWidget(SummaryState state) {
     if (state is SummaryDataLoaded && state.funds != null) {
       return Container(
@@ -79,7 +87,7 @@ class _MySummaryState extends State<MySummary> {
     }
   }
 
-  Widget _accountsSectionWidget(SummaryState state) {
+  Widget _accountsSectionWidget(BuildContext ctx, SummaryState state) {
     if (state is SummaryDataLoaded && state.accounts != null) {
       return Container(
         child: Column(
@@ -98,7 +106,10 @@ class _MySummaryState extends State<MySummary> {
                         onTap: () {
                           Navigator.of(context)
                               .pushNamed(AccountDetailsScreen.routeName,
-                          arguments: {'account': e, 'authToken': widget.token});
+                          arguments: {'account': e, 'authToken': widget.token})
+                          .then((_) {
+                            _refresh(ctx);
+                          });
                         },
                         child: ListTile(
                           title: Text(
@@ -130,25 +141,27 @@ class _MySummaryState extends State<MySummary> {
           // bloc builder
           widget._summaryBloc.add(LoadDataEvent());
         },
-        child: BlocBuilder<SummaryBloc, SummaryState>(
-          bloc: widget._summaryBloc,
-          builder: (context, state) {
-            return Container(
-                child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: <Widget>[
-                  //if (state is SummaryDataLoaded && state.funds != null && state.accounts != null)
+        child: BlocProvider(
+          create: (_) => widget._summaryBloc,
+          child: BlocBuilder<SummaryBloc, SummaryState>(
+            builder: (context, state) {
+              return Container(
+                  child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: <Widget>[
+                    //if (state is SummaryDataLoaded && state.funds != null && state.accounts != null)
 
-                  SizedBox(
-                    height: 18,
-                  ),
-                  _accountsSectionWidget(state),
-                  _fundsSectionWidget(state),
-                ],
-              ),
-            ));
-          },
+                    SizedBox(
+                      height: 18,
+                    ),
+                    _accountsSectionWidget(context, state),
+                    _fundsSectionWidget(state),
+                  ],
+                ),
+              ));
+            },
+          ),
         ),
       ),
     );
