@@ -1,7 +1,7 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:http/http.dart' as http;
+import 'package:savings_app/app_settings.dart';
 import 'package:savings_app/models/fund.dart';
 
 class FundsRepository {
@@ -14,11 +14,11 @@ class FundsRepository {
   get funds => _funds;
 
   Future<List<Fund>> fetchUserFunds() async {
-    print("Bearer $authToken");
+
+    var url = "${AppSettings.getAPIHost()}funds";
 
     final response = await http.get(
-        "https://flask-mymoney.herokuapp.com/api/funds",
-        headers: {"Authorization": "Bearer $authToken"});
+        url, headers: {"Authorization": "Bearer $authToken"});
 
     List<dynamic> objects = json.decode(response.body);
 
