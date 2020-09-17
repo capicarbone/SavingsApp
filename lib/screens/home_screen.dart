@@ -75,6 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   accountsRepository: bloc.accountsRepository,
                   transactionsRepository: _transactionsRepository),
               NewTransaction(
+                categories: bloc.categoriesRepository.categories,
                 funds: bloc.fundsRepository.funds,
                 accounts: bloc.accountsRepository.accounts,
                 transactionsRepository: _transactionsRepository,

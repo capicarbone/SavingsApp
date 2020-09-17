@@ -11,10 +11,12 @@ import 'package:savings_app/widgets/nested_tabs/tab.dart';
 class NewTransaction extends StatefulWidget {
   List<Fund> funds;
   List<Account> accounts;
+  List<Category> categories;
   TransactionsRepository transactionsRepository;
 
   NewTransaction(
-      {@required this.funds,
+      {@required this.categories,
+      @required this.funds,
       @required this.accounts,
       @required this.transactionsRepository});
 
@@ -23,7 +25,6 @@ class NewTransaction extends StatefulWidget {
 }
 
 class _NewTransactionState extends State<NewTransaction> {
-
   int _selectedTab = 0;
 
   @override
@@ -58,17 +59,19 @@ class _NewTransactionState extends State<NewTransaction> {
                   children: [
                     InOutForm(
                       expenseMode: true,
+                      categories: widget.categories,
                       funds: widget.funds,
                       accounts: widget.accounts,
                       transactionsRepository: widget.transactionsRepository,
                     ),
                     InOutForm(
+                      categories: widget.categories,
                       funds: widget.funds,
                       accounts: widget.accounts,
                       transactionsRepository: widget.transactionsRepository,
                     ),
                     AccountTransferForm(
-                        accounts: widget.accounts,
+                      accounts: widget.accounts,
                       transactionsRepository: widget.transactionsRepository,
                     ),
                   ],

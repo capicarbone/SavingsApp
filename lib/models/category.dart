@@ -13,4 +13,6 @@ class Category {
   factory Category.fromMap(Map<String, dynamic> map) {
     return Category(name: map['name'], id: map['id'], kind: map['kind']);
   }
+
+  get isIncome => kind == "income";
 }

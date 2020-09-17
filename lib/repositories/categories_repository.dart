@@ -9,6 +9,8 @@ import '../app_settings.dart';
 class CategoriesRepository extends WebRepository{
   List<Category> _categories = [];
 
+  get categories => _categories;
+
   CategoriesRepository({String authToken}) : super(authToken: authToken);
 
   Future<List<Category>> fetchCategories() async {

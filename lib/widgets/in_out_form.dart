@@ -20,19 +20,23 @@ class InOutForm extends StatefulWidget {
   bool expenseMode = false;
   List<Fund> funds;
   List<Account> accounts;
-  List<Category> categories;
+  List<Category> categoriesFiltered;
   TransactionsRepository transactionsRepository;
 
   InOutForm(
-      {@required this.funds,
+      {@required List<Category> categories,
+        @required this.funds,
       @required this.accounts,
       @required this.transactionsRepository,
       this.expenseMode: false}) {
-    categories = [];
+    categoriesFiltered = categories.where((category) {
+      if (expenseMode){
+        return !category.isIncome;
+      }
 
-    funds.forEach((element) {
-      categories.addAll(element.categories);
-    });
+      return category.isIncome;
+    }).toList();
+
   }
 
   @override
@@ -190,7 +194,7 @@ class _InOutFormState extends State<InOutForm> {
                   },
                   decoration: const InputDecoration(hintText: "Category"),
                   items: [
-                    ...widget.categories.map((e) => DropdownMenuItem(
+                    ...widget.categoriesFiltered.map((e) => DropdownMenuItem(
                           child: Text(e.name),
                           value: e.id,
                         ))
