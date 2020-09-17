@@ -7,6 +7,7 @@ import 'package:savings_app/blocs/settings_syncer/settings_syncer_bloc.dart';
 import 'package:savings_app/blocs/settings_syncer/settings_syncer_states.dart';
 import 'package:savings_app/blocs/settings_syncer/settings_syncer_events.dart';
 import 'package:savings_app/repositories/accounts_repository.dart';
+import 'package:savings_app/repositories/categories_repository.dart';
 import 'package:savings_app/repositories/funds_repository.dart';
 import 'package:savings_app/repositories/transactions_repository.dart';
 import 'package:savings_app/widgets/in_out_form.dart';
@@ -25,6 +26,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   var _selectedPageIndex = 1;
 
+  CategoriesRepository _categoriesRepository;
   FundsRepository _fundsRepository;
   AccountsRepository _accountsRepository;
   TransactionsRepository _transactionsRepository;
@@ -33,6 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
   initState(){
     super.initState();
 
+    _categoriesRepository = CategoriesRepository(authToken: widget.authToken);
     _fundsRepository = FundsRepository(authToken: widget.authToken);
     _accountsRepository = AccountsRepository(authToken: widget.authToken);
 
@@ -42,6 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
         accountsRepository: _accountsRepository);
 
     _syncerBloc = SettingsSyncerBloc(
+      categoriesRepository: _categoriesRepository,
         accountsRepository: _accountsRepository,
         fundsRepository: _fundsRepository);
   }
