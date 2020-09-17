@@ -10,6 +10,7 @@ import 'package:savings_app/blocs/account_transactions/account_transactions_stat
 import 'package:savings_app/models/account.dart';
 import 'package:savings_app/models/transaction.dart';
 import 'package:savings_app/repositories/accounts_repository.dart';
+import 'package:savings_app/repositories/categories_repository.dart';
 import 'package:savings_app/repositories/funds_repository.dart';
 import 'package:savings_app/repositories/transactions_repository.dart';
 import 'package:savings_app/widgets/transaction_tile.dart';
@@ -33,15 +34,16 @@ class AccountDetailsScreen extends StatelessWidget {
       }
     }
 
-    if (transaction.isIncome){
-      return "Income";
-    }
-
-    if (transaction.isExpense) {
+    if (transaction.category != null){
       return transaction.category.name;
+    }else{
+      if (transaction.isIncome){
+        return "Income";
+      }else{
+        return "Expense";
+      }
     }
 
-    return "";
   }
 
   void _onTransactionTap(BuildContext ctx, Transaction transaction) {
@@ -161,10 +163,13 @@ class AccountDetailsScreen extends StatelessWidget {
 
     var fundsRepo = FundsRepository(authToken: authToken);
     var accountsRepo = AccountsRepository(authToken: authToken);
+    var categoriesRepo = CategoriesRepository(authToken: authToken);
     var transactionsRepo = TransactionsRepository(
         authToken: authToken,
         accountsRepository: accountsRepo,
-        fundsRepository: fundsRepo);
+        fundsRepository: fundsRepo,
+      categoriesRepository: categoriesRepo
+    );
 
     if (_bloc == null){
       _bloc = AccountTransactionsBloc(
