@@ -37,6 +37,9 @@ class InOutForm extends StatefulWidget {
       return category.isIncome;
     }).toList();
 
+    categoriesFiltered.sort((categoryA, categoryB) =>
+        categoryA.name.compareTo(categoryB.name) );
+
   }
 
   @override
