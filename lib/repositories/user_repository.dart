@@ -35,27 +35,19 @@ class UserRepository {
   }
 
   Future<String> persistToken(String token) async {
-    //SharedPreferences prefs = await SharedPreferences.getInstance();
-    //await prefs.setString("token", token);
     await box.put("token", token);
   }
 
   Future<String> removeToken() async{
-    //SharedPreferences prefs = await SharedPreferences.getInstance();
-    //await prefs.remove("token");
     await box.delete("token");
 
   }
 
   Future<bool> hasToken() async {
-    //SharedPreferences prefs = await SharedPreferences.getInstance();
-    //return prefs.getKeys().contains("token");
     return box.containsKey("token");
   }
 
   Future<String> restoreToken() async {
-    //SharedPreferences prefs = await SharedPreferences.getInstance();
-    //return await prefs.get("token");
     return await box.get("token");
   }
 
