@@ -30,7 +30,7 @@ class SimpleBlocObserver extends BlocObserver {
   }
 }
 
-void main() {
+void main() async {
   Bloc.observer = SimpleBlocObserver();
   final userRepository = UserRepository();
 

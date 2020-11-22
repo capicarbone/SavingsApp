@@ -3,7 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:savings_app/blocs/authentication/authentication_events.dart';
 import 'package:savings_app/blocs/authentication/authentication_states.dart';
+import 'package:savings_app/models/category.dart';
 import 'package:savings_app/repositories/user_repository.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
   final UserRepository userRepository;
@@ -13,13 +16,25 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   @override
   AuthenticationState get initialState => AuthenticationInitial();
 
+  /**
+   * I should move this method to something more related to application
+   * startup/bootstrap.
+   */
+  Future<void> _initializeApp() async {
+    await Hive.initFlutter();
+    await Hive.openBox<Category>('categories');
+    await Hive.openBox('user');
+  }
+
   @override
   Stream<AuthenticationState> mapEventToState(AuthenticationEvent event) async* {
     if (event is AuthenticationStarted) {
-      final bool hasToken = await userRepository.hastToken();
+      await _initializeApp();
+
+      final bool hasToken = await userRepository.hasToken();
 
       if (hasToken){
-        var token = await userRepository.getPersistedToken();
+        var token = await userRepository.restoreToken();
         yield AuthenticationSuccess(token: token);
       }else {
         yield AuthenticationFailure();
