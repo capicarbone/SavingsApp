@@ -12,6 +12,7 @@ import 'package:savings_app/models/account.dart';
 import 'package:savings_app/models/category.dart';
 import 'package:savings_app/models/fund.dart';
 import 'package:savings_app/repositories/transactions_repository.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 
 import '../blocs/in_out_form/in_out_form_states.dart';
 import '../blocs/in_out_form/in_out_form_states.dart';
@@ -53,7 +54,7 @@ class _InOutFormState extends State<InOutForm> {
   final amountController = TextEditingController();
   final descriptionController = TextEditingController();
 
-  String _selectedCategory = null;
+  Category _selectedCategory = null;
   String _selectedAccount = null;
   DateTime _selectedDate = DateTime.now();
 
@@ -74,7 +75,7 @@ class _InOutFormState extends State<InOutForm> {
         amount: amountController.text,
         accomplishedAt: _selectedDate,
         accountId: _selectedAccount,
-        categoryId: _selectedCategory,
+        categoryId: _selectedCategory.id,
         description: descriptionController.text);
 
     bloc.add(event);
@@ -183,25 +184,18 @@ class _InOutFormState extends State<InOutForm> {
                         ))
                   ],
                 ),
-                DropdownButtonFormField(
-                  onChanged: (categoryId) {
-                    _selectedCategory = categoryId;
+                SizedBox(height: 24),
+                DropdownSearch<Category>(
+                  label: "Category",
+                  items: widget.categoriesFiltered,
+                  selectedItem: _selectedCategory,
+                  autoValidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (Category c) => c == null ? "Required" : null,
+                  showSearchBox: true,
+                  popupItemBuilder: _categoryItemBuilder,
+                  onChanged: (category) {
+                    _selectedCategory = category;
                   },
-                  value: _selectedCategory,
-                  validator: (value) {
-                    if (value == null) {
-                      return "Required";
-                    }
-
-                    return null;
-                  },
-                  decoration: const InputDecoration(hintText: "Category"),
-                  items: [
-                    ...widget.categoriesFiltered.map((e) => DropdownMenuItem(
-                          child: Text(e.name),
-                          value: e.id,
-                        ))
-                  ],
                 ),
                 TextFormField(
                   controller: descriptionController,
@@ -222,4 +216,32 @@ class _InOutFormState extends State<InOutForm> {
       ),
     );
   }
+
+  Fund _getCategoryFund(Category category) {
+    return widget.funds.firstWhere((element) => element.categories.indexOf(category) != -1, orElse: () => null);
+  }
+
+  Widget _categoryItemBuilder(BuildContext context, Category item, bool isSelected){
+    var categoryFund = _getCategoryFund(item);
+    var fundName = (categoryFund == null) ? "" : categoryFund.name;
+    return Container(
+      child: ListTile(
+        title: Text(item.name),
+        subtitle: Text(fundName),
+      ),
+    );
+  }
+
+  /*
+  Widget _categoryDropdownBuilder(BuildContext context, Category item, String itemDesignation) {
+    var categoryFund = _getCategoryFund(item);
+    var fundName = (categoryFund == null) ? "" : categoryFund.name;
+    return Container(
+      child: ListTile(
+        title: Text(item.name),
+        subtitle: Text(fundName),
+      ),
+    );
+  }
+  */
 }

@@ -15,4 +15,15 @@ class Category {
   }
 
   get isIncome => kind == "income";
+
+  @override
+  String toString() {
+    return name;
+  }
+
+  @override
+  bool operator ==(Object other) {
+    var otherCat = other as Category;
+    return id == otherCat.id;
+  }
 }
