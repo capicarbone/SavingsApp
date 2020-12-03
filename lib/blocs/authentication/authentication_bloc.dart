@@ -17,6 +17,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   AuthenticationState get initialState => AuthenticationInitial();
 
   /**
+   * TODO:
    * I should move this method to something more related to application
    * startup/bootstrap.
    */
@@ -34,7 +35,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       final bool hasToken = await userRepository.hasToken();
 
       if (hasToken){
-        var token = await userRepository.restoreToken();
+        var token = userRepository.restoreToken();
         yield AuthenticationSuccess(token: token);
       }else {
         yield AuthenticationFailure();
