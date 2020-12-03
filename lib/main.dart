@@ -3,12 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:savings_app/blocs/authentication/authentication_bloc.dart';
 import 'package:savings_app/blocs/authentication/authentication_events.dart';
 import 'package:savings_app/blocs/authentication/authentication_states.dart';
+import 'package:savings_app/models/category.dart';
 import 'package:savings_app/repositories/user_repository.dart';
 import 'package:savings_app/screens/account_details_screen.dart';
 import 'package:savings_app/screens/fund_details_screen.dart';
 import 'package:savings_app/screens/home_screen.dart';
 import 'package:savings_app/screens/splash_screen.dart';
 import 'screens/login_screen.dart';
+import 'package:hive/hive.dart';
 
 class SimpleBlocObserver extends BlocObserver {
   @override
@@ -33,6 +35,8 @@ class SimpleBlocObserver extends BlocObserver {
 void main() async {
   Bloc.observer = SimpleBlocObserver();
   final userRepository = UserRepository();
+
+  Hive.registerAdapter(CategoryAdapter());
 
   runApp(
     BlocProvider<AuthenticationBloc>(

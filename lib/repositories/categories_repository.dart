@@ -1,15 +1,15 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:hive/hive.dart';
 import 'package:savings_app/models/category.dart';
 import 'package:savings_app/repositories/web_repository.dart';
 
 import '../app_settings.dart';
 
 class CategoriesRepository extends WebRepository{
-  List<Category> _categories = [];
 
-  get categories => _categories;
+  Box<Category> get box => Hive.box('categories');
 
   CategoriesRepository({String authToken}) : super(authToken: authToken);
 
@@ -25,14 +25,26 @@ class CategoriesRepository extends WebRepository{
     if (response.statusCode == 200) {
       List<dynamic> objects = json.decode(response.body);
 
-      _categories.clear();
-      _categories.addAll(objects.map((e) => Category.fromMap(e)));
+      List<Category> categories = [];
 
-      return _categories;
+      categories.addAll(objects.map((e) => Category.fromMap(e)));
+
+      await box.clear();
+      box.putAll( { for (var cat in categories) cat.id: cat} );
+
+      return categories;
     }else {
       throw Exception(response.body);
     }
 
     return null;
   }
+
+  List<Category> restoreCategories(){
+    List<Category>  list = [];
+    box.values.forEach((element) => list.add(element));
+    return list;
+  }
+
+
 }

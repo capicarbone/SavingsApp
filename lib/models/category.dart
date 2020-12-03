@@ -1,11 +1,22 @@
 
+
 import 'package:meta/meta.dart';
+import 'package:hive/hive.dart';
 
 // Categories for transactions
 
+part 'category.g.dart';
+
+@HiveType(typeId: 1)
 class Category {
+
+  @HiveField(0)
   String id;
+
+  @HiveField(1)
   String name;
+
+  @HiveField(2)
   String kind;
 
   Category({@required this.id, @required this.name,@required this.kind});
