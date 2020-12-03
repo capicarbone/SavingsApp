@@ -36,6 +36,7 @@ class UserRepository {
 
   Future<String> persistToken(String token) async {
     await box.put("token", token);
+    return token;
   }
 
   Future<String> removeToken() async{
@@ -47,8 +48,8 @@ class UserRepository {
     return box.containsKey("token");
   }
 
-  Future<String> restoreToken() async {
-    return await box.get("token");
+  String restoreToken() {
+    return box.get("token");
   }
 
 }
