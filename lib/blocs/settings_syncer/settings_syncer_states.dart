@@ -5,6 +5,9 @@
 // settings syncFailed
 
 import 'package:equatable/equatable.dart';
+import 'package:savings_app/models/account.dart';
+import 'package:savings_app/models/category.dart';
+import 'package:savings_app/models/fund.dart';
 
 abstract class SettingsSyncState extends Equatable{
   const SettingsSyncState();
@@ -25,7 +28,13 @@ class SyncingSettings extends SettingsSyncState {
   List<Object> get props => [initial];
 }
 
-class SettingsUpdated extends  SettingsSyncState {}
+class SettingsLoaded extends  SettingsSyncState {
+  List<Category> categories;
+  List<Account> accounts;
+  List<Fund> funds;
+
+  SettingsLoaded({this.categories, this.accounts, this.funds});
+}
 
 class SyncFailed extends SettingsSyncState {
   String errorMessage;

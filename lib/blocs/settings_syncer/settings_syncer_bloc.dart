@@ -20,10 +20,21 @@ class SettingsSyncerBloc extends Bloc<SettingsSyncerEvent, SettingsSyncState> {
   Stream<SettingsSyncState> mapEventToState(SettingsSyncerEvent event) async* {
     if (event is SettingsSyncerUpdateRequested) {
       yield SyncingSettings(initial: true);
-      await categoriesRepository.fetchCategories();
-      await accountsRepository.fetchUserAccounts();
-      await fundsRepository.fetchUserFunds();
-      yield SettingsUpdated();
+      var categories = await categoriesRepository.restore();
+      var accounts = await accountsRepository.fetchUserAccounts();
+      var funds = await fundsRepository.fetchUserFunds();
+      yield SettingsLoaded(
+          categories: categories,
+          accounts: accounts,
+          funds: funds
+      );
+      
+      categories = await categoriesRepository.sync();
+      yield SettingsLoaded(
+          categories: categories,
+          accounts: accounts,
+          funds: funds
+      );
     }
   }
 }

@@ -13,7 +13,7 @@ class CategoriesRepository extends WebRepository{
 
   CategoriesRepository({String authToken}) : super(authToken: authToken);
 
-  Future<List<Category>> fetchCategories() async {
+  Future<List<Category>> sync() async {
 
     var url = "${AppSettings.getAPIHost()}transactions/categories";
     var headers = getAuthenticatedHeader();
@@ -40,7 +40,7 @@ class CategoriesRepository extends WebRepository{
     return null;
   }
 
-  List<Category> restoreCategories(){
+  List<Category> restore(){
     List<Category>  list = [];
     box.values.forEach((element) => list.add(element));
     return list;
