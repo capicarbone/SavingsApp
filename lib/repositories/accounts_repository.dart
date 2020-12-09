@@ -3,12 +3,12 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:savings_app/models/account.dart';
+import 'package:savings_app/repositories/web_repository.dart';
 
-class AccountsRepository {
-  String authToken;
+class AccountsRepository extends WebRepository {
   List<Account> _accounts = [];
 
-  AccountsRepository({this.authToken});
+  AccountsRepository({String authToken}) : super(authToken: authToken);
 
   // TODO: Remove
   get accounts => _accounts;
@@ -18,7 +18,7 @@ class AccountsRepository {
     print("Bearer $authToken");
 
     final response = await http.get("https://flask-mymoney.herokuapp.com/api/accounts",
-      headers: {"Authorization": "Bearer $authToken"});
+      headers: getAuthenticatedHeader());
 
     List<dynamic> objects = json.decode(response.body);
 
