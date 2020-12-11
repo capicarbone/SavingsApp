@@ -1,53 +1,59 @@
 
 import 'dart:convert';
 
+import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:savings_app/models/account.dart';
+import 'package:savings_app/models/category.dart';
 import 'package:savings_app/repositories/web_repository.dart';
 
 class AccountsRepository extends WebRepository {
-  List<Account> _accounts = [];
 
   AccountsRepository({String authToken}) : super(authToken: authToken);
 
-  // TODO: Remove
-  get accounts => _accounts;
+  Box<Account> get _box => Hive.box('accounts');
 
-  Future<List<Account>> fetchUserAccounts() async {
+  Future<List<Account>> sync() async {
 
     print("Bearer $authToken");
 
     final response = await http.get("https://flask-mymoney.herokuapp.com/api/accounts",
       headers: getAuthenticatedHeader());
 
-    List<dynamic> objects = json.decode(response.body);
-
-    _accounts.clear();
-    _accounts.addAll(objects.map((map) => Account.fromMap(map)));
-
     print (response.body);
 
-    return _accounts;
+    if (response.statusCode == 200) {
+      List<dynamic> objects = json.decode(response.body);
+
+      List<Account> accounts = [ for (var obj in objects) Account.fromMap(obj)];
+
+      await _box.clear();
+      _box.putAll( {for (var account in accounts ) account.id: account} );
+      
+      return accounts;
+    } else {
+      throw Exception(response.body);
+    }
 
   }
 
-  List<Account> recoverUserAccounts() {
-    return _accounts;
+  List<Account> restore() {
+    return [ for (var element in _box.values ) element ];
   }
 
   Future<Account> updateBalance(String accountId, double change) async{
-    var account = _accounts.firstWhere((element) => element.id == accountId);
-
-    // TODO: update database
+    var account = _box.get(accountId);
 
     account.balance += change;
+
+    await _box.put(account.id, account);
 
     return account;
   }
 
   Account getAccountById(String accountId) {
-    if (_accounts.length > 0) {
-      return _accounts.firstWhere((element) => element.id == accountId);
+    if (_box.isNotEmpty){
+      return _box.get(accountId, defaultValue: null);
     }else{
       throw Exception("Accounts not loaded yet");
     }

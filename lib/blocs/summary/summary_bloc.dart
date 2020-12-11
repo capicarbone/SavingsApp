@@ -23,7 +23,7 @@ class SummaryBloc extends Bloc<SummaryEvent, SummaryState> {
 
       yield SummaryDataLoaded(funds: funds, accounts: null);
 
-      List<Account> accounts = accountsRepository.recoverUserAccounts();
+      List<Account> accounts = accountsRepository.restore();
 
       yield SummaryDataLoaded(funds: funds, accounts: accounts);
     }

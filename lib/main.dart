@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:savings_app/blocs/authentication/authentication_bloc.dart';
 import 'package:savings_app/blocs/authentication/authentication_events.dart';
 import 'package:savings_app/blocs/authentication/authentication_states.dart';
+import 'package:savings_app/models/account.dart';
 import 'package:savings_app/models/category.dart';
 import 'package:savings_app/repositories/user_repository.dart';
 import 'package:savings_app/screens/account_details_screen.dart';
@@ -37,6 +38,7 @@ void main() async {
   final userRepository = UserRepository();
 
   Hive.registerAdapter(CategoryAdapter());
+  Hive.registerAdapter(AccountAdapter());
 
   runApp(
     BlocProvider<AuthenticationBloc>(
