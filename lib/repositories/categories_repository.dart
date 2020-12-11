@@ -9,7 +9,7 @@ import '../app_settings.dart';
 
 class CategoriesRepository extends WebRepository{
 
-  Box<Category> get box => Hive.box('categories');
+  Box<Category> get _box => Hive.box('categories');
 
   CategoriesRepository({String authToken}) : super(authToken: authToken);
 
@@ -29,8 +29,8 @@ class CategoriesRepository extends WebRepository{
 
       categories.addAll(objects.map((e) => Category.fromMap(e)));
 
-      await box.clear();
-      box.putAll( { for (var cat in categories) cat.id: cat} );
+      await _box.clear();
+      _box.putAll( { for (var cat in categories) cat.id: cat} );
 
       return categories;
     }else {
@@ -41,9 +41,7 @@ class CategoriesRepository extends WebRepository{
   }
 
   List<Category> restore(){
-    List<Category>  list = [];
-    box.values.forEach((element) => list.add(element));
-    return list;
+    return [ for (var element in _box.values ) element ];
   }
 
 
