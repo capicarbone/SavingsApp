@@ -11,7 +11,7 @@ class AccountsRepository extends WebRepository {
 
   AccountsRepository({String authToken}) : super(authToken: authToken);
 
-  Box<Account> get _box => Hive.box('accounts');
+  Box<Account> get _box => Hive.box<Account>('accounts');
 
   Future<List<Account>> sync() async {
 
@@ -57,5 +57,9 @@ class AccountsRepository extends WebRepository {
     }else{
       throw Exception("Accounts not loaded yet");
     }
+  }
+
+  bool isLocallyEmpty() {
+    return _box.isEmpty;
   }
 }

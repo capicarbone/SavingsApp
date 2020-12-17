@@ -25,9 +25,6 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
    */
   Future<void> _initializeApp() async {
     await Hive.initFlutter();
-    await Hive.openBox<Category>('categories');
-    await Hive.openBox<Account>('accounts');
-    await Hive.openBox<Fund>('funds');
     await Hive.openBox('user');
   }
 
@@ -40,6 +37,11 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
       if (hasToken){
         var token = userRepository.restoreToken();
+
+        await Hive.openBox<Category>('categories');
+        await Hive.openBox<Account>('accounts');
+        await Hive.openBox<Fund>('funds');
+
         yield AuthenticationSuccess(token: token);
       }else {
         yield AuthenticationFailure();
@@ -54,7 +56,10 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
     if (event is AuthenticationLoggedOut) {
       yield AuthenticationInProgress();
-      await userRepository.removeToken();
+      Hive.box<Category>('categories').clear();
+      Hive.box<Account>('accounts').clear();
+      Hive.box<Fund>('funds').clear();
+      Hive.box('user').clear();
       yield AuthenticationFailure();
     }
   }

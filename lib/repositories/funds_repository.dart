@@ -10,7 +10,7 @@ class FundsRepository extends WebRepository{
 
   FundsRepository({String authToken}) : super(authToken: authToken);
   
-  Box<Fund> get _box => Hive.box('funds');
+  Box<Fund> get _box => Hive.box<Fund>('funds');
 
   Future<List<Fund>> sync() async {
 
@@ -59,5 +59,9 @@ class FundsRepository extends WebRepository{
 
   List<Fund> restore() {
     return _box.values.toList();
+  }
+
+  bool isLocallyEmpty() {
+    return _box.isEmpty;
   }
 }

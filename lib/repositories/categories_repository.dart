@@ -9,7 +9,7 @@ import '../app_settings.dart';
 
 class CategoriesRepository extends WebRepository{
 
-  Box<Category> get _box => Hive.box('categories');
+  Box<Category> get _box => Hive.box<Category>('categories');
 
   CategoriesRepository({String authToken}) : super(authToken: authToken);
 
@@ -42,6 +42,10 @@ class CategoriesRepository extends WebRepository{
 
   List<Category> restore(){
     return [ for (var element in _box.values ) element ];
+  }
+
+  bool isLocallyEmpty() {
+    return _box.isEmpty;
   }
 
 
