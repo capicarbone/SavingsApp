@@ -11,6 +11,8 @@ import 'package:savings_app/blocs/summary/summary_states.dart';
 import 'package:savings_app/models/account.dart';
 import 'package:savings_app/models/category.dart';
 import 'package:savings_app/models/fund.dart';
+import 'package:savings_app/repositories/accounts_repository.dart';
+import 'package:savings_app/repositories/funds_repository.dart';
 import 'package:savings_app/repositories/transactions_repository.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 
@@ -22,13 +24,13 @@ class InOutForm extends StatefulWidget {
   List<Fund> funds;
   List<Account> accounts;
   List<Category> categoriesFiltered;
-  TransactionsRepository transactionsRepository;
+  String authToken;
 
   InOutForm(
       {@required List<Category> categories,
         @required this.funds,
-      @required this.accounts,
-      @required this.transactionsRepository,
+        @required this.accounts,
+        @required this.authToken,
       this.expenseMode: false}) {
     categoriesFiltered = categories.where((category) {
       if (expenseMode){
@@ -86,7 +88,9 @@ class _InOutFormState extends State<InOutForm> {
     super.initState();
     _bloc = InOutFormBloc(
       expenseMode: widget.expenseMode,
-        transactionsRepository: widget.transactionsRepository);
+        transactionsRepository: TransactionsRepository(authToken: widget.authToken),
+        accountsRepository: AccountsRepository(authToken: widget.authToken),
+        fundsRepository: FundsRepository(authToken: widget.authToken));
   }
 
   @override

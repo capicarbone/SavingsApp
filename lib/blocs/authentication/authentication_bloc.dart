@@ -3,7 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:savings_app/blocs/authentication/authentication_events.dart';
 import 'package:savings_app/blocs/authentication/authentication_states.dart';
+import 'package:savings_app/models/account.dart';
 import 'package:savings_app/models/category.dart';
+import 'package:savings_app/models/fund.dart';
 import 'package:savings_app/repositories/user_repository.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -24,6 +26,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   Future<void> _initializeApp() async {
     await Hive.initFlutter();
     await Hive.openBox<Category>('categories');
+    await Hive.openBox<Account>('accounts');
+    await Hive.openBox<Fund>('funds');
     await Hive.openBox('user');
   }
 

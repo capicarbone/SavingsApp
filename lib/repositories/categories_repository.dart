@@ -30,7 +30,7 @@ class CategoriesRepository extends WebRepository{
       categories.addAll(objects.map((e) => Category.fromMap(e)));
 
       await _box.clear();
-      _box.putAll( { for (var cat in categories) cat.id: cat} );
+      await _box.putAll( { for (var cat in categories) cat.id: cat} );
 
       return categories;
     }else {

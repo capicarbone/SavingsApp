@@ -110,9 +110,7 @@ class FundDetailsScreen extends StatelessWidget {
     var fundsRepo = FundsRepository(authToken: authToken);
     var accountsRepo = AccountsRepository(authToken: authToken);
     var transactionsRepo = TransactionsRepository(
-        authToken: authToken,
-        accountsRepository: accountsRepo,
-        fundsRepository: fundsRepo);
+        authToken: authToken);
 
 
     if (_bloc == null){

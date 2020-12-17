@@ -39,23 +39,19 @@ class AccountTransferBloc
       if (errors != null) {
         yield state.copyWith(errors: errors);
       }else {
-        Response response;
-        var transaction = _createTransferPost(event);
+        var transactionPost = _createTransferPost(event);
 
         try {
-          response = await transactionsRepository.postAccountTransfer(transaction);
-        }catch (e, trace) {
-          log("AccountTransferBloc", error: e, stackTrace: trace);
-        }
-
-        if (response != null && response.statusCode == 200){
+          await transactionsRepository.postAccountTransfer(transactionPost);
           yield state.copyWith(successSubmit: true, isSubmitting: false);
           yield AccountTransferState.initial(accounts);
-        }else{
+        }catch (e, trace) {
           // TODO: Take error from response if exists
+          log("AccountTransferBloc", error: e, stackTrace: trace);
           var errors = AccountTransferFormErrors(submitError: "Error submitting form.");
           yield state.copyWith(isSubmitting: false, errors: errors);
         }
+
       }
 
     }

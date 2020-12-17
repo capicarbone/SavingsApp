@@ -18,7 +18,10 @@ import 'package:meta/meta.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:savings_app/blocs/in_out_form/in_out_form_events.dart';
 import 'package:savings_app/blocs/in_out_form/in_out_form_states.dart';
+import 'package:savings_app/models/transaction.dart';
 import 'package:savings_app/models/transaction_post.dart';
+import 'package:savings_app/repositories/accounts_repository.dart';
+import 'package:savings_app/repositories/funds_repository.dart';
 import 'package:savings_app/repositories/transactions_repository.dart';
 import 'dart:developer';
 
@@ -28,9 +31,15 @@ import 'in_out_form_states.dart';
 class InOutFormBloc extends Bloc<InOutFormEvent, InOutFormState> {
 
   TransactionsRepository transactionsRepository;
+  AccountsRepository accountsRepository;
+  FundsRepository fundsRepository;
+
   bool expenseMode = false;
 
-  InOutFormBloc({@required this.transactionsRepository, this.expenseMode: false}) : super(InOutFormInitialState());
+  InOutFormBloc({@required this.transactionsRepository,
+    @required this.fundsRepository,
+    @required this.accountsRepository,
+    this.expenseMode: false}) : super(InOutFormInitialState());
 
   @override
   Stream<InOutFormState> mapEventToState(InOutFormEvent event) async* {
@@ -44,31 +53,39 @@ class InOutFormBloc extends Bloc<InOutFormEvent, InOutFormState> {
       if (invalidState != null){
         yield invalidState;
       }else {
-        Response response;
+
 
         try {
-          var transaction = _createTransactionPost(event);
+          var transactionPost = _createTransactionPost(event);
 
 
-          response = await transactionsRepository.postTransaction(
-              transaction);
+          var transaction = await transactionsRepository.postTransaction(
+              transactionPost);
+
+          // TODO: Update balances
+          _updateBalances(transaction);
+
+          yield InOutFormSubmittedState();
+
         }catch(e, trace) {
           yield InOutFormSubmitFailedState();
          log("InOutFormBlock", error: e, stackTrace: trace);
-        }
-
-        if (response != null){
-          if (response.statusCode == 200){
-            yield InOutFormSubmittedState();
-          }else{
-            yield InOutFormSubmitFailedState();
-          }
         }
 
       }
 
     }
 
+  }
+
+  void _updateBalances(Transaction transaction) {
+    transaction.accountTransactions.forEach((element) {
+      accountsRepository.updateBalance(element.accountId, element.change);
+    });
+
+    transaction.fundTransactions.forEach((element) {
+      fundsRepository.updateBalance(element.fundId, element.change);
+    });
   }
 
   TransactionPost _createTransactionPost(InOutFormSubmitEvent event){

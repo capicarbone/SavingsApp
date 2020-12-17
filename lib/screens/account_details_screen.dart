@@ -165,10 +165,7 @@ class AccountDetailsScreen extends StatelessWidget {
     var accountsRepo = AccountsRepository(authToken: authToken);
     var categoriesRepo = CategoriesRepository(authToken: authToken);
     var transactionsRepo = TransactionsRepository(
-        authToken: authToken,
-        accountsRepository: accountsRepo,
-        fundsRepository: fundsRepo,
-      categoriesRepository: categoriesRepo
+        authToken: authToken
     );
 
     if (_bloc == null){

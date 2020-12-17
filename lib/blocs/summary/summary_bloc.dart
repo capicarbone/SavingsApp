@@ -19,7 +19,7 @@ class SummaryBloc extends Bloc<SummaryEvent, SummaryState> {
     if (event is LoadDataEvent) {
       yield SummaryLoadingData();
 
-      List<Fund> funds = fundsRepository.recoverUserFunds();
+      List<Fund> funds = fundsRepository.restore();
 
       yield SummaryDataLoaded(funds: funds, accounts: null);
 

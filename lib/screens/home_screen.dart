@@ -40,9 +40,8 @@ class _HomeScreenState extends State<HomeScreen> {
     _accountsRepository = AccountsRepository(authToken: widget.authToken);
 
     _transactionsRepository = TransactionsRepository(
-        authToken: widget.authToken,
-        fundsRepository: _fundsRepository,
-        accountsRepository: _accountsRepository);
+        authToken: widget.authToken
+    );
 
     _syncerBloc = SettingsSyncerBloc(
       categoriesRepository: _categoriesRepository,
@@ -63,22 +62,21 @@ class _HomeScreenState extends State<HomeScreen> {
           BlocProvider.of<SettingsSyncerBloc>(context)
               .add(SettingsSyncerUpdateRequested());
 
-        if (state is SettingsUpdated ||
-            (state is SyncingSettings && !state.initial)) {
+        if (state is SettingsLoaded ) {
           var bloc = BlocProvider.of<SettingsSyncerBloc>(context);
           return IndexedStack(
             index: _selectedPageIndex,
             children: [
               MySummary(
                   token: widget.authToken,
-                  fundsRepository: bloc.fundsRepository,
-                  accountsRepository: bloc.accountsRepository,
+                  fundsRepository: _fundsRepository,
+                  accountsRepository: _accountsRepository,
                   transactionsRepository: _transactionsRepository),
               NewTransaction(
-                categories: bloc.categoriesRepository.restoreCategories(),
-                funds: bloc.fundsRepository.funds,
-                accounts: bloc.accountsRepository.accounts,
-                transactionsRepository: _transactionsRepository,
+                categories: state.categories,
+                funds: state.funds,
+                accounts: state.accounts,
+                authToken: widget.authToken,
               ),
               Container(
                 child: Center(

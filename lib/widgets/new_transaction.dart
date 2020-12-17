@@ -12,13 +12,15 @@ class NewTransaction extends StatefulWidget {
   List<Fund> funds;
   List<Account> accounts;
   List<Category> categories;
-  TransactionsRepository transactionsRepository;
+  String authToken;
 
   NewTransaction(
       {@required this.categories,
       @required this.funds,
       @required this.accounts,
-      @required this.transactionsRepository});
+      @required this.authToken});
+
+
 
   @override
   _NewTransactionState createState() => _NewTransactionState();
@@ -62,17 +64,18 @@ class _NewTransactionState extends State<NewTransaction> {
                       categories: widget.categories,
                       funds: widget.funds,
                       accounts: widget.accounts,
-                      transactionsRepository: widget.transactionsRepository,
+                      authToken: widget.authToken,
                     ),
                     InOutForm(
                       categories: widget.categories,
                       funds: widget.funds,
                       accounts: widget.accounts,
-                      transactionsRepository: widget.transactionsRepository,
+                      authToken: widget.authToken,
                     ),
                     AccountTransferForm(
                       accounts: widget.accounts,
-                      transactionsRepository: widget.transactionsRepository,
+                      // Instance repository in class
+                      transactionsRepository: TransactionsRepository(authToken: widget.authToken),
                     ),
                   ],
                 ),

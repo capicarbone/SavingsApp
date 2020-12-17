@@ -134,7 +134,7 @@ class _MySummaryState extends State<MySummary> {
     return SingleChildScrollView(
       child: BlocListener<SettingsSyncerBloc, SettingsSyncState>(
         listenWhen: (previous, current) {
-          return current is SettingsUpdated;
+          return current is SettingsLoaded;
         },
         listener: (context, state) {
           // No estoy seguro si esto deberia estar aqui, quizas deberia estar despues

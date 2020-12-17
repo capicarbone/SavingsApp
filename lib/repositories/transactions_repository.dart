@@ -16,21 +16,15 @@ import 'package:savings_app/repositories/funds_repository.dart';
 
 class TransactionsRepository {
   String authToken;
-  FundsRepository fundsRepository;
-  AccountsRepository accountsRepository;
-  CategoriesRepository categoriesRepository;
 
   TransactionsRepository(
-      {@required this.authToken,
-      @required this.fundsRepository,
-      @required this.accountsRepository,
-      @required this.categoriesRepository});
+      {@required this.authToken});
 
   Map<String, String> _getAuthenticatedHeader() {
     return {"Authorization": "Bearer $authToken"};
   }
 
-  Future<http.Response> postTransaction(TransactionPost transactionData) async {
+  Future<Transaction> postTransaction(TransactionPost transactionData) async {
 
     var url = "https://flask-mymoney.herokuapp.com/api/transactions";
     var headers = _getAuthenticatedHeader();
@@ -48,19 +42,18 @@ class TransactionsRepository {
 
     var response = await http.post(url, body: body, headers: headers);
 
-    if (response.statusCode == 200) {
-      Transaction transaction = Transaction.fromMap(json.decode(response.body));
-      _updateBalances(transaction);
-    }
-
-    // TODO: Save transactions in cache and database.
-
     print(response.body);
 
-    return response;
+    if (response.statusCode == 200) {
+      Transaction transaction = Transaction.fromMap(json.decode(response.body));
+      return transaction;
+    } else{
+      throw Exception(response.body);
+    }
+
   }
 
-  Future<http.Response> postAccountTransfer(
+  Future<Transaction> postAccountTransfer(
       AccountTransferPost transferData) async {
     var url =
         "https://flask-mymoney.herokuapp.com/api/transaction/account-transfer";
@@ -79,13 +72,13 @@ class TransactionsRepository {
 
     Transaction transaction = Transaction.fromMap(json.decode(response.body));
 
-    _updateBalances(transaction);
+    //_updateBalances(transaction);
 
     // TODO: Save transactions in cache and database.
 
     print(response.body);
 
-    return response;
+    return transaction;
   }
 
   /**
@@ -124,17 +117,13 @@ class TransactionsRepository {
 
     var response = await http.get(url, headers: header);
 
-    var funds = await fundsRepository.fetchUserFunds();
-    var accounts = await accountsRepository.fetchUserAccounts();
-    var categories = await categoriesRepository.fetchCategories();
-
     print(response.body);
 
     if (response.statusCode == 200) {
       var jsonMap = json.decode(response.body) as List<dynamic>;
 
       var transactions = jsonMap
-          .map((e) => Transaction.fromMap(e, categories, accounts, funds))
+          .map((e) => Transaction.fromMap(e))
           .toList();
 
       transactions.sort((left, right) =>
@@ -155,7 +144,7 @@ class TransactionsRepository {
     return await fetchTransactions(accountId, null);
   }
 
-
+/*
 
   void _updateBalances(Transaction transaction) {
     transaction.accountTransactions.forEach((element) {
@@ -166,4 +155,6 @@ class TransactionsRepository {
       fundsRepository.updateBalance(element.fundId, element.change);
     });
   }
+
+ */
 }

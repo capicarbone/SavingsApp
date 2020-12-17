@@ -1,37 +1,44 @@
 import 'dart:convert';
 
+import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:savings_app/app_settings.dart';
 import 'package:savings_app/models/fund.dart';
+import 'package:savings_app/repositories/web_repository.dart';
 
-class FundsRepository {
-  String authToken;
-  List<Fund> _funds = [];
+class FundsRepository extends WebRepository{
 
-  FundsRepository({this.authToken});
+  FundsRepository({String authToken}) : super(authToken: authToken);
+  
+  Box<Fund> get _box => Hive.box('funds');
 
-  // TODO: Remove, should not accesed directly.
-  get funds => _funds;
-
-  Future<List<Fund>> fetchUserFunds() async {
+  Future<List<Fund>> sync() async {
 
     var url = "${AppSettings.getAPIHost()}funds";
 
     final response = await http.get(
-        url, headers: {"Authorization": "Bearer $authToken"});
-
-    List<dynamic> objects = json.decode(response.body);
-
-    _funds.clear();
-    _funds.addAll(objects.map((map) => Fund.fromMap(map)));
+        url, headers: getAuthenticatedHeader());
 
     print("from /api/funds/ : " + response.body);
 
-    return _funds;
+    if (response.statusCode == 200) {
+      List<dynamic> objects = json.decode(response.body);
+      List<Fund> funds = [ for (var obj in objects) Fund.fromMap(obj) ];
+
+      await _box.clear();
+      await _box.putAll( {for (var fund in funds) fund.id : fund } );
+
+      return funds;
+
+    } else {
+      throw Exception(response.body);
+    }
+
+
   }
 
   Future<Fund> updateBalance(String fundId, double change) async {
-    var fund = _funds.firstWhere((element) => element.id == fundId);
+    var fund = _box.get(fundId);
 
     // TODO: Update database.
 
@@ -41,16 +48,16 @@ class FundsRepository {
 
   Fund fundForCategory(String categoryId) {
 
-    if (_funds.length == 0) {
+    if (_box.isEmpty) {
       throw Exception("No cached funds");
     }
 
-    return _funds.firstWhere((element) => element.categories.map((e) => e.id).contains(categoryId));
+    return this.restore().firstWhere((element) => element.categories.map((e) => e.id).contains(categoryId));
 
 
   }
 
-  List<Fund> recoverUserFunds() {
-    return _funds;
+  List<Fund> restore() {
+    return _box.values.toList();
   }
 }
