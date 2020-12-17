@@ -19,10 +19,17 @@ class SettingsSyncerBloc extends Bloc<SettingsSyncerEvent, SettingsSyncState> {
   @override
   Stream<SettingsSyncState> mapEventToState(SettingsSyncerEvent event) async* {
     if (event is SettingsSyncerUpdateRequested) {
+
       yield SyncingSettings(initial: true);
+
+      // TODO: Validates if data exits. If not, keep loading/syncing state until
+      // syncing has finished.
+
+
       var categories = await categoriesRepository.restore();
-      var accounts = await accountsRepository.fetchUserAccounts();
-      var funds = await fundsRepository.fetchUserFunds();
+      var accounts = await accountsRepository.restore();
+      var funds = await fundsRepository.restore();
+
       yield SettingsLoaded(
           categories: categories,
           accounts: accounts,
@@ -30,6 +37,9 @@ class SettingsSyncerBloc extends Bloc<SettingsSyncerEvent, SettingsSyncState> {
       );
       
       categories = await categoriesRepository.sync();
+      accounts = await accountsRepository.sync();
+      funds = await fundsRepository.sync();
+
       yield SettingsLoaded(
           categories: categories,
           accounts: accounts,

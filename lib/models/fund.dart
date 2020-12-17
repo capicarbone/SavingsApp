@@ -1,15 +1,34 @@
 
 import 'package:savings_app/models/category.dart';
+import 'package:hive/hive.dart';
 
+part 'fund.g.dart';
+
+@HiveType(typeId: 3)
 class Fund {
 
+  @HiveField(0)
   String id;
+
+  @HiveField(1)
   String name;
+
+  @HiveField(2)
   String description;
+
+  @HiveField(3)
   double minimumLimit;
+
+  @HiveField(4)
   double maximumLimit;
+
+  @HiveField(5)
   double percetageAssignment;
+
+  @HiveField(6)
   double balance;
+
+  @HiveField(7)
   List<Category> categories;
 
   Fund({this.id, this.name, this.description, this.maximumLimit, this.minimumLimit,

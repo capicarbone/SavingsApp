@@ -5,6 +5,7 @@ import 'package:savings_app/blocs/authentication/authentication_events.dart';
 import 'package:savings_app/blocs/authentication/authentication_states.dart';
 import 'package:savings_app/models/account.dart';
 import 'package:savings_app/models/category.dart';
+import 'package:savings_app/models/fund.dart';
 import 'package:savings_app/repositories/user_repository.dart';
 import 'package:savings_app/screens/account_details_screen.dart';
 import 'package:savings_app/screens/fund_details_screen.dart';
@@ -39,6 +40,7 @@ void main() async {
 
   Hive.registerAdapter(CategoryAdapter());
   Hive.registerAdapter(AccountAdapter());
+  Hive.registerAdapter(FundAdapter());
 
   runApp(
     BlocProvider<AuthenticationBloc>(
