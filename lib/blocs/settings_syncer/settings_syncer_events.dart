@@ -6,4 +6,6 @@ abstract class SettingsSyncerEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class SettingsSyncerUpdateRequested extends SettingsSyncerEvent {}
+class SettingsSyncerSyncRequested extends SettingsSyncerEvent {}
+
+class SettingsSyncerDataUpdated extends SettingsSyncerEvent {}

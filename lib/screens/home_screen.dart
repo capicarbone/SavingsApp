@@ -60,18 +60,18 @@ class _HomeScreenState extends State<HomeScreen> {
         // TODO: Improvable
         if (state is SyncInitial)
           BlocProvider.of<SettingsSyncerBloc>(context)
-              .add(SettingsSyncerUpdateRequested());
+              .add(SettingsSyncerSyncRequested());
 
         if (state is SettingsLoaded ) {
-          var bloc = BlocProvider.of<SettingsSyncerBloc>(context);
+          //var bloc = BlocProvider.of<SettingsSyncerBloc>(context);
           return IndexedStack(
             index: _selectedPageIndex,
             children: [
               MySummary(
                   token: widget.authToken,
-                  fundsRepository: _fundsRepository,
-                  accountsRepository: _accountsRepository,
-                  transactionsRepository: _transactionsRepository),
+                  accounts: state.accounts,
+                funds: state.funds,
+                  ),
               NewTransaction(
                 categories: state.categories,
                 funds: state.funds,

@@ -21,16 +21,34 @@ class SettingsSyncerBloc extends Bloc<SettingsSyncerEvent, SettingsSyncState> {
 
   @override
   Stream<SettingsSyncState> mapEventToState(SettingsSyncerEvent event) async* {
-    if (event is SettingsSyncerUpdateRequested) {
+
+    List<Category> categories;
+    List<Account> accounts;
+    List<Fund> funds;
+
+    if (event is SettingsSyncerDataUpdated) {
+      if (!categoriesRepository.isLocallyEmpty() &&
+          !fundsRepository.isLocallyEmpty() &&
+          !accountsRepository.isLocallyEmpty() ) {
+
+        categories = categoriesRepository.restore();
+        accounts = accountsRepository.restore();
+        funds = fundsRepository.restore();
+
+        yield SettingsLoaded(
+            categories: categories,
+            accounts: accounts,
+            funds: funds
+        );
+      }
+    }
+
+    if (event is SettingsSyncerSyncRequested) {
 
       yield SyncingSettings(initial: true);
 
       // TODO: Validates if data exits. If not, keep loading/syncing state until
       // syncing has finished.
-
-      List<Category> categories;
-      List<Account> accounts;
-      List<Fund> funds;
 
 
       // TODO: This should be smarter, like download every check each repository

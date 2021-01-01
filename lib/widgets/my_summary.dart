@@ -3,38 +3,23 @@ import 'package:meta/meta.dart';
 import 'package:flutter/material.dart';
 import 'package:savings_app/blocs/settings_syncer/settings_syncer_bloc.dart';
 import 'package:savings_app/blocs/settings_syncer/settings_syncer_events.dart';
-import 'package:savings_app/blocs/settings_syncer/settings_syncer_states.dart';
-import 'package:savings_app/blocs/summary/summary_bloc.dart';
-import 'package:savings_app/blocs/summary/summary_events.dart';
-import 'package:savings_app/blocs/summary/summary_states.dart';
-import 'package:savings_app/repositories/accounts_repository.dart';
-import 'package:savings_app/repositories/funds_repository.dart';
-import 'package:savings_app/repositories/transactions_repository.dart';
+import 'package:savings_app/models/account.dart';
+import 'package:savings_app/models/fund.dart';
 import 'package:savings_app/screens/account_details_screen.dart';
 import 'package:savings_app/screens/fund_details_screen.dart';
-import 'package:savings_app/widgets/in_out_form.dart';
 
 class MySummary extends StatefulWidget {
   // Maybe unnecesary
   String token;
 
-  AccountsRepository accountsRepository;
-  FundsRepository fundsRepository;
-  TransactionsRepository transactionsRepository;
+  List<Account> accounts;
+  List<Fund> funds;
 
-  final SummaryBloc _summaryBloc;
 
   MySummary(
       {@required this.token,
-      @required this.fundsRepository,
-      this.accountsRepository,
-      this.transactionsRepository})
-      : this._summaryBloc = SummaryBloc(
-          accountsRepository: accountsRepository,
-          fundsRepository: fundsRepository,
-        ) {
-    _summaryBloc.add(LoadDataEvent());
-  }
+      @required this.accounts,
+      @required this.funds}) ;
 
   @override
   _MySummaryState createState() => _MySummaryState();
@@ -45,11 +30,10 @@ class _MySummaryState extends State<MySummary> {
   void _refresh(BuildContext ctx){
     //TODO: I should update from the database and not from the server
     // so, calling the SummaryBloc it should be the right choice.
-    BlocProvider.of<SettingsSyncerBloc>(ctx).add(SettingsSyncerUpdateRequested());
-    //BlocProvider.of<SummaryBloc>(ctx).add(LoadDataEvent());
+    BlocProvider.of<SettingsSyncerBloc>(ctx).add(SettingsSyncerSyncRequested());
   }
-  Widget _fundsSectionWidget(SummaryState state) {
-    if (state is SummaryDataLoaded && state.funds != null) {
+  Widget _fundsSectionWidget(List<Fund> funds) {
+
       return Container(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,7 +46,7 @@ class _MySummaryState extends State<MySummary> {
                   color: Theme.of(context).primaryColor),
             ),
             Column(
-              children: state.funds
+              children: funds
                   .map((e) => InkWell(
                 onTap: () {
                   Navigator.of(context)
@@ -82,13 +66,11 @@ class _MySummaryState extends State<MySummary> {
           ],
         ),
       );
-    } else {
-      return CircularProgressIndicator();
-    }
+
   }
 
-  Widget _accountsSectionWidget(BuildContext ctx, SummaryState state) {
-    if (state is SummaryDataLoaded && state.accounts != null) {
+  Widget _accountsSectionWidget(BuildContext ctx, List<Account> accounts) {
+
       return Container(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,7 +83,7 @@ class _MySummaryState extends State<MySummary> {
                   color: Theme.of(context).primaryColor),
             ),
             Column(
-              children: state.accounts
+              children: accounts
                   .map((e) => InkWell(
                         onTap: () {
                           Navigator.of(context)
@@ -124,52 +106,27 @@ class _MySummaryState extends State<MySummary> {
           ],
         ),
       );
-    } else {
-      return CircularProgressIndicator();
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: BlocListener<SettingsSyncerBloc, SettingsSyncState>(
-        listenWhen: (previous, current) {
-          return current is SettingsLoaded;
-        },
-        listener: (context, state) {
-          // No estoy seguro si esto deberia estar aqui, quizas deberia estar despues
-          // bloc builder
-          widget._summaryBloc.add(LoadDataEvent());
-        },
-        child: BlocProvider(
-          create: (_) => widget._summaryBloc,
-          child: BlocBuilder<SummaryBloc, SummaryState>(
-            builder: (context, state) {
-              return Container(
+
+        child: Container(
                   child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: <Widget>[
-                    //if (state is SummaryDataLoaded && state.funds != null && state.accounts != null)
-
-                    SizedBox(
+               SizedBox(
                       height: 18,
                     ),
-                    _accountsSectionWidget(context, state),
-                    _fundsSectionWidget(state),
+                    _accountsSectionWidget(context, widget.accounts),
+                    _fundsSectionWidget(widget.funds),
                   ],
                 ),
-              ));
-            },
-          ),
-        ),
-      ),
-    );
+              ))
+          );
+
   }
 
-  @override
-  void dispose() {
-    //widget._summaryBloc.dispose();
-    super.dispose();
-  }
-}
+

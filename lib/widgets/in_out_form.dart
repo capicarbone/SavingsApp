@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:savings_app/blocs/in_out_form/in_out_form_bloc.dart';
 import 'package:savings_app/blocs/in_out_form/in_out_form_events.dart';
 import 'package:savings_app/blocs/in_out_form/in_out_form_states.dart';
-import 'package:savings_app/blocs/summary/summary_states.dart';
+import 'package:savings_app/blocs/settings_syncer/settings_syncer_bloc.dart';
+import 'package:savings_app/blocs/settings_syncer/settings_syncer_events.dart';
+
 import 'package:savings_app/models/account.dart';
 import 'package:savings_app/models/category.dart';
 import 'package:savings_app/models/fund.dart';
@@ -114,6 +116,10 @@ class _InOutFormState extends State<InOutForm> {
               content: Text("Transaction Saved"),
               backgroundColor: Colors.green,
             ));
+
+            var syncerBloc = BlocProvider.of<SettingsSyncerBloc>(context);
+            //syncerBloc.add(SettingsSyncerDataUpdated());
+            syncerBloc.add(SettingsSyncerSyncRequested());
           }
         },
         child:
