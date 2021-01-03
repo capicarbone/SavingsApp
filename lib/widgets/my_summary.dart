@@ -113,20 +113,20 @@ class _MySummaryState extends State<MySummary> {
     return SingleChildScrollView(
 
         child: Container(
-                  child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: <Widget>[
-               SizedBox(
-                      height: 18,
-                    ),
-                    _accountsSectionWidget(context, widget.accounts),
-                    _fundsSectionWidget(widget.funds),
-                  ],
-                ),
-              ))
-          );
-
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: 18,
+                  ),
+                  _accountsSectionWidget(context, widget.accounts),
+                  _fundsSectionWidget(widget.funds),
+                ],
+              ),
+            ))
+    );
+  }
   }
 
 
