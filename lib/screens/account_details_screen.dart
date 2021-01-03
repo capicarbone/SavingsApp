@@ -24,7 +24,7 @@ class AccountDetailsScreen extends StatelessWidget {
   String _getShortDescription(Transaction transaction, String accountId) {
 
     if (transaction.isAccountTransfer) {
-      var receiver = transaction.getAccountReceiver();
+      var receiver = transaction.getReceiverAccount();
       var source = transaction.getAccountSource();
 
       if (receiver.accountId == accountId){

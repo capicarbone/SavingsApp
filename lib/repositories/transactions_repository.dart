@@ -101,7 +101,7 @@ class TransactionsRepository {
     }
   }
 
-  Future<List<Transaction>> fetchTransactions(
+  Future<List<Transaction>> fetch(
       String accountId, String fundId, {int pageSize:100}) async {
     var url = "https://flask-mymoney.herokuapp.com/api/transactions?page_size=$pageSize";
 
@@ -137,11 +137,11 @@ class TransactionsRepository {
   }
 
   Future<List<Transaction>> fetchFundTransactions(String fundId) async {
-    return await fetchTransactions(null, fundId);
+    return await fetch(null, fundId);
   }
 
   Future<List<Transaction>> fetchAccountTransactions(String accountId) async {
-    return await fetchTransactions(accountId, null);
+    return await fetch(accountId, null);
   }
 
 /*

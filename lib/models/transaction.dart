@@ -128,7 +128,7 @@ class Transaction {
     return null;
   }
 
-  AccountTransaction getAccountReceiver() {
+  AccountTransaction getReceiverAccount() {
 
     return accountTransactions.firstWhere((element) => element.change > 0);
 

@@ -1,9 +1,10 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:savings_app/blocs/fund_transactions/fund_transactions_bloc.dart';
 import 'package:savings_app/blocs/fund_transactions/fund_transactions_events.dart';
 import 'package:savings_app/blocs/fund_transactions/fund_transactions_states.dart';
+import 'package:savings_app/models/account.dart';
+import 'package:savings_app/models/category.dart';
 import 'package:savings_app/models/fund.dart';
 import 'package:savings_app/models/transaction.dart';
 import 'package:savings_app/repositories/accounts_repository.dart';
@@ -16,22 +17,25 @@ class FundDetailsScreen extends StatelessWidget {
 
   FundTransactionsBloc _bloc;
 
-  String _getShortDescription(Transaction transaction, String fundId){
-    if (transaction.isFundTransfer){
+  String _getShortDescription(
+      Transaction transaction,
+      Map<String, Account> accounts,
+      Map<String, Category> categories,
+      Map<String, Fund> funds,
+      String fundId) {
+    if (transaction.isFundTransfer) {
       var receiver = transaction.getFundReceiver();
       var source = transaction.getFundSource();
 
-      if (receiver.fundId == fundId){
-        return "Transfer from " + source.fund.name;
-      }else{
-        return "Transfer to " + source.fund.name;
-      }
+      return "Transfer ${(receiver.fundId == fundId) ? "from" : "to"} ${funds[source.fundId].name}";
     }
 
     if (transaction.isIncome) {
-      return "Income in " + transaction.getAccountReceiver().account.name;
-    }else{
-      return transaction.category.name;
+      var receiverAccount =
+          accounts[transaction.getReceiverAccount().accountId];
+      return "Income in " + receiverAccount.name;
+    } else {
+      return categories[transaction.categoryId].name;
     }
   }
 
@@ -41,7 +45,7 @@ class FundDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFundSummary(Fund fund){
+  Widget _buildFundSummary(Fund fund) {
     return Container(
       width: double.infinity,
       color: Colors.blueGrey,
@@ -67,14 +71,20 @@ class FundDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTransactionsList(Fund fund, List<Transaction> transactions) {
+  Widget _buildTransactionsList(
+      Fund fund,
+      List<Transaction> transactions,
+      Map<String, Account> accounts,
+      Map<String, Category> categories,
+      Map<String, Fund> funds) {
     return ListView.builder(
-      itemCount: transactions.length,
+        itemCount: transactions.length,
         itemBuilder: (_, index) {
           var transaction = transactions[index];
           var fundTransaction = transaction.transactionForFund(fund.id);
           return TransactionTile(
-            title: _getShortDescription(transaction, fund.id),
+            title: _getShortDescription(
+                transaction, accounts, categories, funds, fund.id),
             description: transaction.description,
             date: transaction.dateAccomplished,
             change: fundTransaction.change,
@@ -84,15 +94,17 @@ class FundDetailsScreen extends StatelessWidget {
 
   Widget _buildFundTransactionsList(Fund fund) {
     return Container(
-      child: BlocBuilder<FundTransactionsBloc, FundTransactionsState >(
+      child: BlocBuilder<FundTransactionsBloc, FundTransactionsState>(
         builder: (ctx, state) {
           if (state is FundTransactionsUpdatedState) {
-            if (state.transactions.length > 0){
-              return _buildTransactionsList(fund, state.transactions);
-            }else{
-              return Center(child: Text("No transactions"),);
+            if (state.transactions.length > 0) {
+              return _buildTransactionsList(fund, state.transactions,
+                  state.accountsMap, state.categoriesMap, state.fundsMap);
+            } else {
+              return Center(
+                child: Text("No transactions"),
+              );
             }
-
           }
 
           return _buildLoadingView();
@@ -103,23 +115,14 @@ class FundDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var args = ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
+    var args =
+        ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
     Fund fund = args['fund'];
     String authToken = args['authToken'];
 
-    var fundsRepo = FundsRepository(authToken: authToken);
-    var accountsRepo = AccountsRepository(authToken: authToken);
-    var transactionsRepo = TransactionsRepository(
-        authToken: authToken);
-
-
-    if (_bloc == null){
-      _bloc = FundTransactionsBloc(
-          fundId: fund.id,
-          transactionsRepository: transactionsRepo
-      );
+    if (_bloc == null) {
+      _bloc = FundTransactionsBloc(fundId: fund.id, authToken: authToken);
     }
-
 
     return Scaffold(
       appBar: AppBar(
@@ -130,10 +133,14 @@ class FundDetailsScreen extends StatelessWidget {
           _bloc.add(FundTransactionsLoadEvent());
           return _bloc;
         },
-        child: Column(children: <Widget>[
-          _buildFundSummary(fund),
-          Flexible(child: _buildFundTransactionsList(fund),)
-        ],),
+        child: Column(
+          children: <Widget>[
+            _buildFundSummary(fund),
+            Flexible(
+              child: _buildFundTransactionsList(fund),
+            )
+          ],
+        ),
       ),
     );
   }

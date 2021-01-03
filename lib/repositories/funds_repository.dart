@@ -54,11 +54,14 @@ class FundsRepository extends WebRepository{
 
     return this.restore().firstWhere((element) => element.categories.map((e) => e.id).contains(categoryId));
 
-
   }
 
   List<Fund> restore() {
     return _box.values.toList();
+  }
+
+  Fund get(String id) {
+    return _box.get(id);
   }
 
   bool isLocallyEmpty() {
