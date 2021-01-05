@@ -8,6 +8,7 @@ import 'package:savings_app/blocs/account_transactions/account_transactions_bloc
 import 'package:savings_app/blocs/account_transactions/account_transactions_events.dart';
 import 'package:savings_app/blocs/account_transactions/account_transactions_state.dart';
 import 'package:savings_app/models/account.dart';
+import 'package:savings_app/models/category.dart';
 import 'package:savings_app/models/transaction.dart';
 import 'package:savings_app/repositories/accounts_repository.dart';
 import 'package:savings_app/repositories/categories_repository.dart';
@@ -21,21 +22,25 @@ class AccountDetailsScreen extends StatelessWidget {
   AccountTransactionsBloc _bloc;
   Account account;
 
-  String _getShortDescription(Transaction transaction, String accountId) {
+  String _getShortDescription(Transaction transaction,
+      String accountId,
+      Map<String, Account> accounts,
+      Map<String, Category> categories
+      ) {
 
     if (transaction.isAccountTransfer) {
       var receiver = transaction.getReceiverAccount();
       var source = transaction.getAccountSource();
 
       if (receiver.accountId == accountId){
-        return "Transfer from " + source.account.name;
+        return "Transfer from " +  accounts[source.accountId].name;
       }else{
-        return "Transfer to " + receiver.account.name;
+        return "Transfer to " + accounts[receiver.accountId].name;
       }
     }
 
-    if (transaction.category != null){
-      return transaction.category.name;
+    if (transaction.categoryId != null){
+      return categories[transaction.categoryId].name;
     }else{
       if (transaction.isIncome){
         return "Income";
@@ -75,7 +80,9 @@ class AccountDetailsScreen extends StatelessWidget {
   }
 
   Widget _buildTransactionsList(
-      BuildContext ctx, Account account, List<Transaction> transactions) {
+      BuildContext ctx, Account account,
+      AccountTransactionsUpdated state) {
+    var transactions = state.transactions;
     return ListView.builder(
         itemCount: transactions.length,
         itemBuilder: (_, index) {
@@ -85,7 +92,7 @@ class AccountDetailsScreen extends StatelessWidget {
 
           return TransactionTile(
             transaction: transaction,
-            title: _getShortDescription(transaction, account.id),
+            title: _getShortDescription(transaction, account.id, state.accountsMap, state.categoriesMap),
             description: transaction.description,
             date: transaction.dateAccomplished,
             change: accountTransaction.change,
@@ -139,7 +146,7 @@ class AccountDetailsScreen extends StatelessWidget {
         builder: (ctx, state) {
           if (state is AccountTransactionsUpdated) {
             if (state.transactions.length > 0){
-              return _buildTransactionsList(ctx, account, state.transactions);
+              return _buildTransactionsList(ctx, account, state);
             }else{
               return Center(child: Text("No transactions"),);
             }
@@ -161,16 +168,9 @@ class AccountDetailsScreen extends StatelessWidget {
     assert(authToken != null);
     assert(account != null);
 
-    var fundsRepo = FundsRepository(authToken: authToken);
-    var accountsRepo = AccountsRepository(authToken: authToken);
-    var categoriesRepo = CategoriesRepository(authToken: authToken);
-    var transactionsRepo = TransactionsRepository(
-        authToken: authToken
-    );
-
     if (_bloc == null){
       _bloc = AccountTransactionsBloc(
-          accountId: account.id, transactionsRepository: transactionsRepo);
+          accountId: account.id, authToken: authToken);
     }
 
     _bloc.add(AccountTransactionsLoad());

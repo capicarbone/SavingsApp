@@ -120,6 +120,9 @@ class FundDetailsScreen extends StatelessWidget {
     Fund fund = args['fund'];
     String authToken = args['authToken'];
 
+    assert(fund != null);
+    assert(authToken != null);
+
     if (_bloc == null) {
       _bloc = FundTransactionsBloc(fundId: fund.id, authToken: authToken);
     }

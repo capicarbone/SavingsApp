@@ -84,7 +84,7 @@ class TransactionsRepository {
   /**
    * Send delete request for a transaction entity.
    */
-  Future<bool> deleteTransaction(String accountId, String transactionId) async{
+  Future<bool> delete(String accountId, String transactionId) async{
     var url = "${AppSettings.getAPIHost()}transaction/$transactionId";
 
     // TODO: Save delete action in database
@@ -144,17 +144,5 @@ class TransactionsRepository {
     return await fetch(accountId, null);
   }
 
-/*
 
-  void _updateBalances(Transaction transaction) {
-    transaction.accountTransactions.forEach((element) {
-      accountsRepository.updateBalance(element.accountId, element.change);
-    });
-
-    transaction.fundTransactions.forEach((element) {
-      fundsRepository.updateBalance(element.fundId, element.change);
-    });
-  }
-
- */
 }

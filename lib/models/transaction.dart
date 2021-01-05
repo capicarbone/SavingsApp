@@ -5,29 +5,27 @@ import 'package:savings_app/models/fund.dart';
 
 class AccountTransaction {
   final String accountId;
-  final Account account;
   final double change;
 
   AccountTransaction(
-      {@required this.accountId, @required this.change, this.account});
+      {@required this.accountId, @required this.change});
 
   factory AccountTransaction.fromMap(Map<String, dynamic> map,
       [Account account]) {
     return AccountTransaction(
-        accountId: map['account'], change: map['change'], account: account);
+        accountId: map['account'], change: map['change']);
   }
 }
 
 class FundTransaction {
   final String fundId;
-  final Fund fund;
   final double change;
 
-  FundTransaction({@required this.fundId, @required this.change, this.fund});
+  FundTransaction({@required this.fundId, @required this.change});
 
   factory FundTransaction.fromMap(Map<String, dynamic> map, [Fund fund]) {
     return FundTransaction(
-        fundId: map['fund'], change: map['change'], fund: fund);
+        fundId: map['fund'], change: map['change']);
   }
 }
 
