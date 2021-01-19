@@ -28,6 +28,13 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     await Hive.openBox('user');
   }
 
+  Future<void> openBoxes() async {
+    await Hive.openBox('user');
+    await Hive.openBox<Category>('categories');
+    await Hive.openBox<Account>('accounts');
+    await Hive.openBox<Fund>('funds');
+  }
+
   @override
   Stream<AuthenticationState> mapEventToState(AuthenticationEvent event) async* {
     if (event is AuthenticationStarted) {
@@ -38,9 +45,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       if (hasToken){
         var token = userRepository.restoreToken();
 
-        await Hive.openBox<Category>('categories');
-        await Hive.openBox<Account>('accounts');
-        await Hive.openBox<Fund>('funds');
+        await openBoxes();
 
         yield AuthenticationSuccess(token: token);
       }else {
@@ -51,6 +56,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     if (event is AuthenticationLoggedIn) {
       yield AuthenticationInProgress();
       await userRepository.persistToken(event.token);
+      await openBoxes();
       yield AuthenticationSuccess(token: event.token);
     }
 
