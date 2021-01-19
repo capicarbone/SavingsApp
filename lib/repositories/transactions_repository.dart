@@ -33,7 +33,7 @@ class TransactionsRepository {
       "change": transactionData.amount.toString(),
       "account_id": transactionData.accountId,
       "date_accomplished":
-          DateFormat.yMd().format(transactionData.accomplishedAt)
+          DateFormat.yMd().add_Hms().format(transactionData.accomplishedAt)
     };
 
     if (transactionData.categoryId != null) {

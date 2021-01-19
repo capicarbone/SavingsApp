@@ -94,6 +94,10 @@ class InOutFormBloc extends Bloc<InOutFormEvent, InOutFormState> {
 
     amount = expenseMode ? -amount : amount;
 
+    var now = DateTime.now();
+
+    event.accomplishedAt.add(new Duration(hours: now.hour, minutes: now.minute ));
+
     return TransactionPost(amount: amount, accomplishedAt: event.accomplishedAt,
     accountId: event.accountId, categoryId: event.categoryId,
     description: event.description);
