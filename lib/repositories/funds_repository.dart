@@ -14,7 +14,7 @@ class FundsRepository extends WebRepository{
 
   Future<List<Fund>> sync() async {
 
-    var url = "${AppSettings.getAPIHost()}funds";
+    var url = "${getHost()}funds";
 
     final response = await http.get(
         url, headers: getAuthenticatedHeader());

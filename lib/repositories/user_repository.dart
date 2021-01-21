@@ -3,11 +3,10 @@ import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
+import 'package:savings_app/repositories/web_repository.dart';
 import 'dart:convert';
 
-import 'package:shared_preferences/shared_preferences.dart';
-
-class UserRepository {
+class UserRepository extends WebRepository {
 
   Box get box => Hive.box('user');
 
@@ -18,7 +17,7 @@ class UserRepository {
     Codec<String, String> stringToBase64 = utf8.fuse(base64);
     String credentialsEncoded = stringToBase64.encode("$email:$password");
 
-    final response = await http.post("https://flask-mymoney.herokuapp.com/api/login",
+    final response = await http.post("${getHost()}login",
         headers: {"Authorization": "Basic $credentialsEncoded"});
 
     print(response.body);

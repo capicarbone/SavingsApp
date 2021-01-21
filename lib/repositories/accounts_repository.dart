@@ -17,7 +17,7 @@ class AccountsRepository extends WebRepository {
 
     print("Bearer $authToken");
 
-    final response = await http.get("https://flask-mymoney.herokuapp.com/api/accounts",
+    final response = await http.get("${getHost()}accounts",
       headers: getAuthenticatedHeader());
 
     print (response.body);

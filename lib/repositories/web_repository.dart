@@ -1,4 +1,6 @@
 
+import 'package:savings_app/app_settings.dart';
+
 abstract class WebRepository {
   String authToken;
 
@@ -6,5 +8,9 @@ abstract class WebRepository {
 
   Map<String, String> getAuthenticatedHeader() {
     return {"Authorization": "Bearer $authToken"};
+  }
+
+  String getHost(){
+    return AppSettings.getAPIHost();
   }
 }

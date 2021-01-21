@@ -15,7 +15,7 @@ class CategoriesRepository extends WebRepository{
 
   Future<List<Category>> sync() async {
 
-    var url = "${AppSettings.getAPIHost()}transactions/categories";
+    var url = "${getHost()}transactions/categories";
     var headers = getAuthenticatedHeader();
 
     final response = await http.get(url, headers: headers);

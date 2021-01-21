@@ -13,8 +13,9 @@ import 'package:savings_app/models/transaction_post.dart';
 import 'package:savings_app/repositories/accounts_repository.dart';
 import 'package:savings_app/repositories/categories_repository.dart';
 import 'package:savings_app/repositories/funds_repository.dart';
+import 'package:savings_app/repositories/web_repository.dart';
 
-class TransactionsRepository {
+class TransactionsRepository extends WebRepository {
   String authToken;
 
   TransactionsRepository(
@@ -26,7 +27,7 @@ class TransactionsRepository {
 
   Future<Transaction> postTransaction(TransactionPost transactionData) async {
 
-    var url = "https://flask-mymoney.herokuapp.com/api/transactions";
+    var url = "${getHost()}transactions";
     var headers = _getAuthenticatedHeader();
     var body = {
       "description": transactionData.description,
@@ -56,7 +57,7 @@ class TransactionsRepository {
   Future<Transaction> postAccountTransfer(
       AccountTransferPost transferData) async {
     var url =
-        "https://flask-mymoney.herokuapp.com/api/transaction/account-transfer";
+        "${getHost()}transaction/account-transfer";
 
     var body = {
       'description': transferData.description,
@@ -85,7 +86,7 @@ class TransactionsRepository {
    * Send delete request for a transaction entity.
    */
   Future<bool> delete(String accountId, String transactionId) async{
-    var url = "${AppSettings.getAPIHost()}transaction/$transactionId";
+    var url = "${getHost()}transaction/$transactionId";
 
     // TODO: Save delete action in database
 
@@ -103,7 +104,7 @@ class TransactionsRepository {
 
   Future<List<Transaction>> fetch(
       String accountId, String fundId, {int pageSize:100}) async {
-    var url = "https://flask-mymoney.herokuapp.com/api/transactions?page_size=$pageSize";
+    var url = "${getHost()}transactions?page_size=$pageSize";
 
     if (accountId != null) {
       url += "&account_id=$accountId";
