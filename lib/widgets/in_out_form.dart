@@ -88,6 +88,9 @@ class _InOutFormState extends State<InOutForm> {
   @override
   void initState() {
     super.initState();
+
+    // TODO: Create respositories in the InOutFormBloc
+
     _bloc = InOutFormBloc(
       expenseMode: widget.expenseMode,
         transactionsRepository: TransactionsRepository(authToken: widget.authToken),

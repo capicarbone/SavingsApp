@@ -94,11 +94,19 @@ class InOutFormBloc extends Bloc<InOutFormEvent, InOutFormState> {
 
     amount = expenseMode ? -amount : amount;
 
+    // TODO: Convert all to UTC
+
     var now = DateTime.now();
 
-    event.accomplishedAt.add(new Duration(hours: now.hour, minutes: now.minute ));
+    var accomplishedAt = DateTime(event.accomplishedAt.year,
+        event.accomplishedAt.month,
+        event.accomplishedAt.day,
+        now.hour,
+        now.minute,
+        now.second
+    );
 
-    return TransactionPost(amount: amount, accomplishedAt: event.accomplishedAt,
+    return TransactionPost(amount: amount, accomplishedAt: accomplishedAt,
     accountId: event.accountId, categoryId: event.categoryId,
     description: event.description);
 
