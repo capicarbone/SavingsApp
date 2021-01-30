@@ -39,10 +39,8 @@ class _MySummaryState extends State<MySummary> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              "Funds",
+              "Funds".toUpperCase(),
               style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
                   color: Theme.of(context).primaryColor),
             ),
             Column(
@@ -76,10 +74,9 @@ class _MySummaryState extends State<MySummary> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              "Accounts",
+              "Accounts".toUpperCase(),
               style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
+
                   color: Theme.of(context).primaryColor),
             ),
             Column(

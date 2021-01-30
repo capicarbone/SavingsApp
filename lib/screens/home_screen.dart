@@ -13,6 +13,7 @@ import 'package:savings_app/repositories/transactions_repository.dart';
 import 'package:savings_app/widgets/in_out_form.dart';
 import 'package:savings_app/widgets/my_summary.dart';
 import 'package:savings_app/widgets/new_transaction.dart';
+import 'package:savings_app/widgets/settings.dart';
 
 class HomeScreen extends StatefulWidget {
   String authToken;
@@ -78,11 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 accounts: state.accounts,
                 authToken: widget.authToken,
               ),
-              Container(
-                child: Center(
-                  child: Text("Settings"),
-                ),
-              )
+              Settings(funds: state.funds,)
             ],
           );
         }

@@ -1,0 +1,29 @@
+
+import 'package:flutter/material.dart';
+import 'package:savings_app/models/fund.dart';
+import 'package:savings_app/widgets/categories_form.dart';
+
+class Settings extends StatelessWidget {
+
+  List<Fund> funds;
+
+  Settings({@required this.funds});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children:[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              child: CategoriesForm(
+                funds: funds,
+              ),
+            ),
+          ),
+
+      ],
+    );
+  }
+}
+
