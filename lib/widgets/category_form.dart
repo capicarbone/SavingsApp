@@ -2,18 +2,18 @@
 import 'package:flutter/material.dart';
 import 'package:savings_app/models/fund.dart';
 
-class CategoriesForm extends StatefulWidget {
+class CategoryForm extends StatefulWidget {
 
   String authToken;
   List<Fund> funds;
 
-  CategoriesForm({this.authToken, this.funds});
+  CategoryForm({this.authToken, this.funds});
 
   @override
-  _CategoriesFormState createState() => _CategoriesFormState();
+  _CategoryFormState createState() => _CategoryFormState();
 }
 
-class _CategoriesFormState extends State<CategoriesForm> {
+class _CategoryFormState extends State<CategoryForm> {
   final nameController = TextEditingController();
 
   bool isIncome = false;

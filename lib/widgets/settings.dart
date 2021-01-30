@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:savings_app/models/fund.dart';
-import 'package:savings_app/widgets/categories_form.dart';
+import 'package:savings_app/widgets/category_form.dart';
 
 class Settings extends StatelessWidget {
 
@@ -16,7 +16,7 @@ class Settings extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Card(
-              child: CategoriesForm(
+              child: CategoryForm(
                 funds: funds,
               ),
             ),
