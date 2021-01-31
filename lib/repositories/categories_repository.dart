@@ -7,11 +7,52 @@ import 'package:savings_app/repositories/web_repository.dart';
 
 import '../app_settings.dart';
 
+class CategoryPost{
+
+  final String name;
+  final String fundId;
+  final String kind;
+
+  const CategoryPost({this.name, this.fundId, this.kind});
+
+  factory CategoryPost.income({String name}) {
+    return CategoryPost(name: name, fundId: null, kind: 'income');
+  }
+
+  factory CategoryPost.expense({String name, String fundId}) {
+    return CategoryPost(name: name, fundId: fundId, kind: 'expense');
+  }
+}
+
 class CategoriesRepository extends WebRepository{
 
   Box<Category> get _box => Hive.box<Category>('categories');
 
   CategoriesRepository({String authToken}) : super(authToken: authToken);
+
+  Future<Category> post(CategoryPost data) async {
+    var url = "${getHost()}transactions/categories";
+    var headers = getAuthenticatedHeader();
+
+    var body = {
+      "name": data.name,
+      "kind": data.kind
+    };
+
+    if (data.fundId != null){
+      body["fund_id"] = data.fundId;
+    }
+
+    var response = await http.post(url, body: body, headers: headers);
+
+    if (response.statusCode == 200) {
+      var responseMap = json.decode(response.body);
+      var category = Category(id: responseMap["id"], name: data.name , kind: data.kind);
+      return category;
+    } else {
+      throw Exception(response.body);
+    }
+  }
 
   Future<List<Category>> sync() async {
 

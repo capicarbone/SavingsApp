@@ -6,8 +6,9 @@ import 'package:savings_app/widgets/category_form.dart';
 class Settings extends StatelessWidget {
 
   List<Fund> funds;
+  String authToken;
 
-  Settings({@required this.funds});
+  Settings({@required this.authToken, @required this.funds});
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +18,7 @@ class Settings extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Card(
               child: CategoryForm(
+                authToken: authToken,
                 funds: funds,
               ),
             ),

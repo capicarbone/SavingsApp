@@ -11,7 +11,7 @@ class CategoryForm extends StatefulWidget {
   String authToken;
   List<Fund> funds;
 
-  CategoryForm({this.authToken, this.funds});
+  CategoryForm({@required this.authToken, @required this.funds});
 
   @override
   _CategoryFormState createState() => _CategoryFormState();

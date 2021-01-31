@@ -79,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 accounts: state.accounts,
                 authToken: widget.authToken,
               ),
-              Settings(funds: state.funds,)
+              Settings(funds: state.funds, authToken: widget.authToken,)
             ],
           );
         }
