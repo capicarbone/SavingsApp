@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:hive/hive.dart';
 import 'package:savings_app/models/category.dart';
+import 'package:savings_app/models/fund.dart';
 import 'package:savings_app/repositories/web_repository.dart';
 
 import '../app_settings.dart';
@@ -27,6 +28,7 @@ class CategoryPost{
 class CategoriesRepository extends WebRepository{
 
   Box<Category> get _box => Hive.box<Category>('categories');
+  Box<Fund> get _fundsBox => Hive.box<Fund>('funds');
 
   CategoriesRepository({String authToken}) : super(authToken: authToken);
 
@@ -40,7 +42,7 @@ class CategoriesRepository extends WebRepository{
     };
 
     if (data.fundId != null){
-      body["fund_id"] = data.fundId;
+      body["fund"] = data.fundId;
     }
 
     var response = await http.post(url, body: body, headers: headers);
@@ -52,6 +54,24 @@ class CategoriesRepository extends WebRepository{
     } else {
       throw Exception(response.body);
     }
+  }
+
+  Future<Category> save(CategoryPost data) async {
+
+    var newCategory = await post(data);
+
+    await _box.put(newCategory.id, newCategory);
+
+    var fund = _fundsBox.get(data.fundId);
+
+    // TODO: Change to add id
+    if (!newCategory.isIncome) {
+      fund.categories.add(newCategory);
+      _fundsBox.put(fund.id, fund);
+    }
+
+    return newCategory;
+
   }
 
   Future<List<Category>> sync() async {

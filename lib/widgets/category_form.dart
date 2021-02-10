@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:savings_app/blocs/category_form/category_form_bloc.dart';
 import 'package:savings_app/blocs/category_form/category_form_events.dart';
 import 'package:savings_app/blocs/category_form/category_form_states.dart';
+import 'package:savings_app/blocs/settings_syncer/settings_syncer_bloc.dart';
+import 'package:savings_app/blocs/settings_syncer/settings_syncer_events.dart';
 import 'package:savings_app/models/fund.dart';
 
 class CategoryForm extends StatefulWidget {
@@ -46,6 +48,14 @@ class _CategoryFormState extends State<CategoryForm> {
           if (state is SubmittedState) {
             Scaffold.of(context).showSnackBar(SnackBar(content: Text("Category added"),
             backgroundColor: Colors.green,));
+
+            var syncerBloc = BlocProvider.of<SettingsSyncerBloc>(context);
+            syncerBloc.add(SettingsSyncerSyncRequested());
+          }
+
+          if (state is SubmitFailedState) {
+            Scaffold.of(context).showSnackBar(SnackBar(content: Text("Form submit failed."),
+              backgroundColor: Colors.red,));
           }
         },
         child: BlocBuilder<CategoryFormBloc,CategoryFormState>(

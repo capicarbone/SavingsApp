@@ -29,10 +29,17 @@ class CategoryFormBloc extends Bloc<CategoryFormEvent, CategoryFormState> {
         data = CategoryPost.expense(name: event.name, fundId: event.fundId);
       }
 
-      repository.post(data);
+      try {
+        await repository.save(data);
+
+        yield SubmittedState();
+      } catch (ex) {
+        yield SubmitFailedState();
+      }
 
 
-      yield SubmittedState();
+
+
     }
 
   }
