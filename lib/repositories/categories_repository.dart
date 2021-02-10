@@ -62,10 +62,9 @@ class CategoriesRepository extends WebRepository{
 
     await _box.put(newCategory.id, newCategory);
 
-    var fund = _fundsBox.get(data.fundId);
-
     // TODO: Change to add id
     if (!newCategory.isIncome) {
+      var fund = _fundsBox.get(data.fundId);
       fund.categories.add(newCategory);
       _fundsBox.put(fund.id, fund);
     }
