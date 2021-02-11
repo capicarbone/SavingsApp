@@ -34,24 +34,34 @@ class CategoryFormBloc extends Bloc<CategoryFormEvent, CategoryFormState> {
 
       yield SubmittingState(incomeMode: incomeMode, fundId: fundId);
 
-      var repository = CategoriesRepository(authToken: authToken);
-      CategoryPost data;
-
-      if (incomeMode) {
-        data = CategoryPost.income(name: event.name);
+      if (event.name.isEmpty) {
+        yield SubmitFailedState(incomeMode: incomeMode, fundId: fundId, error: CategoryFormError.missingName);
+      } else if (!incomeMode && fundId == null) {
+        yield SubmitFailedState(incomeMode: incomeMode, fundId: fundId, error: CategoryFormError.missingFund);
       }else{
-        data = CategoryPost.expense(name: event.name, fundId: fundId);
+        yield SubmittingState(incomeMode: incomeMode, fundId: fundId);
+
+        var repository = CategoriesRepository(authToken: authToken);
+        CategoryPost data;
+
+        if (incomeMode) {
+          data = CategoryPost.income(name: event.name);
+        }else{
+          data = CategoryPost.expense(name: event.name, fundId: fundId);
+        }
+
+        try {
+          await repository.save(data);
+
+          incomeMode = false;
+          fundId = null;
+          yield SubmittedState(incomeMode: incomeMode, fundId: fundId);
+        } catch (ex) {
+          yield SubmitFailedState(incomeMode: incomeMode, fundId: fundId, error: CategoryFormError.serverError);
+        }
       }
 
-      try {
-        await repository.save(data);
 
-        incomeMode = false;
-        fundId = null;
-        yield SubmittedState(incomeMode: incomeMode, fundId: fundId);
-      } catch (ex) {
-        yield SubmitFailedState(incomeMode: incomeMode, fundId: fundId);
-      }
 
     }
 

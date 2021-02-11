@@ -1,5 +1,12 @@
 
 import 'package:equatable/equatable.dart';
+import 'package:savings_app/models/category.dart';
+
+enum CategoryFormError {
+  missingName,
+  missingFund,
+  serverError
+}
 
 class CategoryFormState extends Equatable {
   bool incomeMode = false;
@@ -23,5 +30,8 @@ class SubmittedState extends CategoryFormState {
 }
 
 class SubmitFailedState extends CategoryFormState {
-  SubmitFailedState({incomeMode, fundId}): super(incomeMode: incomeMode, fundId: fundId);
+  CategoryFormError error;
+  SubmitFailedState({incomeMode, fundId, this.error}): super(incomeMode: incomeMode, fundId: fundId);
+
+  List<Object> get props => [incomeMode, fundId, error];
 }

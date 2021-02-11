@@ -56,6 +56,14 @@ class CategoryForm extends StatelessWidget {
     nameController.text = "";
   }
 
+  String _getErrorMessage(CategoryFormError error){
+    switch (error) {
+      case CategoryFormError.missingFund: return "Fund is required for expense categories";
+      case CategoryFormError.missingName: return "Name is required";
+      default: return "Form submit failed";
+    }
+  }
+
   @override
   Widget build(BuildContext _) {
     return BlocProvider(
@@ -69,7 +77,7 @@ class CategoryForm extends StatelessWidget {
           }
 
           if (state is SubmitFailedState) {
-            Scaffold.of(context).showSnackBar(SnackBar(content: Text("Form submit failed."),
+            Scaffold.of(context).showSnackBar(SnackBar(content: Text(_getErrorMessage(state.error)),
               backgroundColor: Colors.red,));
           }
         },
@@ -108,7 +116,7 @@ class CategoryForm extends StatelessWidget {
                     ...funds.map((e) => DropdownMenuItem(child: Text(e.name), value: e.id,))
                   ]
                       , onChanged:  (value) {
-                      _changeFund(ctx, value);
+                        _changeFund(ctx, value);
 
                   }),
                   Row(
