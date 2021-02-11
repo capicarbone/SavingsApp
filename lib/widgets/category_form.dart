@@ -64,8 +64,12 @@ class CategoryForm extends StatelessWidget {
     }
   }
 
+  Widget _listenState({Function builder}) {
+    return BlocBuilder<CategoryFormBloc,CategoryFormState>( builder: builder);
+  }
+
   @override
-  Widget build(BuildContext _) {
+  Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) {
         return CategoryFormBloc(authToken: authToken);
@@ -81,16 +85,14 @@ class CategoryForm extends StatelessWidget {
               backgroundColor: Colors.red,));
           }
         },
-        child: BlocBuilder<CategoryFormBloc,CategoryFormState>(
-          builder: (ctx, state) => Form(
-            child: Container(
+        child: Container(
               padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text("New category".toUpperCase(),
                     style: TextStyle(
-                      color: Theme.of(ctx).primaryColor
+                      color: Theme.of(context).primaryColor
                    ),
                   ),
                   TextFormField(
@@ -102,39 +104,46 @@ class CategoryForm extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      Checkbox(value: state.incomeMode, onChanged: (value) {
-                        _changeMode(ctx, value);
-                      }),
+                      _listenState(builder: (ctx, state) =>
+                        Checkbox(value: state.incomeMode, onChanged: (value) {
+                          _changeMode(ctx, value);
+                        })
+                      )
+                      ,
                       Text("Is income")
                     ],
                   ),
-                  if (!state.incomeMode)
-                  DropdownButtonFormField(
-                    value: state.fundId,
-                    decoration: const InputDecoration(hintText: "Fund"),
-                      items: [
-                    ...funds.map((e) => DropdownMenuItem(child: Text(e.name), value: e.id,))
-                  ]
-                      , onChanged:  (value) {
+                  _listenState(builder: (ctx, state) {
+                    if (!state.incomeMode)
+                      return DropdownButtonFormField(
+                          value: state.fundId,
+                          decoration: const InputDecoration(hintText: "Fund"),
+                          items: [
+                            ...funds.map((e) => DropdownMenuItem(child: Text(e.name), value: e.id,))
+                          ]
+                          , onChanged:  (value) {
                         _changeFund(ctx, value);
 
+                      });
+
+                    return Container();
                   }),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                    RaisedButton(
-                        child: Text("Save"),
-                        onPressed: () {
-                          _submitForm(ctx);
-                        })
+                      _listenState(builder: (ctx, state) => RaisedButton(
+                          child: Text("Save"),
+                          onPressed: (state is SubmittingState) ? null :  () {
+                            _submitForm(ctx);
+                          }))
+
                   ],)
 
                 ],
               ),
             ),
-          ),
+
         ),
-      ),
-    );
+      );
   }
 }
