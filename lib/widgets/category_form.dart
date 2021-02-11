@@ -50,7 +50,7 @@ class _CategoryFormState extends State<CategoryForm> {
             backgroundColor: Colors.green,));
 
             var syncerBloc = BlocProvider.of<SettingsSyncerBloc>(context);
-            syncerBloc.add(SettingsSyncerSyncRequested());
+            syncerBloc.add(SettingsSyncerDataUpdated());
           }
 
           if (state is SubmitFailedState) {

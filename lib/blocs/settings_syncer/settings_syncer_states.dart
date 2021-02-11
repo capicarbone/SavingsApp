@@ -34,6 +34,15 @@ class SettingsLoaded extends  SettingsSyncState {
   List<Fund> funds;
 
   SettingsLoaded({this.categories, this.accounts, this.funds});
+
+  @override
+  List<Object> get props => [categories, accounts, funds];
+}
+
+class DataUpdated extends SettingsLoaded {
+  DataUpdated({List<Category> categories, List<Account> accounts, List<Fund> funds})
+      : super(categories: categories, accounts: accounts, funds: funds);
+
 }
 
 class SyncFailed extends SettingsSyncState {

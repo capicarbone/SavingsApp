@@ -35,7 +35,7 @@ class SettingsSyncerBloc extends Bloc<SettingsSyncerEvent, SettingsSyncState> {
         accounts = accountsRepository.restore();
         funds = fundsRepository.restore();
 
-        yield SettingsLoaded(
+        yield DataUpdated(
             categories: categories,
             accounts: accounts,
             funds: funds
