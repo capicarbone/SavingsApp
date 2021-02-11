@@ -5,9 +5,19 @@ class CategoryFormEvent {}
 
 class SubmitEvent extends CategoryFormEvent {
   String name;
+
+  SubmitEvent({@required this.name});
+
+}
+
+class ChangeModeEvent extends CategoryFormEvent {
+  bool incomeMode;
+
+  ChangeModeEvent({this.incomeMode});
+}
+
+class ChangeFundEvent extends CategoryFormEvent {
   String fundId;
-  bool isIncome;
 
-  SubmitEvent({@required this.name, @required this.fundId, @required this.isIncome : true });
-
+  ChangeFundEvent({this.fundId});
 }

@@ -10,35 +10,48 @@ import 'package:savings_app/repositories/categories_repository.dart';
 class CategoryFormBloc extends Bloc<CategoryFormEvent, CategoryFormState> {
 
   String authToken;
+  bool incomeMode = false;
+  String fundId = null;
 
-  CategoryFormBloc({this.authToken}) : super(FormReadyState());
+  CategoryFormBloc({this.authToken}) : super(FormReadyState(incomeMode: false));
 
   @override
   Stream<CategoryFormState> mapEventToState(CategoryFormEvent event) async* {
 
+    if (event is ChangeModeEvent){
+      incomeMode = event.incomeMode;
+
+      yield FormReadyState(incomeMode: incomeMode, fundId: fundId);
+    }
+
+    if (event is ChangeFundEvent) {
+      fundId = event.fundId;
+
+      yield FormReadyState(incomeMode: incomeMode, fundId: fundId);
+    }
+
     if (event is SubmitEvent) {
 
-      yield SubmittingState();
+      yield SubmittingState(incomeMode: incomeMode, fundId: fundId);
 
       var repository = CategoriesRepository(authToken: authToken);
       CategoryPost data;
 
-      if (event.isIncome) {
+      if (incomeMode) {
         data = CategoryPost.income(name: event.name);
       }else{
-        data = CategoryPost.expense(name: event.name, fundId: event.fundId);
+        data = CategoryPost.expense(name: event.name, fundId: fundId);
       }
 
       try {
         await repository.save(data);
 
-        yield SubmittedState();
+        incomeMode = false;
+        fundId = null;
+        yield SubmittedState(incomeMode: incomeMode, fundId: fundId);
       } catch (ex) {
-        yield SubmitFailedState();
+        yield SubmitFailedState(incomeMode: incomeMode, fundId: fundId);
       }
-
-
-
 
     }
 
