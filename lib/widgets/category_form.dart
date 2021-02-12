@@ -64,29 +64,31 @@ class CategoryForm extends StatelessWidget {
     }
   }
 
-  Widget _listenState({Function builder}) {
+  Widget _react({Function builder}) {
     return BlocBuilder<CategoryFormBloc, CategoryFormState>(builder: builder);
+  }
+
+  void _listenState(context, state) {
+    if (state is SubmittedState) {
+      _onFormSubmitted(context);
+    }
+
+    if (state is SubmitFailedState) {
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text(_getErrorMessage(state.error)),
+        backgroundColor: Colors.red,
+      ));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
+    return BlocProvider<CategoryFormBloc>(
       create: (_) {
         return CategoryFormBloc(authToken: authToken);
       },
       child: BlocListener<CategoryFormBloc, CategoryFormState>(
-        listener: (context, state) {
-          if (state is SubmittedState) {
-            _onFormSubmitted(context);
-          }
-
-          if (state is SubmitFailedState) {
-            Scaffold.of(context).showSnackBar(SnackBar(
-              content: Text(_getErrorMessage(state.error)),
-              backgroundColor: Colors.red,
-            ));
-          }
-        },
+        listener: _listenState,
         child: Container(
           padding: const EdgeInsets.all(20),
           child: Column(
@@ -102,7 +104,7 @@ class CategoryForm extends StatelessWidget {
               ),
               Row(
                 children: [
-                  _listenState(
+                  _react(
                       builder: (ctx, state) => Checkbox(
                           value: state.incomeMode,
                           onChanged: (value) {
@@ -111,7 +113,7 @@ class CategoryForm extends StatelessWidget {
                   Text("Is income")
                 ],
               ),
-              _listenState(builder: (ctx, state) {
+              _react(builder: (ctx, state) {
                 if (!state.incomeMode)
                   return DropdownButtonFormField(
                       value: state.fundId,
@@ -131,7 +133,7 @@ class CategoryForm extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _listenState(
+                  _react(
                       builder: (ctx, state) => RaisedButton(
                           child: Text("Save"),
                           onPressed: (state is SubmittingState)
