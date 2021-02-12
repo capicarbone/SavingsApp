@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:savings_app/models/fund.dart';
 import 'package:savings_app/widgets/category_form.dart';
+import 'package:savings_app/widgets/fund_form.dart';
 
 class Settings extends StatelessWidget {
 
@@ -12,19 +13,32 @@ class Settings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children:[
+    return SingleChildScrollView(
+      child: Column(
+        children:[
+            Container(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Card(
+                  child: CategoryForm(
+                    authToken: authToken,
+                    funds: funds,
+                  ),
+                ),
+              ),
+            ),
+
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Card(
-              child: CategoryForm(
+              child: FundForm(
                 authToken: authToken,
-                funds: funds,
               ),
             ),
           ),
 
-      ],
+        ],
+      ),
     );
   }
 }
