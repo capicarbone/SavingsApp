@@ -46,14 +46,13 @@ class FundForm extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 20,),
+          SizedBox(
+            height: 20,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-            RaisedButton(
-              child: Text("Save"),
-                onPressed: () {})
-          ],)
+            children: [RaisedButton(child: Text("Save"), onPressed: () {})],
+          )
         ],
       ),
     );
