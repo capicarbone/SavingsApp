@@ -31,6 +31,7 @@ class CategoryForm extends StatelessWidget {
   }
 
   void _changeFund(BuildContext context, String fundId) {
+    // ignore: close_sinks
     var bloc = BlocProvider.of<CategoryFormBloc>(context);
 
     var event = ChangeFundEvent(fundId: fundId);

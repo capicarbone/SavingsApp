@@ -6,12 +6,14 @@ class FundFormEvent {}
 class SubmitEvent extends FundFormEvent {
   String name;
   String description;
-  String minimum_limit;
-  String maximum_limit;
+  String assignment;
+  String minimumLimit;
+  String maximumLimit;
 
   SubmitEvent({@required this.name,
     @required this.description,
-    @required this.maximum_limit,
-    @required this.minimum_limit
+    @required this.assignment,
+    @required this.maximumLimit,
+    @required this.minimumLimit
   });
 }
