@@ -56,7 +56,7 @@ class _MySummaryState extends State<MySummary> {
                             e.name,
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          trailing: Text('\$${e.balance.toStringAsFixed(2)}'),
+                          trailing: Text( (e.balance != null) ? '\$${e.balance.toStringAsFixed(2)}' : "\$0"),
                         ),
                   ))
                   .toList(),
