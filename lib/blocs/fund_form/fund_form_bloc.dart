@@ -21,15 +21,22 @@ class FundFormBloc extends Bloc<FundFormEvent, FundFormState> {
       var repository = FundsRepository(authToken: authToken);
 
       var fund = Fund(id: null, name: event.name,
-      description: event.description,
+      description: (event.description.isNotEmpty) ? event.description : null,
         maximumLimit: (event.maximumLimit.isNotEmpty)  ? double.parse(event.maximumLimit) : null,
         minimumLimit: (event.minimumLimit.isNotEmpty) ? double.parse(event.minimumLimit) : null,
         percetageAssignment: double.parse(event.assignment) / 100
       );
 
-      await repository.save(fund);
+      try {
+        await repository.save(fund);
 
-      yield SubmittedState();
+        yield SubmittedState();
+      }catch (ex) {
+        yield SubmitFailedState();
+      }
+
+
+
 
     }
 

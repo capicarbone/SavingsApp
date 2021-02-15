@@ -44,9 +44,12 @@ class FundsRepository extends WebRepository{
 
     var body = {
       'name': fund.name,
-      'description': fund.description,
       'percentage_assignment': fund.percetageAssignment.toString(),
     };
+
+    if (fund.description != null) {
+      body['description'] = fund.description;
+    }
 
     if (fund.maximumLimit != null){
       body['maximum_limit'] = fund.maximumLimit.toString();

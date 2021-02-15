@@ -26,7 +26,7 @@ class Fund {
   double percetageAssignment;
 
   @HiveField(6)
-  double balance;
+  double balance = 0;
 
   @HiveField(7)
   List<Category> categories;
