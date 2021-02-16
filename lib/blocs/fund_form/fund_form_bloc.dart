@@ -114,9 +114,12 @@ class FundFormBloc extends Bloc<FundFormEvent, FundFormState> {
         availableAssignment: availableAssignment);
       }
 
+    }
+
+    if (data.minimumLimit.isNotEmpty && data.maximumLimit.isNotEmpty){
       if (minimum >= maximum){
         return SubmitFailedState(error: FundFormError.invalidMinimum,
-        availableAssignment: availableAssignment);
+            availableAssignment: availableAssignment);
       }
     }
 
