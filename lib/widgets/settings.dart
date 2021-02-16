@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:savings_app/models/fund.dart';
+import 'package:savings_app/widgets/account_form.dart';
 import 'package:savings_app/widgets/category_form.dart';
 import 'package:savings_app/widgets/fund_form.dart';
 
@@ -16,14 +17,20 @@ class Settings extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children:[
-            Container(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Card(
-                  child: CategoryForm(
-                    authToken: authToken,
-                    funds: funds,
-                  ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              child: AccountForm(
+                authToken: authToken,
+              ),
+            ),
+          ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                child: CategoryForm(
+                  authToken: authToken,
+                  funds: funds,
                 ),
               ),
             ),
@@ -36,7 +43,6 @@ class Settings extends StatelessWidget {
               ),
             ),
           ),
-
         ],
       ),
     );
