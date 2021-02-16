@@ -111,4 +111,9 @@ class FundsRepository extends WebRepository{
   bool isLocallyEmpty() {
     return _box.isEmpty;
   }
+
+  get availableAssignment {
+    var totalAssigned = restore().fold(0, (previousValue, element) => previousValue + element.percetageAssignment);
+    return 1 - totalAssigned;
+  }
 }

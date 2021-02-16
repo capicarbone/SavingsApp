@@ -1,4 +1,3 @@
-
 enum FundFormError {
   missingName,
   missingAssignment,
@@ -9,17 +8,31 @@ enum FundFormError {
   serverError
 }
 
-class FundFormState {}
+class FundFormState {
+  double availableAssignment = 0;
 
-class FormReadyState extends FundFormState {}
+  FundFormState({this.availableAssignment});
+}
 
-class SubmittingState extends FundFormState {}
+class FormReadyState extends FundFormState {
 
-class SubmittedState extends FundFormState {}
+  FormReadyState({double availableForAssignment})
+      : super(availableAssignment: availableForAssignment);
+}
+
+class SubmittingState extends FundFormState {
+  SubmittingState({double availableAssignment})
+      : super(availableAssignment: availableAssignment);
+}
+
+class SubmittedState extends FundFormState {
+  SubmittedState({double availableAssignment})
+      : super(availableAssignment: availableAssignment);
+}
 
 class SubmitFailedState extends FundFormState {
   FundFormError error;
 
-  SubmitFailedState({this.error});
+  SubmitFailedState({double availableAssignment, this.error})
+      : super(availableAssignment: availableAssignment);
 }
-

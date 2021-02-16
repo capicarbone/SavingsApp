@@ -7,25 +7,39 @@ import 'package:savings_app/repositories/funds_repository.dart';
 
 class FundFormBloc extends Bloc<FundFormEvent, FundFormState> {
 
-  String authToken;
+  FundsRepository repository;
 
-  FundFormBloc({this.authToken}) : super(FormReadyState());
+  FundFormBloc({this.repository}) : 
+        super(FormReadyState( availableForAssignment: repository.availableAssignment));
+
+  
+
 
   @override
   Stream<FundFormState> mapEventToState(FundFormEvent event) async* {
 
+    var availableAssignment = repository.availableAssignment;
+
     if (event is SubmitEvent) {
 
-      yield SubmittingState();
+      yield SubmittingState(availableAssignment: availableAssignment);
 
-      var dataChecks = _validateFormData(event, _getAvailableAssignment());
+      SubmitFailedState dataChecks;
+      try {
+         dataChecks = _validateFormData(event, availableAssignment);
+      }catch (ex){
+        yield SubmitFailedState(
+            availableAssignment: availableAssignment,
+            error: FundFormError.serverError
+        );
+        return;
+      }
+
 
       if (dataChecks != null){
         yield dataChecks;
         return;
       }
-
-      var repository = FundsRepository(authToken: authToken);
 
       var fund = Fund(id: null, name: event.name,
       description: (event.description.isNotEmpty) ? event.description : null,
@@ -37,9 +51,12 @@ class FundFormBloc extends Bloc<FundFormEvent, FundFormState> {
       try {
         await repository.save(fund);
 
-        yield SubmittedState();
+        yield SubmittedState(availableAssignment: repository.availableAssignment);
       }catch (ex) {
-        yield SubmitFailedState(error: FundFormError.serverError);
+        yield SubmitFailedState(
+          availableAssignment: availableAssignment,
+            error: FundFormError.serverError
+        );
       }
 
     }
@@ -48,26 +65,31 @@ class FundFormBloc extends Bloc<FundFormEvent, FundFormState> {
 
   SubmitFailedState _validateFormData(SubmitEvent data, double availableAssignment){
     if (data.name.isEmpty){
-      return SubmitFailedState(error: FundFormError.missingName);
+      return SubmitFailedState(error: FundFormError.missingName,
+          availableAssignment: availableAssignment);
     }
 
     if (data.assignment.isEmpty){
-      return SubmitFailedState(error: FundFormError.missingAssignment);
+      return SubmitFailedState(error: FundFormError.missingAssignment,
+      availableAssignment: availableAssignment);
     }
 
     double assignment;
     try{
       assignment = double.parse(data.assignment);
     }catch (ex){
-      return SubmitFailedState(error: FundFormError.invalidAssignment);
+      return SubmitFailedState(error: FundFormError.invalidAssignment,
+      availableAssignment: availableAssignment);
     }
 
     if (assignment < 0 || assignment > 100) {
-      return SubmitFailedState(error: FundFormError.invalidAssignment);
+      return SubmitFailedState(error: FundFormError.invalidAssignment,
+      availableAssignment: availableAssignment);
     }
 
     if (availableAssignment < assignment/100 ){
-      return SubmitFailedState(error: FundFormError.overassignment);
+      return SubmitFailedState(error: FundFormError.overassignment,
+      availableAssignment: availableAssignment);
     }
 
     double maximum;
@@ -77,7 +99,8 @@ class FundFormBloc extends Bloc<FundFormEvent, FundFormState> {
       try{
         maximum = double.parse(data.maximumLimit);
       }catch (ex){
-        return SubmitFailedState(error: FundFormError.invalidLimit);
+        return SubmitFailedState(error: FundFormError.invalidLimit,
+        availableAssignment: availableAssignment);
       }
     }
 
@@ -87,22 +110,20 @@ class FundFormBloc extends Bloc<FundFormEvent, FundFormState> {
       try{
         minimum = double.parse(data.minimumLimit);
       }catch (ex){
-        return SubmitFailedState(error: FundFormError.invalidMinimum);
+        return SubmitFailedState(error: FundFormError.invalidMinimum,
+        availableAssignment: availableAssignment);
+      }
+
+      if (minimum >= maximum){
+        return SubmitFailedState(error: FundFormError.invalidMinimum,
+        availableAssignment: availableAssignment);
       }
     }
 
-    if (minimum >= maximum){
-      return SubmitFailedState(error: FundFormError.invalidMinimum);
-    }
+
   }
 
-  double _getAvailableAssignment(){
-    var repository = FundsRepository(authToken: authToken);
-    var funds = repository.restore();
 
-    var totalAssigned = funds.fold(0, (previousValue, element) => previousValue + element.percetageAssignment);
-    return 1 - totalAssigned;
-  }
 
 
 

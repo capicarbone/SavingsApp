@@ -1,10 +1,14 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:savings_app/blocs/fund_form/fund_form_bloc.dart';
 import 'package:savings_app/blocs/fund_form/fund_form_states.dart';
 import 'package:savings_app/blocs/fund_form/fund_form_events.dart';
 import 'package:savings_app/blocs/settings_syncer/settings_syncer_bloc.dart';
 import 'package:savings_app/blocs/settings_syncer/settings_syncer_events.dart';
+import 'package:savings_app/repositories/funds_repository.dart';
 
 class FundForm extends StatelessWidget {
   String authToken;
@@ -69,8 +73,9 @@ class FundForm extends StatelessWidget {
       case FundFormError.invalidAssignment:
         return "Invalid assignment value";
       case FundFormError.missingAssignment:
-        return"Assignment is missing";
-      case FundFormError.overassignment: return "Total assignment is greater than 100%";
+        return "Assignment is missing";
+      case FundFormError.overassignment:
+        return "Total assignment is greater than 100%";
       default:
         return "Error submitting form";
     }
@@ -98,6 +103,21 @@ class FundForm extends StatelessWidget {
             decoration: const InputDecoration(
                 hintText: "Assignment", suffix: Text("%")),
             controller: assignmentController,
+          ),
+          SizedBox(
+            height: 5,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              BlocBuilder<FundFormBloc, FundFormState>(builder: (ctx, state) =>
+                  Text(
+                    "${(state.availableAssignment*100).round()}% Available for assignment",
+                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                    textAlign: TextAlign.end,
+                  )
+              ),
+            ],
           ),
           Row(
             mainAxisSize: MainAxisSize.max,
@@ -142,10 +162,12 @@ class FundForm extends StatelessWidget {
     );
   }
 
+  FundFormBloc _createBloc(_) => FundFormBloc(repository: FundsRepository(authToken: authToken));
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<FundFormBloc>(
-      create: (_) => FundFormBloc(authToken: authToken),
+      create: _createBloc,
       child: BlocListener<FundFormBloc, FundFormState>(
         listener: _listeState,
         child: _buildForm(context),
