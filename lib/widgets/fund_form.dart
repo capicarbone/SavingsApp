@@ -29,12 +29,15 @@ class FundForm extends StatelessWidget {
     bloc.add(event);
   }
 
-  void _clear(){
-
+  void _clear() {
+    // The form is already cleaned on success submit.
   }
 
   void _onFormSubmitted(BuildContext context) {
-    Scaffold.of(context).showSnackBar(SnackBar(content: Text("Fund added."), backgroundColor: Colors.green,));
+    Scaffold.of(context).showSnackBar(SnackBar(
+      content: Text("Fund added."),
+      backgroundColor: Colors.green,
+    ));
 
     var syncerBloc = BlocProvider.of<SettingsSyncerBloc>(context);
     syncerBloc.add(SettingsSyncerDataUpdated());
@@ -43,8 +46,32 @@ class FundForm extends StatelessWidget {
   }
 
   Widget _listeState(context, state) {
-    if (state is SubmittedState){
+    if (state is SubmittedState) {
       _onFormSubmitted(context);
+    }
+
+    if (state is SubmitFailedState) {
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text(_getMessageForError(state.error)),
+        backgroundColor: Colors.red,
+      ));
+    }
+  }
+
+  String _getMessageForError(FundFormError error) {
+    switch (error) {
+      case FundFormError.missingName:
+        return "Name is missing";
+      case FundFormError.invalidMinimum:
+        return "Invalid minimum value";
+      case FundFormError.invalidLimit:
+        return "Invalid limit value";
+      case FundFormError.invalidAssignment:
+        return "Invalid assignment value";
+      case FundFormError.missingAssignment:
+        return"Assignment is missing";
+      default:
+        return "Error submitting form";
     }
   }
 

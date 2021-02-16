@@ -18,6 +18,13 @@ class FundFormBloc extends Bloc<FundFormEvent, FundFormState> {
 
       yield SubmittingState();
 
+      var dataChecks = _validateFormData(event);
+
+      if (dataChecks != null){
+        yield dataChecks;
+        return;
+      }
+
       var repository = FundsRepository(authToken: authToken);
 
       var fund = Fund(id: null, name: event.name,
@@ -32,13 +39,55 @@ class FundFormBloc extends Bloc<FundFormEvent, FundFormState> {
 
         yield SubmittedState();
       }catch (ex) {
-        yield SubmitFailedState();
+        yield SubmitFailedState(error: FundFormError.serverError);
       }
 
-
-
-
     }
+
+  }
+
+  SubmitFailedState _validateFormData(SubmitEvent data){
+    if (data.name.isEmpty){
+      return SubmitFailedState(error: FundFormError.missingName);
+    }
+
+    if (data.assignment.isEmpty){
+      return SubmitFailedState(error: FundFormError.missingAssignment);
+    }
+
+    double assignment;
+    try{
+      assignment = double.parse(data.assignment);
+    }catch (ex){
+      return SubmitFailedState(error: FundFormError.invalidAssignment);
+    }
+
+    if (assignment < 0 || assignment > 100) {
+      return SubmitFailedState(error: FundFormError.invalidAssignment);
+    }
+
+    // TODO: Validate
+
+    if (data.maximumLimit.isNotEmpty){
+      double maximum;
+      try{
+        maximum = double.parse(data.maximumLimit);
+      }catch (ex){
+        return SubmitFailedState(error: FundFormError.invalidLimit);
+      }
+    }
+
+    if (data.minimumLimit.isNotEmpty) {
+      double minimum;
+      try{
+        minimum = double.parse(data.minimumLimit);
+      }catch (ex){
+        return SubmitFailedState(error: FundFormError.invalidMinimum);
+      }
+    }
+
+
+
 
   }
 
