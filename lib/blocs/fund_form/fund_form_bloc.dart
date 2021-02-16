@@ -70,8 +70,10 @@ class FundFormBloc extends Bloc<FundFormEvent, FundFormState> {
       return SubmitFailedState(error: FundFormError.overassignment);
     }
 
+    double maximum;
+
     if (data.maximumLimit.isNotEmpty){
-      double maximum;
+
       try{
         maximum = double.parse(data.maximumLimit);
       }catch (ex){
@@ -79,13 +81,18 @@ class FundFormBloc extends Bloc<FundFormEvent, FundFormState> {
       }
     }
 
+    double minimum;
     if (data.minimumLimit.isNotEmpty) {
-      double minimum;
+
       try{
         minimum = double.parse(data.minimumLimit);
       }catch (ex){
         return SubmitFailedState(error: FundFormError.invalidMinimum);
       }
+    }
+
+    if (minimum >= maximum){
+      return SubmitFailedState(error: FundFormError.invalidMinimum);
     }
   }
 
