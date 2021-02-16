@@ -18,7 +18,7 @@ class FundFormBloc extends Bloc<FundFormEvent, FundFormState> {
 
       yield SubmittingState();
 
-      var dataChecks = _validateFormData(event);
+      var dataChecks = _validateFormData(event, _getAvailableAssignment());
 
       if (dataChecks != null){
         yield dataChecks;
@@ -46,7 +46,7 @@ class FundFormBloc extends Bloc<FundFormEvent, FundFormState> {
 
   }
 
-  SubmitFailedState _validateFormData(SubmitEvent data){
+  SubmitFailedState _validateFormData(SubmitEvent data, double availableAssignment){
     if (data.name.isEmpty){
       return SubmitFailedState(error: FundFormError.missingName);
     }
@@ -66,7 +66,9 @@ class FundFormBloc extends Bloc<FundFormEvent, FundFormState> {
       return SubmitFailedState(error: FundFormError.invalidAssignment);
     }
 
-    // TODO: Validate
+    if (availableAssignment < assignment/100 ){
+      return SubmitFailedState(error: FundFormError.overassignment);
+    }
 
     if (data.maximumLimit.isNotEmpty){
       double maximum;
@@ -85,10 +87,14 @@ class FundFormBloc extends Bloc<FundFormEvent, FundFormState> {
         return SubmitFailedState(error: FundFormError.invalidMinimum);
       }
     }
+  }
 
+  double _getAvailableAssignment(){
+    var repository = FundsRepository(authToken: authToken);
+    var funds = repository.restore();
 
-
-
+    var totalAssigned = funds.fold(0, (previousValue, element) => previousValue + element.percetageAssignment);
+    return 1 - totalAssigned;
   }
 
 

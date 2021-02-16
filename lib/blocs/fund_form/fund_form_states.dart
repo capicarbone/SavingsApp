@@ -3,6 +3,7 @@ enum FundFormError {
   missingName,
   missingAssignment,
   invalidAssignment,
+  overassignment,
   invalidMinimum,
   invalidLimit,
   serverError

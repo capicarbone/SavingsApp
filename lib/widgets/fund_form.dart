@@ -70,6 +70,7 @@ class FundForm extends StatelessWidget {
         return "Invalid assignment value";
       case FundFormError.missingAssignment:
         return"Assignment is missing";
+      case FundFormError.overassignment: return "Total assignment is greater than 100%";
       default:
         return "Error submitting form";
     }
