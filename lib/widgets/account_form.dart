@@ -29,6 +29,7 @@ class AccountForm extends StatelessWidget {
           ),
           TextFormField(
             decoration: const InputDecoration(hintText: "Name"),
+            controller: nameController,
           ),
           BlocBuilder<AccountFormBloc, AccountFormState>(
               builder: (ctx, state) => Row(
@@ -37,7 +38,7 @@ class AccountForm extends StatelessWidget {
                   RaisedButton(
                       child: Text("Save"),
                       onPressed:
-                      (state is FormSubmittedState) ? null : () {
+                      (state is FormSubmittingState) ? null : () {
                           _submitForm(ctx);
                       })
                 ],

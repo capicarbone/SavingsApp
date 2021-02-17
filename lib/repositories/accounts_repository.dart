@@ -37,6 +37,32 @@ class AccountsRepository extends WebRepository {
 
   }
 
+  Future<Account> post(Account account) async {
+
+    var headers = getAuthenticatedHeader();
+    var body = {'name': account.name};
+    var url  = "${getHost()}accounts";
+
+    var response = await http.post(url, body: body, headers: headers);
+
+    if (response.statusCode == 200){
+      var newAccount = Account(id: json.decode(response.body)['id'], name: account.name);
+      return newAccount;
+    }else{
+      throw Exception(response.body);
+    }
+
+  }
+
+  Future<Account> save(Account account) async{
+
+    var newAccount = await post(account);
+
+    _box.put(newAccount.id, newAccount);
+
+    return newAccount;
+  }
+
   List<Account> restore() {
     return [ for (var element in _box.values ) element ];
   }
