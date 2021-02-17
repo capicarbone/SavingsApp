@@ -13,9 +13,9 @@ class Account {
   final String name;
 
   @HiveField(2)
-  double balance;
+  double balance = 0;
 
-  Account({this.id, this.name, this.balance});
+  Account({this.id, this.name, this.balance = 0});
 
   factory Account.fromMap(Map<String, dynamic> map) {
     return Account(id: map['id'], name: map['name'],

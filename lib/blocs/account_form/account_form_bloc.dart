@@ -25,7 +25,7 @@ class AccountFormBloc extends Bloc<AccountFormEvent, AccountFormState> {
         return;
       }
 
-      var account = Account(id: null, name: event.name);
+      var account = Account(id: null, name: event.name, balance: 0);
 
       await repository.save(account);
 
