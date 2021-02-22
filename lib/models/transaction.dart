@@ -47,7 +47,8 @@ class Transaction {
 
   get isAccountTransfer => accountTransactions.length == 2;
 
-  get isFundTransfer => fundTransactions.length == 2;
+  get isFundTransfer => fundTransactions.length == 2 &&
+      fundTransactions[0].change + fundTransactions[1].change == 0;
 
   get isIncome =>
       accountTransactions.length == 1 && accountTransactions[0].change > 0;
