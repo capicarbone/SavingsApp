@@ -16,8 +16,9 @@ class UserRepository extends WebRepository {
   }) async{
     Codec<String, String> stringToBase64 = utf8.fuse(base64);
     String credentialsEncoded = stringToBase64.encode("$email:$password");
+    var url = "${getHost()}login";
 
-    final response = await http.post("${getHost()}login",
+    final response = await http.post(url,
         headers: {"Authorization": "Basic $credentialsEncoded"});
 
     print(response.body);

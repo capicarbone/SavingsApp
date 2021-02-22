@@ -27,20 +27,15 @@ class SettingsSyncerBloc extends Bloc<SettingsSyncerEvent, SettingsSyncState> {
     List<Fund> funds;
 
     if (event is SettingsSyncerDataUpdated) {
-      if (!categoriesRepository.isLocallyEmpty() &&
-          !fundsRepository.isLocallyEmpty() &&
-          !accountsRepository.isLocallyEmpty() ) {
+      categories = categoriesRepository.restore();
+      accounts = accountsRepository.restore();
+      funds = fundsRepository.restore();
 
-        categories = categoriesRepository.restore();
-        accounts = accountsRepository.restore();
-        funds = fundsRepository.restore();
-
-        yield DataUpdated(
-            categories: categories,
-            accounts: accounts,
-            funds: funds
-        );
-      }
+      yield DataUpdated(
+          categories: categories,
+          accounts: accounts,
+          funds: funds
+      );
     }
 
     if (event is SettingsSyncerSyncRequested) {
