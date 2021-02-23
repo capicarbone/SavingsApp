@@ -75,6 +75,8 @@ class _InOutFormState extends State<InOutForm> {
   void _submitForm(ctx) {
     var bloc = BlocProvider.of<InOutFormBloc>(ctx);
 
+    // TODO: Validate form
+
     var event = InOutFormSubmitEvent(
         amount: amountController.text,
         accomplishedAt: _selectedDate,
