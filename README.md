@@ -1,4 +1,8 @@
-# savings_app
+# Savings App (Provitional name)
+
+App for personal finances management with some features like reports, assets management, virtual funds, transactions registration assisted by geolozaliations, etc.
+
+## Development
 
 For generate Hive type adapters
 
