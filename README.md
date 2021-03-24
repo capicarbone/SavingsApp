@@ -4,7 +4,7 @@ App for personal finances management with some features like reports, assets man
 
 ## Development
 
-For generate Hive type adapters
+Generate Hive type adapters
 
 ```
 flutter packages pub run build_runner build
