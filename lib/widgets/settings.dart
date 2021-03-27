@@ -5,12 +5,12 @@ import 'package:savings_app/widgets/account_form.dart';
 import 'package:savings_app/widgets/category_form.dart';
 import 'package:savings_app/widgets/fund_form.dart';
 
-class Settings extends StatelessWidget {
+class SettingsScreen extends StatelessWidget {
 
   List<Fund> funds;
   String authToken;
 
-  Settings({@required this.authToken, @required this.funds});
+  SettingsScreen({@required this.authToken, @required this.funds});
 
   @override
   Widget build(BuildContext context) {

@@ -8,7 +8,7 @@ import 'package:savings_app/models/fund.dart';
 import 'package:savings_app/screens/account_details_screen.dart';
 import 'package:savings_app/screens/fund_details_screen.dart';
 
-class MySummary extends StatefulWidget {
+class MySummaryScreen extends StatefulWidget {
   // Maybe unnecesary
   String token;
 
@@ -16,16 +16,16 @@ class MySummary extends StatefulWidget {
   List<Fund> funds;
 
 
-  MySummary(
+  MySummaryScreen(
       {@required this.token,
       @required this.accounts,
       @required this.funds}) ;
 
   @override
-  _MySummaryState createState() => _MySummaryState();
+  _MySummaryScreenState createState() => _MySummaryScreenState();
 }
 
-class _MySummaryState extends State<MySummary> {
+class _MySummaryScreenState extends State<MySummaryScreen> {
 
   void _refresh(BuildContext ctx){
     //TODO: I should update from the database and not from the server

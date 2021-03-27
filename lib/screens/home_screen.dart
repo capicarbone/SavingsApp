@@ -10,6 +10,7 @@ import 'package:savings_app/repositories/accounts_repository.dart';
 import 'package:savings_app/repositories/categories_repository.dart';
 import 'package:savings_app/repositories/funds_repository.dart';
 import 'package:savings_app/repositories/transactions_repository.dart';
+import 'package:savings_app/screens/reports_screen.dart';
 import 'package:savings_app/widgets/in_out_form.dart';
 import 'package:savings_app/widgets/my_summary.dart';
 import 'package:savings_app/widgets/new_transaction.dart';
@@ -83,18 +84,20 @@ class _HomeScreenState extends State<HomeScreen> {
           return IndexedStack(
             index: _selectedPageIndex,
             children: [
-              MySummary(
+              MySummaryScreen(
                   token: widget.authToken,
                   accounts: state.accounts,
                 funds: state.funds,
                   ),
-              NewTransaction(
+              NewTransactionScreen(
                 categories: state.categories,
                 funds: state.funds,
                 accounts: state.accounts,
                 authToken: widget.authToken,
               ),
-              Settings(funds: state.funds, authToken: widget.authToken,)
+              ReportsScreen(
+              ),
+              SettingsScreen(funds: state.funds, authToken: widget.authToken,)
             ],
           );
         }
@@ -141,11 +144,15 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedPageIndex,
         onTap: _onTabSelected,
-        items: [
+        selectedItemColor: Theme.of(context).primaryColor,
+        unselectedItemColor: Colors.grey,
+        items: const [
           BottomNavigationBarItem(
               icon: Icon(Icons.dashboard), title: Text("Dashboard")),
           BottomNavigationBarItem(
               icon: Icon(Icons.add), title: Text("New Transaction")),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.score), title: Text("Reports")),
           BottomNavigationBarItem(
               icon: Icon(Icons.settings), title: Text("Settings"))
         ],

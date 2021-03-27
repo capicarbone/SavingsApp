@@ -8,13 +8,13 @@ import 'package:savings_app/widgets/in_out_form.dart';
 import 'package:savings_app/widgets/nested_tabs/nested_tab_bar.dart';
 import 'package:savings_app/widgets/nested_tabs/tab.dart';
 
-class NewTransaction extends StatefulWidget {
+class NewTransactionScreen extends StatefulWidget {
   List<Fund> funds;
   List<Account> accounts;
   List<Category> categories;
   String authToken;
 
-  NewTransaction(
+  NewTransactionScreen(
       {@required this.categories,
       @required this.funds,
       @required this.accounts,
@@ -23,10 +23,10 @@ class NewTransaction extends StatefulWidget {
 
 
   @override
-  _NewTransactionState createState() => _NewTransactionState();
+  _NewTransactionScreenState createState() => _NewTransactionScreenState();
 }
 
-class _NewTransactionState extends State<NewTransaction> {
+class _NewTransactionScreenState extends State<NewTransactionScreen> {
   int _selectedTab = 0;
 
   @override
