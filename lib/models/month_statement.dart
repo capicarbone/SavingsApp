@@ -1,5 +1,3 @@
-
-
 class AccountMonthStatement {
   final String accountId;
   double income;
@@ -32,4 +30,23 @@ class MonthStatement {
 
   MonthStatement(
       this.year, this.month, this.accounts, this.funds, this.categories);
+
+  factory MonthStatement.fromMap(Map<String, dynamic> map) {
+    var accountsChanges = (map['accounts'] as List)
+        .map((e) =>
+            AccountMonthStatement(e['account_id'], e['income'], e['expense']))
+        .toList();
+
+    var fundChanges = (map['funds'] as List)
+        .map((e) =>
+            FundMonthStatement(e['fund_id'], e['income'], e['expense']))
+        .toList();
+
+    var categorychanges = (map['categories'] as List)
+        .map((e) => CategoryMonthStatement(e['category_id'], e['change']))
+        .toList();
+
+    return MonthStatement(map['year'], map['month'], accountsChanges,
+        fundChanges, categorychanges);
+  }
 }
