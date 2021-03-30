@@ -12,7 +12,7 @@ class MonthStatementsRepository extends WebRepository {
   String get _resourceUrl => getHost() + resourceUri;
 
   // TODO: add month and year as parameters
-  Future<List<MonthStatement>> fetch([int page = 0]) async {
+  Future<List<PeriodStatement>> fetch([int page = 0]) async {
 
     var url = "$_resourceUrl?page=$page";
 
@@ -25,8 +25,8 @@ class MonthStatementsRepository extends WebRepository {
       LinkedHashMap<String, dynamic> parsedResponse =
           json.decode(response.body);
 
-      List<MonthStatement> statements = (parsedResponse['_items'] as List<dynamic>)
-          .map((e) => MonthStatement.fromMap(e))
+      List<PeriodStatement> statements = (parsedResponse['_items'] as List<dynamic>)
+          .map((e) => PeriodStatement.fromMap(e))
           .toList();
 
       return statements;

@@ -7,7 +7,7 @@ class InitialState extends ReportsState {}
 
 class PageLoaded extends ReportsState {
   final int pageLoaded;
-  final List<MonthStatement> monthStatements;
+  final List<PeriodStatement> monthStatements;
 
   PageLoaded(this.pageLoaded, this.monthStatements);
 }

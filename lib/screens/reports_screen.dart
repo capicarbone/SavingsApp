@@ -12,6 +12,9 @@ class ReportsScreen extends StatelessWidget {
       child: BlocConsumer<ReportsBloc, ReportsState>(
         listener: (context, state) {
         },
+        buildWhen: (context, state){
+          return !(state is PageLoadFailed);
+        },
         builder: (context, state){
 
           if (state is InitialState){

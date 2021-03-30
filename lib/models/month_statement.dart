@@ -1,52 +1,125 @@
-class AccountMonthStatement {
+class AccountChange {
   final String accountId;
   double income;
   double expense;
 
-  AccountMonthStatement(this.accountId, this.income, this.expense);
+  AccountChange(this.accountId, this.income, this.expense);
 }
 
-class CategoryMonthStatement {
+class CategoryChange {
   final String categoryId;
   double change;
 
-  CategoryMonthStatement(this.categoryId, this.change);
+  CategoryChange(this.categoryId, this.change);
 }
 
-class FundMonthStatement {
+class FundChange {
   final String fundId;
   double income;
   double expense;
 
-  FundMonthStatement(this.fundId, this.income, this.expense);
+  FundChange(this.fundId, this.income, this.expense);
 }
 
-class MonthStatement {
+class PeriodStatement {
   final int year;
   final int month;
-  final List<AccountMonthStatement> accounts;
-  final List<FundMonthStatement> funds;
-  final List<CategoryMonthStatement> categories;
+  final List<AccountChange> accounts;
+  final List<FundChange> funds;
+  final List<CategoryChange> categories;
 
-  MonthStatement(
+  PeriodStatement(
       this.year, this.month, this.accounts, this.funds, this.categories);
 
-  factory MonthStatement.fromMap(Map<String, dynamic> map) {
+  factory PeriodStatement.fromMap(Map<String, dynamic> map) {
     var accountsChanges = (map['accounts'] as List)
-        .map((e) =>
-            AccountMonthStatement(e['account_id'], e['income'], e['expense']))
+        .map((e) => AccountChange(e['account_id'], e['income'], e['expense']))
         .toList();
 
     var fundChanges = (map['funds'] as List)
-        .map((e) =>
-            FundMonthStatement(e['fund_id'], e['income'], e['expense']))
+        .map((e) => FundChange(e['fund_id'], e['income'], e['expense']))
         .toList();
 
     var categorychanges = (map['categories'] as List)
-        .map((e) => CategoryMonthStatement(e['category_id'], e['change']))
+        .map((e) => CategoryChange(e['category_id'], e['change']))
         .toList();
 
-    return MonthStatement(map['year'], map['month'], accountsChanges,
+    return PeriodStatement(map['year'], map['month'], accountsChanges,
         fundChanges, categorychanges);
+  }
+
+  factory PeriodStatement.computeYear(
+      int year, List<PeriodStatement> statements) {
+    final accountsChanges = <AccountChange>[];
+    final fundsChanges = <FundChange>[];
+    final categoriesChanges = <CategoryChange>[];
+
+    var accounts = Set.from(statements
+        .map((e) => e.accounts.map((e) => e.accountId).toList())
+        .expand((element) => element));
+
+    var funds = Set.from(statements
+        .map((e) => e.funds.map((e) => e.fundId).toList())
+        .expand((element) => element));
+
+    var categories = Set.from(statements
+        .map((e) => e.categories.map((e) => e.categoryId).toList())
+        .expand((element) => element));
+
+    accounts.forEach((accountId) {
+      final accountChange = AccountChange(accountId, 0, 0);
+      statements.forEach((statement) {
+        var change = statement.getAccountChange(accountId);
+        if (change != null) {
+          accountChange.expense += change.expense;
+          accountChange.income += change.income;
+        }
+      });
+
+      accountsChanges.add(accountChange);
+    });
+
+    funds.forEach((fundId) {
+      final fundChange = FundChange(fundId, 0, 0);
+      statements.forEach((statement) {
+        var change = statement.getFundChange(fundId);
+        if (change != null) {
+          fundChange.expense += change.expense;
+          fundChange.income += change.income;
+        }
+      });
+
+      fundsChanges.add(fundChange);
+    });
+
+    categories.forEach((categoryId) {
+      final categoryChange = CategoryChange(categoryId, 0);
+      statements.forEach((statement) {
+        var change = statement.getCategoryChange(categoryId);
+        if (change != null) {
+          categoryChange.change += change.change;
+        }
+      });
+
+      categoriesChanges.add(categoryChange);
+    });
+
+    return PeriodStatement(
+        year, null, accountsChanges, fundsChanges, categoriesChanges);
+  }
+
+  AccountChange getAccountChange(String id) {
+    return accounts.firstWhere((element) => element.accountId == id,
+        orElse: () => null);
+  }
+
+  FundChange getFundChange(String id) {
+    return funds.firstWhere((element) => element.fundId == id,
+        orElse: () => null);
+  }
+
+  CategoryChange getCategoryChange(String id) {
+    return categories.firstWhere((element) => element.categoryId == id,
+        orElse: () => null);
   }
 }
