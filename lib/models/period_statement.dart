@@ -48,6 +48,7 @@ class PeriodStatement {
         fundChanges, categorychanges);
   }
 
+
   factory PeriodStatement.computeYear(
       int year, List<PeriodStatement> statements) {
     final accountsChanges = <AccountChange>[];
