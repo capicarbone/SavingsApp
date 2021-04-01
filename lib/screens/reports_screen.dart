@@ -69,30 +69,22 @@ class _PeriodStatementItem extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
-                _label.toUpperCase(),
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
               SizedBox(
                 height: 8,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [_ValueLabel("Income"), Text("\$${statement.totalIncome.toStringAsFixed(2)}")],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [_ValueLabel("Expenses"), Text("\$${statement.totalExpense.toStringAsFixed(2)}")],
+                  Text(
+                    _label.toUpperCase(),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _ValueLabel("Ahorro"),
+                      _ValueLabel("Saving"),
                       Row(
                         children: [
                           Text(
@@ -105,16 +97,16 @@ class _PeriodStatementItem extends StatelessWidget {
                     ],
                   )
                 ],
+              ),
+              Row(
+                children: [
+                  Expanded(child: Container(color: Colors.red, height: 4,), flex: 100 - statement.savingsRatio.round(),),
+                  Expanded(child: Container(color: Colors.green, height: 4,), flex: statement.savingsRatio.round(),),
+                ],
               )
             ],
           ),
         ),
-        SizedBox(
-          height: 1,
-          child: Container(
-            color: Colors.grey,
-          ),
-        )
       ],
     );
   }
