@@ -31,6 +31,8 @@ class PeriodStatement {
   PeriodStatement(
       this.year, this.month, this.accounts, this.funds, this.categories);
 
+  bool get isYear => month == null;
+
   factory PeriodStatement.fromMap(Map<String, dynamic> map) {
     var accountsChanges = (map['accounts'] as List)
         .map((e) => AccountChange(e['account_id'], e['income'], e['expense']))
@@ -122,5 +124,16 @@ class PeriodStatement {
   CategoryChange getCategoryChange(String id) {
     return categories.firstWhere((element) => element.categoryId == id,
         orElse: () => null);
+  }
+
+  double get totalIncome => accounts.fold(0, (value, element) => value + element.income);
+
+  double get totalExpense => accounts.fold(0, (value, element) => value + element.expense);
+
+  double get savingsRatio {
+    var income = this.totalIncome;
+    var expense = this.totalExpense;
+
+    return ((income + expense) / income)*100;
   }
 }

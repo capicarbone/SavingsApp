@@ -2,7 +2,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:savings_app/blocs/reports/reports_events.dart';
 import 'package:savings_app/blocs/reports/reports_states.dart';
-import 'package:savings_app/models/month_statement.dart';
+import 'package:savings_app/models/period_statement.dart';
 import 'package:savings_app/repositories/month_statements_repository.dart';
 import 'package:savings_app/repositories/user_repository.dart';
 

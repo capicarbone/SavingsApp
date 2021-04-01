@@ -1,7 +1,7 @@
 import 'dart:collection';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:savings_app/models/month_statement.dart';
+import 'package:savings_app/models/period_statement.dart';
 import 'package:savings_app/repositories/web_repository.dart';
 
 class MonthStatementsRepository extends WebRepository {

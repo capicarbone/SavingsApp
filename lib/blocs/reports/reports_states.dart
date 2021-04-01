@@ -1,5 +1,5 @@
 
-import 'package:savings_app/models/month_statement.dart';
+import 'package:savings_app/models/period_statement.dart';
 
 class ReportsState {}
 
