@@ -5,6 +5,7 @@ import 'package:savings_app/blocs/reports/reports_bloc.dart';
 import 'package:savings_app/blocs/reports/reports_events.dart';
 import 'package:savings_app/blocs/reports/reports_states.dart';
 import 'package:savings_app/models/period_statement.dart';
+import 'package:savings_app/screens/report_screen.dart';
 
 class ReportsScreen extends StatelessWidget {
   @override
@@ -62,48 +63,51 @@ class _PeriodStatementItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: (statement.isYear) ? Colors.black12 : Colors.transparent,
-      padding: EdgeInsets.all(12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          SizedBox(
-            height: 8,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                _label.toUpperCase(),
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
+    return GestureDetector(
+      onTap: () => Navigator.of(context).pushNamed(ReportScreen.routeName, arguments: {'statement': statement}),
+      child: Container(
+        color: (statement.isYear) ? Colors.black12 : Colors.transparent,
+        padding: EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            SizedBox(
+              height: 8,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  _label.toUpperCase(),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _ValueLabel("Saving"),
-                  Row(
-                    children: [
-                      Text(
-                        statement.savingsRatio.round().toString(),
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      Text("%")
-                    ],
-                  )
-                ],
-              )
-            ],
-          ),
-          Row(
-            children: [
-              Expanded(child: Container(color: Colors.red, height: 4,), flex: 100 - statement.savingsRatio.round(),),
-              Expanded(child: Container(color: Colors.green, height: 4,), flex: statement.savingsRatio.round(),),
-            ],
-          )
-        ],
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _ValueLabel("Saving"),
+                    Row(
+                      children: [
+                        Text(
+                          statement.savingsRatio.round().toString(),
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        Text("%")
+                      ],
+                    )
+                  ],
+                )
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(child: Container(color: Colors.red, height: 4,), flex: 100 - statement.savingsRatio.round(),),
+                Expanded(child: Container(color: Colors.green, height: 4,), flex: statement.savingsRatio.round(),),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

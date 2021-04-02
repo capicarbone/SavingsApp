@@ -104,6 +104,10 @@ class CategoriesRepository extends WebRepository{
     return [ for (var element in _box.values ) element ];
   }
 
+  Category restoreById(String id){
+    return restore().firstWhere((element) => element.id == id, orElse: () => null);
+  }
+
   bool isLocallyEmpty() {
     return _box.isEmpty;
   }

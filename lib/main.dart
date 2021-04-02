@@ -7,6 +7,7 @@ import 'package:savings_app/models/account.dart';
 import 'package:savings_app/models/category.dart';
 import 'package:savings_app/models/fund.dart';
 import 'package:savings_app/repositories/user_repository.dart';
+import 'package:savings_app/screens/report_screen.dart';
 import 'package:savings_app/screens/account_details_screen.dart';
 import 'package:savings_app/screens/fund_details_screen.dart';
 import 'package:savings_app/screens/home_screen.dart';
@@ -90,7 +91,8 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         AccountDetailsScreen.routeName: (context) => AccountDetailsScreen(),
-        FundDetailsScreen.routeName: (context) => FundDetailsScreen()
+        FundDetailsScreen.routeName: (context) => FundDetailsScreen(),
+        ReportScreen.routeName: (context) => ReportScreen()
       },
     );
   }
