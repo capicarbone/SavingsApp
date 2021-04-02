@@ -55,59 +55,56 @@ class _StatementsList extends StatelessWidget {
 class _PeriodStatementItem extends StatelessWidget {
   PeriodStatement statement;
 
+
   _PeriodStatementItem({this.statement});
 
   String get _label => (statement.isYear) ? statement.year.toString() : DateFormat.MMMM().format(DateTime(1, statement.month));
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Padding(
-          padding: EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+    return Container(
+      color: (statement.isYear) ? Colors.black12 : Colors.transparent,
+      padding: EdgeInsets.all(12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          SizedBox(
+            height: 8,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SizedBox(
-                height: 8,
+              Text(
+                _label.toUpperCase(),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    _label.toUpperCase(),
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  _ValueLabel("Saving"),
+                  Row(
                     children: [
-                      _ValueLabel("Saving"),
-                      Row(
-                        children: [
-                          Text(
-                            statement.savingsRatio.round().toString(),
-                            style: TextStyle(fontSize: 20),
-                          ),
-                          Text("%")
-                        ],
-                      )
+                      Text(
+                        statement.savingsRatio.round().toString(),
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      Text("%")
                     ],
                   )
-                ],
-              ),
-              Row(
-                children: [
-                  Expanded(child: Container(color: Colors.red, height: 4,), flex: 100 - statement.savingsRatio.round(),),
-                  Expanded(child: Container(color: Colors.green, height: 4,), flex: statement.savingsRatio.round(),),
                 ],
               )
             ],
           ),
-        ),
-      ],
+          Row(
+            children: [
+              Expanded(child: Container(color: Colors.red, height: 4,), flex: 100 - statement.savingsRatio.round(),),
+              Expanded(child: Container(color: Colors.green, height: 4,), flex: statement.savingsRatio.round(),),
+            ],
+          )
+        ],
+      ),
     );
   }
 }
