@@ -75,9 +75,11 @@ class AccountsRepository extends WebRepository {
 
     await _box.put(account.id, account);
 
-
-
     return account;
+  }
+
+  Account restoreById(String id){
+    return restore().firstWhere((element) => element.id == id, orElse: () => null);
   }
 
   Account getAccountById(String accountId) {

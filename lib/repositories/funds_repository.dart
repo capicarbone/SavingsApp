@@ -104,6 +104,10 @@ class FundsRepository extends WebRepository{
     return _box.values.toList();
   }
 
+  Fund restoreById(String id) {
+    return restore().firstWhere((element) => element.id == id, orElse: () => null );
+  }
+
   Fund get(String id) {
     return _box.get(id);
   }

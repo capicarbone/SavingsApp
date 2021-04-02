@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:savings_app/models/period_statement.dart';
+import 'package:savings_app/repositories/accounts_repository.dart';
 import 'package:savings_app/repositories/categories_repository.dart';
+import 'package:savings_app/repositories/funds_repository.dart';
 import 'package:savings_app/widgets/currency_value.dart';
 
 class ReportScreen extends StatelessWidget {
@@ -26,11 +28,11 @@ class ReportScreen extends StatelessWidget {
                 text: "Categories",
               ),
               Tab(
-                text: "Accounts",
+                text: "Funds",
               ),
               Tab(
-                text: "Funds",
-              )
+                text: "Accounts",
+              ),
             ],
           ),
         ),
@@ -39,8 +41,12 @@ class ReportScreen extends StatelessWidget {
             _CategoriesReport(
               categoriesChanges: statement.categories,
             ),
-            _AccountsReports(),
-            _FundsReports()
+            _FundsReports(
+              fundsChanges: statement.funds,
+            ),
+            _AccountsReports(
+              accountsChanges: statement.accounts,
+            ),
           ],
         ),
       ),
@@ -76,24 +82,26 @@ class _CategoriesReport extends StatelessWidget {
 
     return ListView(
       children: [
-        ListTile(
-          title: Text(
-            "Incomes",
-            style: TextStyle(color: Theme.of(context).primaryColor),
+        if (incomeChanges.length > 0)
+          ListTile(
+            title: Text(
+              "Incomes",
+              style: TextStyle(color: Theme.of(context).primaryColor),
+            ),
           ),
-        ),
         ...incomeChanges
             .map((e) => ListTile(
                   title: Text(categoriesNames[e.categoryId]),
                   trailing: CurrencyValue(e.change, true),
                 ))
             .toList(),
-        ListTile(
-          title: Text(
-            "Expenses",
-            style: TextStyle(color: Theme.of(context).primaryColor),
+        if (expenseChanges.length > 0)
+          ListTile(
+            title: Text(
+              "Expenses",
+              style: TextStyle(color: Theme.of(context).primaryColor),
+            ),
           ),
-        ),
         ...expenseChanges
             .map((e) => ListTile(
                   title: Text(categoriesNames[e.categoryId]),
@@ -106,19 +114,71 @@ class _CategoriesReport extends StatelessWidget {
 }
 
 class _AccountsReports extends StatelessWidget {
+  List<AccountChange> accountsChanges;
+
+  _AccountsReports({this.accountsChanges});
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text("Accounts"),
+    var repository = AccountsRepository();
+
+    var accountsNames = {
+      for (var e in accountsChanges)
+        e.accountId: repository.restoreById(e.accountId).name
+    };
+
+    accountsChanges.sort((a, b) =>
+        accountsNames[a.accountId].compareTo(accountsNames[b.accountId]));
+
+    return ListView(
+      children: [
+        ...accountsChanges
+            .map((e) => ListTile(
+                  title: Text(accountsNames[e.accountId]),
+                  trailing: CurrencyValue(e.income - e.expense),
+                ))
+            .toList()
+      ],
     );
   }
 }
 
 class _FundsReports extends StatelessWidget {
+  List<FundChange> fundsChanges;
+
+  _FundsReports({this.fundsChanges});
+
   @override
   Widget build(BuildContext context) {
+    var repository = FundsRepository();
+    var fundsNames = {
+      for (var e in fundsChanges)
+        e.fundId: repository.restoreById(e.fundId).name
+    };
+
+    fundsChanges
+        .sort((a, b) => fundsNames[a.fundId].compareTo(fundsNames[b.fundId]));
+
     return Container(
-      child: Text("Funds"),
+      child: ListView(
+        children: [
+          SizedBox(
+            height: 18,
+          ),
+          ...fundsChanges
+              .map((e) => ListTile(
+                    title: Text(fundsNames[e.fundId]),
+                    trailing: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CurrencyValue(e.income - e.expense, true),
+                      ],
+                    ),
+                  ))
+              .toList(),
+        ],
+      ),
     );
   }
 }
