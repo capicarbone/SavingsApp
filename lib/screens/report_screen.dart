@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:savings_app/models/period_statement.dart';
 import 'package:savings_app/repositories/accounts_repository.dart';
 import 'package:savings_app/repositories/categories_repository.dart';
@@ -10,6 +11,8 @@ class ReportScreen extends StatelessWidget {
 
   PeriodStatement statement;
 
+
+
   @override
   Widget build(BuildContext context) {
     var args =
@@ -17,23 +20,35 @@ class ReportScreen extends StatelessWidget {
 
     PeriodStatement statement = args['statement'];
 
+    var title = (statement.isYear) ? statement.year.toString() : DateFormat.MMMM().format(DateTime(1, statement.month));
+
     return DefaultTabController(
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Report"),
-          bottom: TabBar(
-            tabs: [
-              Tab(
-                text: "Categories",
-              ),
-              Tab(
-                text: "Funds",
-              ),
-              Tab(
-                text: "Accounts",
-              ),
-            ],
+          title: Text(title),
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(112),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                _StatementSummary(statement: statement,),
+                SizedBox(height: 12,),
+                TabBar(
+                  tabs: [
+                    Tab(
+                      text: "Categories",
+                    ),
+                    Tab(
+                      text: "Funds",
+                    ),
+                    Tab(
+                      text: "Accounts",
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
         body: TabBarView(
@@ -53,6 +68,50 @@ class ReportScreen extends StatelessWidget {
     );
   }
 }
+
+class _StatementSummary extends StatelessWidget {
+
+  PeriodStatement statement;
+
+  _StatementSummary({this.statement});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Incomes", style: TextStyle(color: Colors.white),),
+              CurrencyValue(statement.totalIncome, asChange: true,
+                style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),)
+            ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Expenses", style: TextStyle(color: Colors.white),),
+              CurrencyValue(statement.totalExpense, asChange: true,
+                style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),)
+            ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Savings", style: TextStyle(color: Colors.white),),
+              CurrencyValue(statement.totalIncome + statement.totalExpense, asChange: true,
+                style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),)
+            ],
+          )
+        ],
+      ),
+    );
+  }
+}
+
 
 class _CategoriesReport extends StatelessWidget {
   List<CategoryChange> categoriesChanges;
@@ -92,7 +151,7 @@ class _CategoriesReport extends StatelessWidget {
         ...incomeChanges
             .map((e) => ListTile(
                   title: Text(categoriesNames[e.categoryId]),
-                  trailing: CurrencyValue(e.change, true),
+                  trailing: CurrencyValue(e.change, asChange: true),
                 ))
             .toList(),
         if (expenseChanges.length > 0)
@@ -105,7 +164,7 @@ class _CategoriesReport extends StatelessWidget {
         ...expenseChanges
             .map((e) => ListTile(
                   title: Text(categoriesNames[e.categoryId]),
-                  trailing: CurrencyValue(e.change, true),
+                  trailing: CurrencyValue(e.change, asChange: true),
                 ))
             .toList(),
       ],
@@ -172,7 +231,7 @@ class _FundsReports extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        CurrencyValue(e.income - e.expense, true),
+                        CurrencyValue(e.income - e.expense, asChange: true),
                       ],
                     ),
                   ))
