@@ -104,6 +104,14 @@ class CategoriesRepository extends WebRepository{
     return [ for (var element in _box.values ) element ];
   }
 
+  List<Category> restoreIncomes(){
+    return restore().where((element) => element.isIncome).toList();
+  }
+
+  List<Category> restoreExpenses(){
+    return restore().where((element) => !element.isIncome).toList();
+  }
+
   Category restoreById(String id){
     return restore().firstWhere((element) => element.id == id, orElse: () => null);
   }

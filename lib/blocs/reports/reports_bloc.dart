@@ -8,6 +8,7 @@ import 'package:savings_app/repositories/user_repository.dart';
 
 class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
   int nextPage = 0;
+  List<PeriodStatement> allStatements = [];
 
   ReportsBloc() : super(InitialState());
 
@@ -26,7 +27,8 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
         
         _prepareStatements(statements);
 
-        yield PageLoaded(nextPage, statements);
+        allStatements.addAll(statements);
+        yield PageLoaded(nextPage, allStatements);
         nextPage++;
       }catch (ex){
         yield PageLoadFailed(ex.toString());

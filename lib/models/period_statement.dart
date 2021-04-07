@@ -130,6 +130,8 @@ class PeriodStatement {
 
   double get totalExpense => accounts.fold(0, (value, element) => value + element.expense);
 
+  double get change => totalIncome + totalExpense;
+
   double get savingsRatio {
     var income = this.totalIncome;
     var expense = this.totalExpense;
