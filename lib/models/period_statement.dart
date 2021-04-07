@@ -134,6 +134,8 @@ class PeriodStatement {
     var income = this.totalIncome;
     var expense = this.totalExpense;
 
+    if (income == 0.0) return 0.0;
+
     return ((income + expense) / income)*100;
   }
 }

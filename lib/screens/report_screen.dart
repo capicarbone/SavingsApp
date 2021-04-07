@@ -194,7 +194,7 @@ class _AccountsReports extends StatelessWidget {
         ...accountsChanges
             .map((e) => ListTile(
                   title: Text(accountsNames[e.accountId]),
-                  trailing: CurrencyValue(e.income - e.expense),
+                  trailing: CurrencyValue(e.income + e.expense, asChange: true,),
                 ))
             .toList()
       ],
