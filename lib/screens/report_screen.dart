@@ -164,8 +164,8 @@ class _CategoriesReport extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    var incomeCategories = repository.restoreIncomes();
-    var expenseCategories = repository.restoreExpenses();
+    var incomeCategories = repository.restoreIncomes()..sort((a,b) => a.name.compareTo(b.name));
+    var expenseCategories = repository.restoreExpenses()..sort((a,b) => a.name.compareTo(b.name));
 
     return ListView(
       children: [
@@ -195,7 +195,7 @@ class _AccountsReports extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var accounts = AccountsRepository().restore();
+    var accounts = AccountsRepository().sortedRestore();
     return ListView(
       children: [
         ...accounts.map((account) {
@@ -222,7 +222,7 @@ class _FundsReports extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var funds = FundsRepository().restore();
+    var funds = FundsRepository().sortedRestore();
 
     return Container(
       child: ListView(

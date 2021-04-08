@@ -88,6 +88,7 @@ class CategoriesRepository extends WebRepository{
       List<Category> categories = [];
 
       categories.addAll(objects.map((e) => Category.fromMap(e)));
+      categories.sort((a,b) => a.name.compareTo(b.name));
 
       await _box.clear();
       await _box.putAll( { for (var cat in categories) cat.id: cat} );

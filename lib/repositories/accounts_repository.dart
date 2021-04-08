@@ -67,6 +67,10 @@ class AccountsRepository extends WebRepository {
     return [ for (var element in _box.values ) element ];
   }
 
+  List<Account> sortedRestore() {
+    return restore()..sort((a,b) => a.name.compareTo(b.name));
+  }
+
   Future<Account> updateBalance(String accountId, double change) async{
     var account = _box.get(accountId);
 

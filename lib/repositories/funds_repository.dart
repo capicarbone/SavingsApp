@@ -101,7 +101,11 @@ class FundsRepository extends WebRepository{
   }
 
   List<Fund> restore() {
-    return _box.values.toList()..sort((a,b) => a.name.compareTo(b.name));
+    return _box.values.toList();
+  }
+
+  List<Fund> sortedRestore() {
+    return restore()..sort((a,b) => a.name.compareTo(b.name));
   }
 
   Fund restoreById(String id) {
