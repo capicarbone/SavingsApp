@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:savings_app/blocs/reports/reports_events.dart';
 import 'package:savings_app/blocs/reports/reports_states.dart';
@@ -15,7 +17,15 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
   @override
   Stream<ReportsState> mapEventToState(ReportsEvent event) async* {
 
-    if (event is LoadNextPage) {
+
+    if (event is ReloadData){
+      nextPage = 0;
+      allStatements.clear();
+    }
+
+    if (event is LoadNextPage || event is ReloadData) {
+
+      yield GettingPage();
 
       var authToken = UserRepository().restoreToken();
 

@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:savings_app/blocs/reports/reports_bloc.dart';
 import 'package:savings_app/blocs/reports/reports_events.dart';
 import 'package:savings_app/blocs/reports/reports_states.dart';
+import 'package:savings_app/blocs/settings_syncer/settings_syncer_bloc.dart';
+import 'package:savings_app/blocs/settings_syncer/settings_syncer_states.dart';
 import 'package:savings_app/models/period_statement.dart';
 import 'package:savings_app/screens/report_screen.dart';
 
@@ -12,24 +14,44 @@ class ReportsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => ReportsBloc(),
-      child: BlocConsumer<ReportsBloc, ReportsState>(
-        listener: (context, state) {},
-        buildWhen: (context, state) {
-          return !(state is PageLoadFailed);
-        },
-        builder: (context, state) {
-          if (state is InitialState) {
-            BlocProvider.of<ReportsBloc>(context).add(LoadNextPage());
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<SettingsSyncerBloc, SettingsSyncState>(
+            listener: (context, state) {
+              BlocProvider.of<ReportsBloc>(context).add(ReloadData());
+            },
+            listenWhen: (context, state) =>
+                state is DataUpdated || state is SettingsLoaded,
+          ),
+          BlocListener<ReportsBloc, ReportsState>(
+            listener: (context, state) {
+              // TODO: Notify error
+            },
+            listenWhen: (context, state) => state is PageLoadFailed,
+          )
+        ],
+        child: BlocBuilder<ReportsBloc, ReportsState>(
+          buildWhen: (context, state) {
+            return !(state is PageLoadFailed);
+          },
+          builder: (context, state) {
+            if (state is PageLoaded) {
+              return _StatementsList(statements: state.monthStatements);
+            }
 
-          if (state is PageLoaded) {
-            return _StatementsList(statements: state.monthStatements);
-          }
-        },
+            return _Loading();
+          },
+        ),
       ),
+    );
+  }
+}
+
+class _Loading extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: CircularProgressIndicator(),
     );
   }
 }
@@ -56,15 +78,17 @@ class _StatementsList extends StatelessWidget {
 class _PeriodStatementItem extends StatelessWidget {
   PeriodStatement statement;
 
-
   _PeriodStatementItem({this.statement});
 
-  String get _label => (statement.isYear) ? statement.year.toString() : DateFormat.MMMM().format(DateTime(1, statement.month));
+  String get _label => (statement.isYear)
+      ? statement.year.toString()
+      : DateFormat.MMMM().format(DateTime(1, statement.month));
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.of(context).pushNamed(ReportScreen.routeName, arguments: {'statement': statement}),
+      onTap: () => Navigator.of(context).pushNamed(ReportScreen.routeName,
+          arguments: {'statement': statement}),
       child: Container(
         color: (statement.isYear) ? Colors.black12 : Colors.transparent,
         padding: EdgeInsets.all(12),
@@ -102,8 +126,20 @@ class _PeriodStatementItem extends StatelessWidget {
             ),
             Row(
               children: [
-                Expanded(child: Container(color: Colors.red, height: 4,), flex: 100 - statement.savingsRatio.round(),),
-                Expanded(child: Container(color: Colors.green, height: 4,), flex: statement.savingsRatio.round(),),
+                Expanded(
+                  child: Container(
+                    color: Colors.red,
+                    height: 4,
+                  ),
+                  flex: 100 - statement.savingsRatio.round(),
+                ),
+                Expanded(
+                  child: Container(
+                    color: Colors.green,
+                    height: 4,
+                  ),
+                  flex: statement.savingsRatio.round(),
+                ),
               ],
             )
           ],

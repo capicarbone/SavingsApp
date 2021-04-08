@@ -5,6 +5,8 @@ class ReportsState {}
 
 class InitialState extends ReportsState {}
 
+class GettingPage extends ReportsState {}
+
 class PageLoaded extends ReportsState {
   final int pageLoaded;
   final List<PeriodStatement> monthStatements;
