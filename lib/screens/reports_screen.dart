@@ -21,7 +21,7 @@ class ReportsScreen extends StatelessWidget {
           if (state is InitialState) {
             BlocProvider.of<ReportsBloc>(context).add(LoadNextPage());
             return Center(
-              child: Text("starting"),
+              child: CircularProgressIndicator(),
             );
           }
 
