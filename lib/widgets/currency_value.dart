@@ -15,13 +15,14 @@ class CurrencyValue extends StatelessWidget {
     }
 
     if (value > 0){
-      return "+";
+      return asChange ? "+" : "";
     }
 
     return "";
   }
 
   Color get _color {
+
     if (value > 0) {
       return Colors.green;
     }
@@ -54,6 +55,6 @@ class CurrencyValue extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text("${(asChange) ? _valueSymbol : "" } \$${_absoluteValue.toStringAsFixed(2)}", style: _textStyle, );
+    return Text("${_valueSymbol} \$${_absoluteValue.toStringAsFixed(2)}", style: _textStyle, );
   }
 }

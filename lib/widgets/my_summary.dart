@@ -7,6 +7,7 @@ import 'package:savings_app/models/account.dart';
 import 'package:savings_app/models/fund.dart';
 import 'package:savings_app/screens/account_details_screen.dart';
 import 'package:savings_app/screens/fund_details_screen.dart';
+import 'package:savings_app/widgets/currency_value.dart';
 
 class MySummaryScreen extends StatefulWidget {
   // Maybe unnecesary
@@ -54,9 +55,11 @@ class _MySummaryScreenState extends State<MySummaryScreen> {
                     child: ListTile(
                           title: Text(
                             e.name,
-                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          trailing: Text( (e.balance != null) ? '\$${e.balance.toStringAsFixed(2)}' : "\$0"),
+                          subtitle: Text("Receiving ${(e.percetageAssignment*100).toStringAsFixed(0)}% of your income.", style: TextStyle(fontSize: 12),),
+
+                          trailing: CurrencyValue(e.balance, style: TextStyle(fontSize: 16),),
+
                         ),
                   ))
                   .toList(),
@@ -93,9 +96,8 @@ class _MySummaryScreenState extends State<MySummaryScreen> {
                         child: ListTile(
                           title: Text(
                             e.name,
-                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          trailing: Text('\$${e.balance.toStringAsFixed(2)}'),
+                          trailing: CurrencyValue(e.balance, style: TextStyle(color: e.balance < 0 ? Colors.red : Colors.black, fontSize: 16),),
                         ),
                       ))
                   .toList(),
@@ -117,8 +119,9 @@ class _MySummaryScreenState extends State<MySummaryScreen> {
                   SizedBox(
                     height: 18,
                   ),
-                  _accountsSectionWidget(context, widget.accounts),
                   _fundsSectionWidget(widget.funds),
+                  SizedBox(height: 18,),
+                  _accountsSectionWidget(context, widget.accounts),
                 ],
               ),
             ))
