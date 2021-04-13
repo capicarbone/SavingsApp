@@ -123,7 +123,7 @@ class _InOutFormState extends State<InOutForm> {
             ));
 
             var syncerBloc = BlocProvider.of<SettingsSyncerBloc>(context);
-            syncerBloc.add(UpdateData());
+            syncerBloc.add(ReloadLocalData(accounts: true, funds: true));
           }
         },
         child:

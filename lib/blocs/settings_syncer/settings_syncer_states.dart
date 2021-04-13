@@ -45,8 +45,8 @@ class SettingsLoaded extends DataContainerState {
       : super(categories: categories, accounts: accounts, funds: funds);
 }
 
-class DataUpdated extends DataContainerState {
-  DataUpdated(
+class LocalDataUpdated extends DataContainerState {
+  LocalDataUpdated(
       {List<Category> categories, List<Account> accounts, List<Fund> funds})
       : super(categories: categories, accounts: accounts, funds: funds);
 }

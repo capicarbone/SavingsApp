@@ -58,7 +58,7 @@ class AccountForm extends StatelessWidget {
       ));
 
       BlocProvider.of<SettingsSyncerBloc>(context)
-          .add(UpdateData());
+          .add(ReloadLocalData());
     }
 
     if (state is FormSubmitFailedState) {

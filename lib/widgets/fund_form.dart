@@ -44,7 +44,7 @@ class FundForm extends StatelessWidget {
     ));
 
     var syncerBloc = BlocProvider.of<SettingsSyncerBloc>(context);
-    syncerBloc.add(UpdateData());
+    syncerBloc.add(ReloadLocalData());
 
     _clear();
   }

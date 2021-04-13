@@ -21,7 +21,7 @@ class ReportsScreen extends StatelessWidget {
               BlocProvider.of<ReportsBloc>(context).add(ReloadData());
             },
             listenWhen: (context, state) =>
-                state is DataUpdated || state is SettingsLoaded,
+                state is LocalDataUpdated || state is SettingsLoaded,
           ),
           BlocListener<ReportsBloc, ReportsState>(
             listener: (context, state) {

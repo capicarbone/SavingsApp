@@ -72,6 +72,7 @@ class _MySummaryScreenState extends State<MySummaryScreen> {
   Widget _accountsSectionWidget() {
 
     return BlocBuilder<SettingsSyncerBloc, SettingsSyncState>(
+      buildWhen: (_, state) => state is DataContainerState && state.accounts != null ,
         builder: (context, state) {
       var accounts = (state as DataContainerState).accounts;
       return Container(

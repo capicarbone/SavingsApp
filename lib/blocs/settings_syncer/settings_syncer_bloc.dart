@@ -26,15 +26,12 @@ class SettingsSyncerBloc extends Bloc<SettingsSyncerEvent, SettingsSyncState> {
     List<Account> accounts;
     List<Fund> funds;
 
-    if (event is UpdateData) {
-      categories = categoriesRepository.restore();
-      accounts = accountsRepository.restore();
-      funds = fundsRepository.restore();
+    if (event is ReloadLocalData) {
 
-      yield DataUpdated(
-          categories: categories,
-          accounts: accounts,
-          funds: funds
+      yield LocalDataUpdated(
+          categories: (event.categories) ? categoriesRepository.restore() : null,
+          accounts: (event.accounts) ? accountsRepository.restore() : null,
+          funds: (event.funds) ? fundsRepository.restore() : null
       );
     }
 
