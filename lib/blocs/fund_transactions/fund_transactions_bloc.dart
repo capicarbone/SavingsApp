@@ -1,4 +1,3 @@
-
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
@@ -11,9 +10,10 @@ import 'package:savings_app/repositories/accounts_repository.dart';
 import 'package:savings_app/repositories/categories_repository.dart';
 import 'package:savings_app/repositories/funds_repository.dart';
 import 'package:savings_app/repositories/transactions_repository.dart';
+import 'package:savings_app/repositories/user_repository.dart';
 
-class FundTransactionsBloc extends Bloc<FundTransactionsEvent, FundTransactionsState> {
-
+class FundTransactionsBloc
+    extends Bloc<FundTransactionsEvent, FundTransactionsState> {
   String fundId;
   String authToken;
   TransactionsRepository _transactionsRepository;
@@ -21,44 +21,42 @@ class FundTransactionsBloc extends Bloc<FundTransactionsEvent, FundTransactionsS
   AccountsRepository _accountsRepository;
   CategoriesRepository _categoriesRepository;
 
-  FundTransactionsBloc({@required this.fundId, @required this.authToken}) : super(FundTransactionsInitialState()) {
-     _fundsRepository = FundsRepository(authToken: authToken);
+  FundTransactionsBloc({@required this.fundId})
+      : super(FundTransactionsInitialState()) {
+    var authToken = UserRepository().restoreToken();
+    _fundsRepository = FundsRepository(authToken: authToken);
     _accountsRepository = AccountsRepository(authToken: authToken);
-    _transactionsRepository = TransactionsRepository(
-        authToken: authToken);
+    _transactionsRepository = TransactionsRepository(authToken: authToken);
     _categoriesRepository = CategoriesRepository(authToken: authToken);
   }
 
   @override
-  Stream<FundTransactionsState> mapEventToState(FundTransactionsEvent event) async* {
+  Stream<FundTransactionsState> mapEventToState(
+      FundTransactionsEvent event) async* {
     if (event is FundTransactionsLoadEvent) {
       yield FundTransactionsLoadingState();
 
       List<Transaction> transactions;
 
-      try{
-        transactions = await _transactionsRepository.fetchFundTransactions(fundId);
-
-      }catch(e, trace) {
+      try {
+        transactions =
+            await _transactionsRepository.fetchFundTransactions(fundId);
+      } catch (e, trace) {
         log(e.toString(), error: e, stackTrace: trace);
         yield FundTransactionsLoadingFailed();
       }
 
-      if (transactions != null){
+      if (transactions != null) {
         var accounts = _accountsRepository.restore();
         var funds = _fundsRepository.restore();
         var categories = _categoriesRepository.restore();
 
-
-        yield FundTransactionsUpdatedState(transactions: transactions,
-        fundsMap: {for (var fund in funds) fund.id : fund },
-        accountsMap: { for (var account in accounts) account.id: account },
-          categoriesMap: {  for (var cat in categories) cat.id : cat}
-        );
+        yield FundTransactionsUpdatedState(
+            transactions: transactions,
+            fundsMap: {for (var fund in funds) fund.id: fund},
+            accountsMap: {for (var account in accounts) account.id: account},
+            categoriesMap: {for (var cat in categories) cat.id: cat});
       }
-
-
     }
   }
-
 }

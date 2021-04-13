@@ -118,13 +118,11 @@ class FundDetailsScreen extends StatelessWidget {
     var args =
         ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
     Fund fund = args['fund'];
-    String authToken = args['authToken'];
 
     assert(fund != null);
-    assert(authToken != null);
 
     if (_bloc == null) {
-      _bloc = FundTransactionsBloc(fundId: fund.id, authToken: authToken);
+      _bloc = FundTransactionsBloc(fundId: fund.id);
     }
 
     return Scaffold(

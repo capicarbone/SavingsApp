@@ -59,9 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
           return IndexedStack(
             index: _selectedPageIndex,
             children: [
-              MySummaryScreen(
-                  token: widget.authToken
-                  ),
+              const MySummaryScreen(),
               NewTransactionScreen(
                 categories: state.categories,
                 funds: state.funds,

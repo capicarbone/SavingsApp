@@ -11,11 +11,9 @@ import 'package:savings_app/screens/fund_details_screen.dart';
 import 'package:savings_app/widgets/currency_value.dart';
 
 class MySummaryScreen extends StatefulWidget {
-  // Maybe unnecesary
-  String token;
 
-  MySummaryScreen(
-      {@required this.token}) ;
+
+  const MySummaryScreen() ;
 
   @override
   _MySummaryScreenState createState() => _MySummaryScreenState();
@@ -49,7 +47,7 @@ class _MySummaryScreenState extends State<MySummaryScreen> {
                     onTap: () {
                       Navigator.of(context)
                           .pushNamed(FundDetailsScreen.routeName,
-                          arguments: {'fund': e, 'authToken': widget.token});
+                          arguments: {'fund': e});
                     },
                     child: ListTile(
                       title: Text(
@@ -92,7 +90,7 @@ class _MySummaryScreenState extends State<MySummaryScreen> {
                 onTap: () {
                   Navigator.of(context)
                       .pushNamed(AccountDetailsScreen.routeName,
-                      arguments: {'account': e, 'authToken': widget.token})
+                      arguments: {'account': e})
                       .then((_) {
                     _refresh(context);
                   });

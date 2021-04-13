@@ -163,14 +163,12 @@ class AccountDetailsScreen extends StatelessWidget {
     var args =
         ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
     account = args['account'];
-    String authToken = args['authToken'];
 
-    assert(authToken != null);
     assert(account != null);
 
     if (_bloc == null){
       _bloc = AccountTransactionsBloc(
-          accountId: account.id, authToken: authToken);
+          accountId: account.id);
     }
 
     _bloc.add(AccountTransactionsLoad());
