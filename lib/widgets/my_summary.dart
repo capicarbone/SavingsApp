@@ -14,14 +14,8 @@ class MySummaryScreen extends StatefulWidget {
   // Maybe unnecesary
   String token;
 
-  List<Account> accounts;
-  List<Fund> funds;
-
-
   MySummaryScreen(
-      {@required this.token,
-      @required this.accounts,
-      @required this.funds}) ;
+      {@required this.token}) ;
 
   @override
   _MySummaryScreenState createState() => _MySummaryScreenState();

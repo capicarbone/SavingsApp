@@ -32,19 +32,12 @@ class DataContainerState extends SettingsSyncState {
 
   DataContainerState({this.categories, this.accounts, this.funds});
 
+
+
   @override
-  bool operator ==(Object other) {
-    if (other is DataContainerState){
-      var balance = accounts.fold(0, (previousValue, element) => previousValue + element.balance);
-      var otherBalance = other.accounts.fold(0, (previousValue, element) => previousValue + element.balance);
-
-      return balance == otherBalance;
-    }
-
-    return false;
-
-  }
+  List<Object> get props => [categories, accounts, funds];
 }
+
 
 class SettingsLoaded extends DataContainerState {
   SettingsLoaded(

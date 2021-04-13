@@ -60,9 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
             index: _selectedPageIndex,
             children: [
               MySummaryScreen(
-                  token: widget.authToken,
-                  accounts: state.accounts,
-                funds: state.funds,
+                  token: widget.authToken
                   ),
               NewTransactionScreen(
                 categories: state.categories,
