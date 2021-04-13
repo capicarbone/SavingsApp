@@ -64,7 +64,7 @@ class AccountsRepository extends WebRepository {
   }
 
   List<Account> restore() {
-    return [ for (var element in _box.values ) element ];
+    return [ for (var element in _box.values ) Account.copy(element) ];
   }
 
   List<Account> sortedRestore() {

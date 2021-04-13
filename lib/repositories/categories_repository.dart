@@ -102,7 +102,7 @@ class CategoriesRepository extends WebRepository{
   }
 
   List<Category> restore(){
-    return [ for (var element in _box.values ) element ];
+    return [ for (var element in _box.values ) Category.copy(element) ];
   }
 
   List<Category> restoreIncomes(){

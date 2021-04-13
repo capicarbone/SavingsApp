@@ -19,13 +19,19 @@ class Category {
   @HiveField(2)
   String kind;
 
+  get isIncome => kind == "income";
+
   Category({@required this.id, @required this.name,@required this.kind});
 
   factory Category.fromMap(Map<String, dynamic> map) {
     return Category(name: map['name'], id: map['id'], kind: map['kind']);
   }
 
-  get isIncome => kind == "income";
+  factory Category.copy(Category from){
+    return Category(id: from.id, name: from.name, kind: from.kind);
+  }
+
+
 
   @override
   String toString() {
@@ -37,4 +43,5 @@ class Category {
     var otherCat = other as Category;
     return id == otherCat.id;
   }
+
 }

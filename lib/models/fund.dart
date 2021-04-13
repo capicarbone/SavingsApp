@@ -42,4 +42,11 @@ class Fund {
         categories: (map['categories'] as List<dynamic>).map((e) =>  Category.fromMap(e)
         ).toList());
   }
+
+  factory Fund.copy(Fund from){
+    return Fund(id: from.id, name: from.name, description: from.description,
+    minimumLimit: from.minimumLimit, maximumLimit: from.maximumLimit,
+    percetageAssignment: from.percetageAssignment, balance: from.balance,
+    categories: [ for (var cat in from.categories) Category.copy(cat) ]);
+  }
 }

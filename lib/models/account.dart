@@ -22,4 +22,8 @@ class Account {
     balance: map['balance']);
   }
 
+  factory Account.copy(Account from) {
+    return Account(id: from.id, name: from.name, balance: from.balance);
+  }
+
 }
