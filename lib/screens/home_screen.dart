@@ -31,30 +31,6 @@ class _HomeScreenState extends State<HomeScreen> {
   CategoriesRepository _categoriesRepository;
   FundsRepository _fundsRepository;
   AccountsRepository _accountsRepository;
-  TransactionsRepository _transactionsRepository;
-  SettingsSyncerBloc _syncerBloc;
-
-  initState(){
-    super.initState();
-
-    /*
-    _categoriesRepository = CategoriesRepository(authToken: widget.authToken);
-    _fundsRepository = FundsRepository(authToken: widget.authToken);
-    _accountsRepository = AccountsRepository(authToken: widget.authToken);
-
-     */
-    _transactionsRepository = TransactionsRepository(
-        authToken: widget.authToken
-    );
-
-    /*
-
-    _syncerBloc = SettingsSyncerBloc(
-      categoriesRepository: _categoriesRepository,
-        accountsRepository: _accountsRepository,
-        fundsRepository: _fundsRepository);
-    */
-  }
 
   Widget _body() {
 
@@ -71,16 +47,15 @@ class _HomeScreenState extends State<HomeScreen> {
             fundsRepository: _fundsRepository);
       },
       child: BlocBuilder<SettingsSyncerBloc, SettingsSyncState>(
+        buildWhen: (context, state) => state is SettingsLoaded || state is InitialSync,
           builder: (context, state) {
-        // TODO: Improvable
-        if (state is SyncInitial)
+
+        if (state is InitialSync)
           BlocProvider.of<SettingsSyncerBloc>(context)
               .add(SettingsSyncerSyncRequested());
 
-        // TODO: Separate this sate from DateUpdate, in that way just updating UI
-        // which really requires to be updated.
         if (state is SettingsLoaded ) {
-          //var bloc = BlocProvider.of<SettingsSyncerBloc>(context);
+
           return IndexedStack(
             index: _selectedPageIndex,
             children: [

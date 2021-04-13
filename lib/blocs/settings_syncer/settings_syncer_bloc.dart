@@ -17,7 +17,7 @@ class SettingsSyncerBloc extends Bloc<SettingsSyncerEvent, SettingsSyncState> {
   SettingsSyncerBloc(
       {@required this.accountsRepository, @required this.fundsRepository,
       @required this.categoriesRepository})
-      : super(SyncInitial());
+      : super(InitialSync());
 
   @override
   Stream<SettingsSyncState> mapEventToState(SettingsSyncerEvent event) async* {
@@ -26,7 +26,7 @@ class SettingsSyncerBloc extends Bloc<SettingsSyncerEvent, SettingsSyncState> {
     List<Account> accounts;
     List<Fund> funds;
 
-    if (event is SettingsSyncerDataUpdated) {
+    if (event is UpdateData) {
       categories = categoriesRepository.restore();
       accounts = accountsRepository.restore();
       funds = fundsRepository.restore();
@@ -56,7 +56,7 @@ class SettingsSyncerBloc extends Bloc<SettingsSyncerEvent, SettingsSyncState> {
         accounts = accountsRepository.restore();
         funds = fundsRepository.restore();
 
-        yield SettingsLoaded(
+        yield SettingsLoaded( 
             categories: categories,
             accounts: accounts,
             funds: funds

@@ -1,23 +1,20 @@
-
 // State initital
 // State syncing (is initial or not)
 // settings updated
 // settings syncFailed
-
 import 'package:equatable/equatable.dart';
 import 'package:savings_app/models/account.dart';
 import 'package:savings_app/models/category.dart';
 import 'package:savings_app/models/fund.dart';
 
-abstract class SettingsSyncState extends Equatable{
+abstract class SettingsSyncState extends Equatable {
   const SettingsSyncState();
 
   @override
   List<Object> get props => [];
-
 }
 
-class SyncInitial extends SettingsSyncState {}
+class InitialSync extends SettingsSyncState {}
 
 class SyncingSettings extends SettingsSyncState {
   bool initial = true;
@@ -28,21 +25,37 @@ class SyncingSettings extends SettingsSyncState {
   List<Object> get props => [initial];
 }
 
-class SettingsLoaded extends  SettingsSyncState {
+class DataContainerState extends SettingsSyncState {
   List<Category> categories;
   List<Account> accounts;
   List<Fund> funds;
 
-  SettingsLoaded({this.categories, this.accounts, this.funds});
+  DataContainerState({this.categories, this.accounts, this.funds});
 
   @override
-  List<Object> get props => [categories, accounts, funds];
+  bool operator ==(Object other) {
+    if (other is DataContainerState){
+      var balance = accounts.fold(0, (previousValue, element) => previousValue + element.balance);
+      var otherBalance = other.accounts.fold(0, (previousValue, element) => previousValue + element.balance);
+
+      return balance == otherBalance;
+    }
+
+    return false;
+
+  }
 }
 
-class DataUpdated extends SettingsLoaded {
-  DataUpdated({List<Category> categories, List<Account> accounts, List<Fund> funds})
+class SettingsLoaded extends DataContainerState {
+  SettingsLoaded(
+      {List<Category> categories, List<Account> accounts, List<Fund> funds})
       : super(categories: categories, accounts: accounts, funds: funds);
+}
 
+class DataUpdated extends DataContainerState {
+  DataUpdated(
+      {List<Category> categories, List<Account> accounts, List<Fund> funds})
+      : super(categories: categories, accounts: accounts, funds: funds);
 }
 
 class SyncFailed extends SettingsSyncState {

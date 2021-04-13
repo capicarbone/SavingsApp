@@ -123,8 +123,7 @@ class _InOutFormState extends State<InOutForm> {
             ));
 
             var syncerBloc = BlocProvider.of<SettingsSyncerBloc>(context);
-            //syncerBloc.add(SettingsSyncerDataUpdated());
-            syncerBloc.add(SettingsSyncerSyncRequested());
+            syncerBloc.add(UpdateData());
           }
         },
         child:

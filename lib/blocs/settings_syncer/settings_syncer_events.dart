@@ -8,4 +8,4 @@ abstract class SettingsSyncerEvent extends Equatable {
 
 class SettingsSyncerSyncRequested extends SettingsSyncerEvent {}
 
-class SettingsSyncerDataUpdated extends SettingsSyncerEvent {}
+class UpdateData extends SettingsSyncerEvent {}
