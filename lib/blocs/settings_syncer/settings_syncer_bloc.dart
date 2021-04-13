@@ -10,6 +10,11 @@ import 'package:savings_app/repositories/funds_repository.dart';
 import 'package:meta/meta.dart';
 
 class SettingsSyncerBloc extends Bloc<SettingsSyncerEvent, SettingsSyncState> {
+
+  List<Category> categories;
+  List<Fund> funds;
+  List<Account> accounts;
+
   AccountsRepository accountsRepository;
   FundsRepository fundsRepository;
   CategoriesRepository categoriesRepository;
@@ -22,16 +27,16 @@ class SettingsSyncerBloc extends Bloc<SettingsSyncerEvent, SettingsSyncState> {
   @override
   Stream<SettingsSyncState> mapEventToState(SettingsSyncerEvent event) async* {
 
-    List<Category> categories;
-    List<Account> accounts;
-    List<Fund> funds;
-
     if (event is ReloadLocalData) {
 
+      categories = (event.categories) ? categoriesRepository.restore() : categories;
+      funds = (event.funds) ? fundsRepository.restore() : funds;
+      accounts = (event.accounts) ? accountsRepository.restore() : accounts;
+
       yield LocalDataUpdated(
-          categories: (event.categories) ? categoriesRepository.restore() : null,
-          accounts: (event.accounts) ? accountsRepository.restore() : null,
-          funds: (event.funds) ? fundsRepository.restore() : null
+          categories: categories,
+          accounts: accounts,
+          funds: funds
       );
     }
 
