@@ -4,14 +4,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:savings_app/blocs/account_transfer/account_transfer_bloc.dart';
 import 'package:savings_app/blocs/account_transfer/account_transfer_events.dart';
 import 'package:savings_app/blocs/account_transfer/account_transfer_states.dart';
+import 'package:savings_app/blocs/settings_syncer/settings_syncer_bloc.dart';
+import 'package:savings_app/blocs/settings_syncer/settings_syncer_events.dart';
+import 'package:savings_app/blocs/settings_syncer/settings_syncer_states.dart';
 import 'package:savings_app/models/account.dart';
 import 'package:savings_app/repositories/transactions_repository.dart';
 
 class AccountTransferForm extends StatefulWidget {
-  List<Account> accounts;
   TransactionsRepository transactionsRepository;
 
-  AccountTransferForm({this.transactionsRepository, this.accounts});
+  AccountTransferForm({this.transactionsRepository});
 
   @override
   _AccountTransferFormState createState() => _AccountTransferFormState();
@@ -33,9 +35,7 @@ class _AccountTransferFormState extends State<AccountTransferForm> {
   void initState() {
     super.initState();
 
-    _bloc = AccountTransferBloc(
-        accounts: widget.accounts,
-        transactionsRepository: widget.transactionsRepository);
+    _bloc = AccountTransferBloc();
   }
 
   void _clearForm() {
@@ -87,40 +87,47 @@ class _AccountTransferFormState extends State<AccountTransferForm> {
                 onPressed: () {
                   var now = DateTime.now();
                   showDatePicker(
-                      context: context,
-                      initialDate: _selectedDate,
-                      firstDate: DateTime(now.year - 1, 1, 1),
-                      lastDate: DateTime(now.year + 1, 1, 1))
+                          context: context,
+                          initialDate: _selectedDate,
+                          firstDate: DateTime(now.year - 1, 1, 1),
+                          lastDate: DateTime(now.year + 1, 1, 1))
                       .then((value) => setState(() {
-                    _selectedDate =
-                    value != null ? value : _selectedDate;
-                  }));
+                            _selectedDate =
+                                value != null ? value : _selectedDate;
+                          }));
                 },
               )
             ],
           ),
-          DropdownButtonFormField(
-            onChanged: (accountId) {
-              accountFromId = accountId;
-              var event = AccountTransferFromSelectedEvent(
-                  accountFromId: accountId);
-              _bloc.add(event);
-            },
-            decoration: const InputDecoration(hintText: "From"),
-            autovalidate: true,
-            validator: (_) {
-              if (state.errors != null)
-                return state.errors.accountFromMessage;
-              return null;
-            },
-            value: accountFromId,
-            items: [
-              ...state.accountsFrom.map((e) => DropdownMenuItem(
-                child: Text(e.name),
-                value: e.id,
-              ))
-            ],
-          ),
+          BlocBuilder<SettingsSyncerBloc, SettingsSyncState>(
+              buildWhen: (_, dataState) =>
+                  dataState is DataContainerState && dataState.accounts != null,
+              builder: (context, dataState) {
+
+                var accounts = (dataState as DataContainerState).accounts;
+                return DropdownButtonFormField(
+                  onChanged: (accountId) {
+                    accountFromId = accountId;
+                    var event =
+                        AccountFromSelectedEvent(accountFromId: accountId, accounts: accounts);
+                    _bloc.add(event);
+                  },
+                  decoration: const InputDecoration(hintText: "From"),
+                  autovalidate: true,
+                  validator: (_) {
+                    if (state.errors != null)
+                      return state.errors.accountFromMessage;
+                    return null;
+                  },
+                  value: accountFromId,
+                  items: [
+                    ...accounts.map((e) => DropdownMenuItem(
+                          child: Text(e.name),
+                          value: e.id,
+                        ))
+                  ],
+                );
+              }),
           DropdownButtonFormField(
             onChanged: (accountId) {
               accountToId = accountId;
@@ -129,18 +136,17 @@ class _AccountTransferFormState extends State<AccountTransferForm> {
             decoration: const InputDecoration(hintText: "To"),
             autovalidate: true,
             validator: (_) {
-              if (state.errors != null)
-                return state.errors.accountToMessage;
+              if (state.errors != null) return state.errors.accountToMessage;
               return null;
             },
             items: state.accountsTo == null
                 ? null
                 : [
-              ...state.accountsTo.map((e) => DropdownMenuItem(
-                child: Text(e.name),
-                value: e.id,
-              ))
-            ],
+                    ...state.accountsTo.map((e) => DropdownMenuItem(
+                          child: Text(e.name),
+                          value: e.id,
+                        ))
+                  ],
           ),
           TextFormField(
             controller: descriptionController,
@@ -151,8 +157,8 @@ class _AccountTransferFormState extends State<AccountTransferForm> {
             onPressed: state.isSubmitting
                 ? null
                 : () {
-              _submitForm();
-            },
+                    _submitForm();
+                  },
           )
         ],
       ),
@@ -174,6 +180,8 @@ class _AccountTransferFormState extends State<AccountTransferForm> {
             ));
 
             _clearForm();
+
+            BlocProvider.of<SettingsSyncerBloc>(context).add(ReloadLocalData(accounts: true));
           }
 
           if (state.errors != null && state.errors.submitError != null) {
@@ -185,7 +193,7 @@ class _AccountTransferFormState extends State<AccountTransferForm> {
         },
         child: BlocBuilder<AccountTransferBloc, AccountTransferState>(
             builder: (context, state) {
-              // TODO: Potential error
+          // TODO: Potential error
           accountToId =
               state.accountsTo == null ? null : state.accountsTo[0].id;
 

@@ -3,6 +3,8 @@
 // -- FromSelected
 // -- ToSelected
 
+import 'package:savings_app/models/account.dart';
+
 class AccountTransferEvent {}
 
 class AccountTransferSubmitFormEvent extends AccountTransferEvent {
@@ -20,8 +22,9 @@ class AccountTransferSubmitFormEvent extends AccountTransferEvent {
       this.accomplishedAt});
 }
 
-class AccountTransferFromSelectedEvent extends AccountTransferEvent {
+class AccountFromSelectedEvent extends AccountTransferEvent {
   String accountFromId;
+  List<Account> accounts;
 
-  AccountTransferFromSelectedEvent({this.accountFromId});
+  AccountFromSelectedEvent({this.accounts, this.accountFromId});
 }

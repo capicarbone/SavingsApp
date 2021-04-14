@@ -8,24 +8,30 @@ import 'package:savings_app/models/account.dart';
 import 'package:savings_app/models/account_transfer_post.dart';
 import 'package:savings_app/models/transaction_post.dart';
 import 'package:savings_app/repositories/transactions_repository.dart';
+import 'package:savings_app/repositories/user_repository.dart';
 
 class AccountTransferBloc
     extends Bloc<AccountTransferEvent, AccountTransferState> {
   TransactionsRepository transactionsRepository;
-  List<Account> accounts;
 
-  AccountTransferBloc({this.transactionsRepository, this.accounts}) : super(AccountTransferState.initial(accounts));
+
+  AccountTransferBloc() : super(AccountTransferState.initial()) {
+    var authToken = UserRepository().restoreToken();
+    transactionsRepository = TransactionsRepository(authToken: authToken);
+
+
+  }
 
 
   @override
-  AccountTransferState get state => super.state;
+  AccountTransferState get state => super.state; // TODO: Is it neccesary?
 
   @override
   Stream<AccountTransferState> mapEventToState(
       AccountTransferEvent event) async* {
-    if (event is AccountTransferFromSelectedEvent) {
+    if (event is AccountFromSelectedEvent) {
       //var toAccounts = [];
-      var toAccounts = accounts
+      var toAccounts = event.accounts
           .where((element) => element.id != event.accountFromId)
           .toList();
       yield state.copyWith(accountsTo: toAccounts);
@@ -44,7 +50,7 @@ class AccountTransferBloc
         try {
           await transactionsRepository.postAccountTransfer(transactionPost);
           yield state.copyWith(successSubmit: true, isSubmitting: false);
-          yield AccountTransferState.initial(accounts);
+          yield AccountTransferState.initial();
         }catch (e, trace) {
           // TODO: Take error from response if exists
           log("AccountTransferBloc", error: e, stackTrace: trace);

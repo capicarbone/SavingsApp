@@ -31,9 +31,9 @@ class AccountTransferState {
   AccountTransferState(
       {this.accountsFrom, this.accountsTo, this.isSubmitting, this.successSubmit, this.errors});
 
-  factory AccountTransferState.initial(List<Account> accounts) {
+  factory AccountTransferState.initial() {
     return AccountTransferState(
-        accountsFrom: accounts,
+        accountsFrom: null,
         accountsTo: null,
         isSubmitting: false,
         successSubmit: false,

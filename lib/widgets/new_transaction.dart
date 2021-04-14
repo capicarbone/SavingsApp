@@ -41,7 +41,7 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
                   NestedTab(
                     text: "Income",
                   ),
-                  //NestedTab(text: "Transfer"),
+                  NestedTab(text: "Transfer"),
                 ],
               ),
               Padding(
@@ -51,13 +51,7 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
                   children: [
                     InOutForm(expenseMode: true,),
                     InOutForm(),
-                    // TODO: Re-enable
-                    /*
-                    AccountTransferForm(
-                      accounts: widget.accounts,
-                      // Instance repository in class
-                      transactionsRepository: TransactionsRepository(authToken: widget.authToken),
-                    )*/
+                    AccountTransferForm(),
                   ],
                 ),
               ),
