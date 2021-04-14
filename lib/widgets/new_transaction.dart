@@ -49,9 +49,9 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
                 child: IndexedStack(
                   index: _selectedTab,
                   children: [
-                    InOutForm(expenseMode: true,),
-                    InOutForm(),
-                    AccountTransferForm(),
+                    const InOutForm(expenseMode: true,),
+                    const InOutForm(),
+                    const AccountTransferForm(),
                   ],
                 ),
               ),

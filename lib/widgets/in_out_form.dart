@@ -19,9 +19,9 @@ import '../blocs/in_out_form/in_out_form_states.dart';
 
 
 class InOutForm extends StatefulWidget {
-  bool expenseMode = false;
+  final bool expenseMode;
 
-  InOutForm({this.expenseMode: false});
+  const InOutForm({this.expenseMode: false});
 
   @override
   _InOutFormState createState() => _InOutFormState();

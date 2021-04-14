@@ -11,9 +11,8 @@ import 'package:savings_app/models/account.dart';
 import 'package:savings_app/repositories/transactions_repository.dart';
 
 class AccountTransferForm extends StatefulWidget {
-  TransactionsRepository transactionsRepository;
 
-  AccountTransferForm({this.transactionsRepository});
+  const AccountTransferForm();
 
   @override
   _AccountTransferFormState createState() => _AccountTransferFormState();
@@ -83,7 +82,7 @@ class _AccountTransferFormState extends State<AccountTransferForm> {
                 child: Text(DateFormat.yMd().format(_selectedDate)),
               ),
               RaisedButton(
-                child: Text("Pick a date"),
+                child: const Text("Pick a date"),
                 onPressed: () {
                   var now = DateTime.now();
                   showDatePicker(
@@ -153,7 +152,7 @@ class _AccountTransferFormState extends State<AccountTransferForm> {
             decoration: const InputDecoration(hintText: "Description"),
           ),
           RaisedButton(
-            child: Text("Save"),
+            child: const Text("Save"),
             onPressed: state.isSubmitting
                 ? null
                 : () {
