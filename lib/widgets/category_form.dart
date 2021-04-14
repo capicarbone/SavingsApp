@@ -45,7 +45,7 @@ class CategoryForm extends StatelessWidget {
     ));
 
     var syncerBloc = BlocProvider.of<SettingsSyncerBloc>(context);
-    syncerBloc.add(ReloadLocalData());
+    syncerBloc.add(ReloadLocalData(categories: true));
 
     _clear();
   }

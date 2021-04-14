@@ -9,18 +9,8 @@ import 'package:savings_app/widgets/nested_tabs/nested_tab_bar.dart';
 import 'package:savings_app/widgets/nested_tabs/tab.dart';
 
 class NewTransactionScreen extends StatefulWidget {
-  List<Fund> funds;
-  List<Account> accounts;
-  List<Category> categories;
-  String authToken;
 
-  NewTransactionScreen(
-      {@required this.categories,
-      @required this.funds,
-      @required this.accounts,
-      @required this.authToken});
-
-
+  const NewTransactionScreen();
 
   @override
   _NewTransactionScreenState createState() => _NewTransactionScreenState();
@@ -51,7 +41,7 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
                   NestedTab(
                     text: "Income",
                   ),
-                  NestedTab(text: "Transfer"),
+                  //NestedTab(text: "Transfer"),
                 ],
               ),
               Padding(
@@ -59,24 +49,15 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
                 child: IndexedStack(
                   index: _selectedTab,
                   children: [
-                    InOutForm(
-                      expenseMode: true,
-                      categories: widget.categories,
-                      funds: widget.funds,
-                      accounts: widget.accounts,
-                      authToken: widget.authToken,
-                    ),
-                    InOutForm(
-                      categories: widget.categories,
-                      funds: widget.funds,
-                      accounts: widget.accounts,
-                      authToken: widget.authToken,
-                    ),
+                    InOutForm(expenseMode: true,),
+                    InOutForm(),
+                    // TODO: Re-enable
+                    /*
                     AccountTransferForm(
                       accounts: widget.accounts,
                       // Instance repository in class
                       transactionsRepository: TransactionsRepository(authToken: widget.authToken),
-                    ),
+                    )*/
                   ],
                 ),
               ),

@@ -23,6 +23,7 @@ import 'package:savings_app/models/transaction_post.dart';
 import 'package:savings_app/repositories/accounts_repository.dart';
 import 'package:savings_app/repositories/funds_repository.dart';
 import 'package:savings_app/repositories/transactions_repository.dart';
+import 'package:savings_app/repositories/user_repository.dart';
 import 'dart:developer';
 
 import 'in_out_form_states.dart';
@@ -36,10 +37,14 @@ class InOutFormBloc extends Bloc<InOutFormEvent, InOutFormState> {
 
   bool expenseMode = false;
 
-  InOutFormBloc({@required this.transactionsRepository,
-    @required this.fundsRepository,
-    @required this.accountsRepository,
-    this.expenseMode: false}) : super(InOutFormInitialState());
+  InOutFormBloc({this.expenseMode: false}) : super(InOutFormInitialState()){
+
+    var authToken = UserRepository().restoreToken();
+    transactionsRepository = TransactionsRepository(authToken: authToken);
+    fundsRepository = FundsRepository(authToken: authToken);
+    accountsRepository = AccountsRepository(authToken: authToken);
+
+  }
 
   @override
   Stream<InOutFormState> mapEventToState(InOutFormEvent event) async* {
