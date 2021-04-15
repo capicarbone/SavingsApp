@@ -5,13 +5,12 @@ import 'package:savings_app/blocs/category_form/category_form_events.dart';
 import 'package:savings_app/blocs/category_form/category_form_states.dart';
 import 'package:savings_app/blocs/settings_syncer/settings_syncer_bloc.dart';
 import 'package:savings_app/blocs/settings_syncer/settings_syncer_events.dart';
+import 'package:savings_app/blocs/settings_syncer/settings_syncer_states.dart';
 import 'package:savings_app/models/fund.dart';
 
 class CategoryForm extends StatelessWidget {
-  String authToken;
-  List<Fund> funds;
 
-  CategoryForm({@required this.authToken, @required this.funds});
+  CategoryForm();
 
   final nameController = TextEditingController();
 
@@ -45,7 +44,7 @@ class CategoryForm extends StatelessWidget {
     ));
 
     var syncerBloc = BlocProvider.of<SettingsSyncerBloc>(context);
-    syncerBloc.add(ReloadLocalData(categories: true));
+    syncerBloc.add(ReloadLocalData(categories: true, funds: true));
 
     _clear();
   }
@@ -86,7 +85,7 @@ class CategoryForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<CategoryFormBloc>(
       create: (_) {
-        return CategoryFormBloc(authToken: authToken);
+        return CategoryFormBloc();
       },
       child: BlocListener<CategoryFormBloc, CategoryFormState>(
         listener: _listenState,
@@ -114,23 +113,30 @@ class CategoryForm extends StatelessWidget {
                   Text("Is income")
                 ],
               ),
-              _react(builder: (ctx, state) {
-                if (!state.incomeMode)
-                  return DropdownButtonFormField(
-                      value: state.fundId,
-                      decoration: const InputDecoration(hintText: "Fund"),
-                      items: [
-                        ...funds.map((e) => DropdownMenuItem(
-                              child: Text(e.name),
-                              value: e.id,
-                            ))
-                      ],
-                      onChanged: (value) {
-                        _changeFund(ctx, value);
-                      });
+              BlocBuilder<SettingsSyncerBloc, SettingsSyncState>(
+                buildWhen: (_, dataState) => dataState is DataContainerState,
+                  builder: (context, dataState){
+                    var funds = (dataState as DataContainerState).funds;
+                    return _react(builder: (ctx, state) {
+                      if (!state.incomeMode)
+                        return DropdownButtonFormField(
+                            value: state.fundId,
+                            decoration: const InputDecoration(hintText: "Fund"),
+                            items: [
+                              ...funds.map((e) => DropdownMenuItem(
+                                child: Text(e.name),
+                                value: e.id,
+                              ))
+                            ],
+                            onChanged: (value) {
+                              _changeFund(ctx, value);
+                            });
 
-                return Container();
+                      return Container();
+                    });
+
               }),
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

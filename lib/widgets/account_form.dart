@@ -7,10 +7,10 @@ import 'package:savings_app/blocs/settings_syncer/settings_syncer_bloc.dart';
 import 'package:savings_app/blocs/settings_syncer/settings_syncer_events.dart';
 
 class AccountForm extends StatelessWidget {
-  String authToken;
+
   var nameController = TextEditingController();
 
-  AccountForm({this.authToken});
+  AccountForm();
 
   void _submitForm(BuildContext ctx) {
     var event = SubmitEvent(name: nameController.text);
@@ -72,7 +72,7 @@ class AccountForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<AccountFormBloc>(
-      create: (_) => AccountFormBloc(authToken),
+      create: (_) => AccountFormBloc(),
       child: BlocListener<AccountFormBloc, AccountFormState>(
           listener: _listenState, child: _buildForm(context)),
     );

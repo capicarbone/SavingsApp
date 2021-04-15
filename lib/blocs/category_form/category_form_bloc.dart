@@ -4,13 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:savings_app/blocs/category_form/category_form_events.dart';
 import 'package:savings_app/blocs/category_form/category_form_states.dart';
 import 'package:savings_app/repositories/categories_repository.dart';
+import 'package:savings_app/repositories/user_repository.dart';
 
 class CategoryFormBloc extends Bloc<CategoryFormEvent, CategoryFormState> {
-  String authToken;
+
   bool incomeMode = false;
   String fundId = null;
 
-  CategoryFormBloc({this.authToken}) : super(FormReadyState(incomeMode: false));
+  CategoryFormBloc() : super(FormReadyState(incomeMode: false));
 
   @override
   Stream<CategoryFormState> mapEventToState(CategoryFormEvent event) async* {
@@ -42,7 +43,7 @@ class CategoryFormBloc extends Bloc<CategoryFormEvent, CategoryFormState> {
       } else {
         yield SubmittingState(incomeMode: incomeMode, fundId: fundId);
 
-        var repository = CategoriesRepository(authToken: authToken);
+        var repository = CategoriesRepository(authToken: UserRepository().restoreToken());
         CategoryPost data;
 
         if (incomeMode) {

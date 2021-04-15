@@ -1,16 +1,21 @@
 
+import 'dart:developer';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:savings_app/blocs/fund_form/fund_form_events.dart';
 import 'package:savings_app/blocs/fund_form/fund_form_states.dart';
 import 'package:savings_app/models/fund.dart';
 import 'package:savings_app/repositories/funds_repository.dart';
+import 'package:savings_app/repositories/user_repository.dart';
 
 class FundFormBloc extends Bloc<FundFormEvent, FundFormState> {
 
   FundsRepository repository;
 
-  FundFormBloc({this.repository}) : 
-        super(FormReadyState( availableForAssignment: repository.availableAssignment));
+  FundFormBloc() :super(FormReadyState( availableForAssignment: 0.0)) {
+    repository = FundsRepository(authToken: UserRepository().restoreToken());
+   add(StartEvent());
+  }
 
   
 
@@ -19,6 +24,10 @@ class FundFormBloc extends Bloc<FundFormEvent, FundFormState> {
   Stream<FundFormState> mapEventToState(FundFormEvent event) async* {
 
     var availableAssignment = repository.availableAssignment;
+
+    if (event is StartEvent) {
+      yield FormReadyState(availableForAssignment: availableAssignment);
+    }
 
     if (event is SubmitEvent) {
 
@@ -53,6 +62,7 @@ class FundFormBloc extends Bloc<FundFormEvent, FundFormState> {
 
         yield SubmittedState(availableAssignment: repository.availableAssignment);
       }catch (ex) {
+        log(ex.toString());
         yield SubmitFailedState(
           availableAssignment: availableAssignment,
             error: FundFormError.serverError

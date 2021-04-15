@@ -20,27 +20,20 @@ class SettingsScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Card(
-              child: AccountForm(
-                authToken: authToken,
-              ),
+              child: AccountForm(),
             ),
           ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Card(
-                child: CategoryForm(
-                  authToken: authToken,
-                  funds: funds,
-                ),
+                child: CategoryForm(),
               ),
             ),
 
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Card(
-              child: FundForm(
-                authToken: authToken,
-              ),
+              child: FundForm(),
             ),
           ),
         ],

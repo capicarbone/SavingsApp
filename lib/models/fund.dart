@@ -32,7 +32,7 @@ class Fund {
   List<Category> categories;
 
   Fund({this.id, this.name, this.description, this.maximumLimit, this.minimumLimit,
-  this.percetageAssignment, this.balance, this.categories});
+  this.percetageAssignment, this.balance = 0, this.categories});
 
   factory Fund.fromMap(Map<String, dynamic> map) {
     //var l = ;
@@ -47,6 +47,6 @@ class Fund {
     return Fund(id: from.id, name: from.name, description: from.description,
     minimumLimit: from.minimumLimit, maximumLimit: from.maximumLimit,
     percetageAssignment: from.percetageAssignment, balance: from.balance,
-    categories: [ for (var cat in from.categories) Category.copy(cat) ]);
+    categories: (from.categories != null) ? [ for (var cat in from.categories) Category.copy(cat) ]: null ) ;
   }
 }

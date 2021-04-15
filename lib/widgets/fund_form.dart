@@ -11,7 +11,7 @@ import 'package:savings_app/blocs/settings_syncer/settings_syncer_events.dart';
 import 'package:savings_app/repositories/funds_repository.dart';
 
 class FundForm extends StatelessWidget {
-  String authToken;
+
 
   final nameController = TextEditingController();
   final descriptionController = TextEditingController();
@@ -19,7 +19,7 @@ class FundForm extends StatelessWidget {
   final minimumController = TextEditingController();
   final maximumController = TextEditingController();
 
-  FundForm({@required this.authToken});
+  FundForm();
 
   void _submitForm(BuildContext context) {
     var event = SubmitEvent(
@@ -162,7 +162,7 @@ class FundForm extends StatelessWidget {
     );
   }
 
-  FundFormBloc _createBloc(_) => FundFormBloc(repository: FundsRepository(authToken: authToken));
+  FundFormBloc _createBloc(_) => FundFormBloc();
 
   @override
   Widget build(BuildContext context) {

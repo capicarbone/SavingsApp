@@ -1,7 +1,9 @@
 
 import 'package:flutter/cupertino.dart';
 
-class FundFormEvent {}
+abstract class FundFormEvent {}
+
+class StartEvent extends FundFormEvent {}
 
 class SubmitEvent extends FundFormEvent {
   String name;
