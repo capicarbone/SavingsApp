@@ -29,10 +29,12 @@ class Fund {
   double balance = 0;
 
   @HiveField(7)
-  List<Category> categories;
+  List<Category> categories = [];
 
   Fund({this.id, this.name, this.description, this.maximumLimit, this.minimumLimit,
-  this.percetageAssignment, this.balance = 0, this.categories});
+  this.percetageAssignment, this.balance = 0, this.categories}){
+    if (categories == null) categories = []; // ???
+  }
 
   factory Fund.fromMap(Map<String, dynamic> map) {
     //var l = ;
