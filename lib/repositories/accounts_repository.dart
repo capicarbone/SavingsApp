@@ -63,6 +63,10 @@ class AccountsRepository extends WebRepository {
     return [ for (var element in _box.values ) Account.copy(element) ];
   }
 
+  List<Account> restoreSorted() {
+    return restore()..sort((a, b) => a.name.compareTo(b.name));
+  }
+
   List<Account> sortedRestore() {
     return restore()..sort((a,b) => a.name.compareTo(b.name));
   }

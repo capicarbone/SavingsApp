@@ -103,6 +103,10 @@ class CategoriesRepository extends WebRepository{
     return [ for (var element in _box.values ) Category.copy(element) ];
   }
 
+  List<Category> restoreSorted(){
+    return restore()..sort((a,b) => a.name.compareTo(b.name));
+  }
+
   List<Category> restoreIncomes(){
     return restore().where((element) => element.isIncome).toList();
   }

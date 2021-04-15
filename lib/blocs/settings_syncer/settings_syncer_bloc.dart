@@ -29,9 +29,7 @@ class SettingsSyncerBloc extends Bloc<SettingsSyncerEvent, SettingsSyncState> {
 
     if (event is ReloadLocalData) {
 
-      categories = (event.categories) ? categoriesRepository.restore() : categories;
-      funds = (event.funds) ? fundsRepository.restore() : funds;
-      accounts = (event.accounts) ? accountsRepository.restore() : accounts;
+      _loadCache(event.accounts, event.funds, event.categories);
 
       yield LocalDataUpdated(
           categories: categories,
@@ -44,19 +42,12 @@ class SettingsSyncerBloc extends Bloc<SettingsSyncerEvent, SettingsSyncState> {
 
       yield SyncingSettings(initial: true);
 
-      // TODO: Validates if data exits. If not, keep loading/syncing state until
-      // syncing has finished.
-
-
-      // TODO: This should be smarter, like download every check each repository
-      // and load according
+      // TODO: Ask if db it's not initialized
       if (!categoriesRepository.isLocallyEmpty() &&
           !fundsRepository.isLocallyEmpty() &&
           !accountsRepository.isLocallyEmpty() ) {
 
-        categories = categoriesRepository.restore();
-        accounts = accountsRepository.restore();
-        funds = fundsRepository.restore();
+        _loadAllCache();
 
         yield SettingsLoaded( 
             categories: categories,
@@ -64,10 +55,10 @@ class SettingsSyncerBloc extends Bloc<SettingsSyncerEvent, SettingsSyncState> {
             funds: funds
         );
       }
+
+      await _syncAll();
       
-      categories = await categoriesRepository.sync();
-      accounts = await accountsRepository.sync();
-      funds = await fundsRepository.sync();
+      _loadAllCache();
 
       yield SettingsLoaded(
           categories: categories,
@@ -75,5 +66,21 @@ class SettingsSyncerBloc extends Bloc<SettingsSyncerEvent, SettingsSyncState> {
           funds: funds
       );
     }
+  }
+
+  void _loadCache(bool loadAccounts, bool loadFunds, bool loadCategories){
+    categories = loadCategories ? categoriesRepository.restoreSorted() : categories;
+    funds = loadFunds ? fundsRepository.restoreSorted() : funds;
+    accounts = loadAccounts ? accountsRepository.restoreSorted() : accounts;
+  }
+
+  void _loadAllCache(){
+    _loadCache(true, true, true);
+  }
+
+  Future<void> _syncAll() async{
+    await categoriesRepository.sync();
+    await accountsRepository.sync();
+    await fundsRepository.sync();
   }
 }

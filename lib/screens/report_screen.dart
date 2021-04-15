@@ -222,7 +222,7 @@ class _FundsReports extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var funds = FundsRepository().sortedRestore();
+    var funds = FundsRepository().restoreSorted();
 
     return Container(
       child: ListView(

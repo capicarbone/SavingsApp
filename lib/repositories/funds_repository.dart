@@ -103,7 +103,7 @@ class FundsRepository extends WebRepository{
     return [for (var fund in _box.values) Fund.copy(fund)];
   }
 
-  List<Fund> sortedRestore() {
+  List<Fund> restoreSorted() {
     return restore()..sort((a,b) => a.name.compareTo(b.name));
   }
 
