@@ -80,8 +80,6 @@ class CategoriesRepository extends WebRepository{
 
     final response = await http.get(url, headers: headers);
 
-    print(response.body);
-
     if (response.statusCode == 200) {
       List<dynamic> objects = json.decode(response.body);
 

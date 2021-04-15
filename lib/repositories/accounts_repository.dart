@@ -15,12 +15,8 @@ class AccountsRepository extends WebRepository {
 
   Future<List<Account>> sync() async {
 
-    print("Bearer $authToken");
-
     final response = await http.get("${getHost()}accounts",
       headers: getAuthenticatedHeader());
-
-    print (response.body);
 
     if (response.statusCode == 200) {
       List<dynamic> objects = json.decode(response.body);

@@ -8,7 +8,7 @@ import 'dart:convert';
 
 class UserRepository extends WebRepository {
 
-  Box get box => Hive.box('user');
+  Box get _box => Hive.box('user');
 
   Future<String> getAuthToken({
     @required String email,
@@ -20,8 +20,6 @@ class UserRepository extends WebRepository {
 
     final response = await http.post(url,
         headers: {"Authorization": "Basic $credentialsEncoded"});
-
-    print(response.body);
 
     if (response.statusCode == 200){
       final responseData = json.decode(response.body);
@@ -35,21 +33,21 @@ class UserRepository extends WebRepository {
   }
 
   Future<String> persistToken(String token) async {
-    await box.put("token", token);
+    await _box.put("token", token);
     return token;
   }
 
   Future<String> removeToken() async{
-    await box.delete("token");
+    await _box.delete("token");
 
   }
 
   Future<bool> hasToken() async {
-    return box.containsKey("token");
+    return _box.containsKey("token");
   }
 
   String restoreToken() {
-    return box.get("token");
+    return _box.get("token");
   }
 
 }

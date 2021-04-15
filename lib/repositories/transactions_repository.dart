@@ -43,8 +43,6 @@ class TransactionsRepository extends WebRepository {
 
     var response = await http.post(url, body: body, headers: headers);
 
-    print(response.body);
-
     if (response.statusCode == 200) {
       Transaction transaction = Transaction.fromMap(json.decode(response.body));
       return transaction;
@@ -73,12 +71,6 @@ class TransactionsRepository extends WebRepository {
 
     Transaction transaction = Transaction.fromMap(json.decode(response.body));
 
-    //_updateBalances(transaction);
-
-    // TODO: Save transactions in cache and database.
-
-    print(response.body);
-
     return transaction;
   }
 
@@ -90,10 +82,7 @@ class TransactionsRepository extends WebRepository {
 
     // TODO: Save delete action in database
 
-    print(url);
     var response = await http.delete(url, headers: _getAuthenticatedHeader());
-
-    print(response.body);
 
     if (response.statusCode == 204) {
       return true;
@@ -117,8 +106,6 @@ class TransactionsRepository extends WebRepository {
     var header = _getAuthenticatedHeader();
 
     var response = await http.get(url, headers: header);
-
-    print(response.body);
 
     if (response.statusCode == 200) {
       var jsonMap = json.decode(response.body) as List<dynamic>;

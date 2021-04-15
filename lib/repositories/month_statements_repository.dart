@@ -19,8 +19,6 @@ class MonthStatementsRepository extends WebRepository {
     final response =
         await http.get(url, headers: getAuthenticatedHeader(), );
 
-    print(response.body);
-
     if (response.statusCode == 200) {
       LinkedHashMap<String, dynamic> parsedResponse =
           json.decode(response.body);
