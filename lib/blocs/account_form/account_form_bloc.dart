@@ -12,7 +12,7 @@ class AccountFormBloc extends Bloc<AccountFormEvent, AccountFormState> {
   AccountsRepository repository;
 
   AccountFormBloc() :super(FormReadyState()) {
-    var authToken = UserRepository().authToken;
+    var authToken = UserRepository().restoreToken();
     repository = AccountsRepository(authToken: authToken);
   }
 
