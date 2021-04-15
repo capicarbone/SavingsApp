@@ -10,6 +10,9 @@ import 'package:savings_app/models/period_statement.dart';
 import 'package:savings_app/screens/report_screen.dart';
 
 class ReportsScreen extends StatelessWidget {
+
+  const ReportsScreen();
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(

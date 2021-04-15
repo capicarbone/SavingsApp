@@ -7,10 +7,7 @@ import 'package:savings_app/widgets/fund_form.dart';
 
 class SettingsScreen extends StatelessWidget {
 
-  List<Fund> funds;
-  String authToken;
-
-  SettingsScreen({@required this.authToken, @required this.funds});
+  const SettingsScreen();
 
   @override
   Widget build(BuildContext context) {
