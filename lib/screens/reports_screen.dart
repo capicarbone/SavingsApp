@@ -83,10 +83,19 @@ class _PeriodStatementItem extends StatelessWidget {
 
   _PeriodStatementItem({this.statement});
 
-  String get _label => (statement.isYear)
-      ? statement.year.toString()
-      : DateFormat.MMMM().format(DateTime(1, statement.month));
+  String get _label {
+    if (statement.isYear) {
+      return statement.year.toString();
+    }
+    if (statement.isMonth){
+      return DateFormat.MMMM().format(DateTime(1, statement.month));
+    }
+    if (statement.isGeneral){
+      return "General";
+    }
 
+    print("Gola");
+  }
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

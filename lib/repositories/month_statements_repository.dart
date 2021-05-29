@@ -7,7 +7,7 @@ import 'package:savings_app/repositories/web_repository.dart';
 class MonthStatementsRepository extends WebRepository {
   MonthStatementsRepository({String authToken}) : super(authToken: authToken);
 
-  static const resourceUri = "reports/month_statements";
+  static const resourceUri = "reports/statements";
 
   String get _resourceUrl => getHost() + resourceUri;
 

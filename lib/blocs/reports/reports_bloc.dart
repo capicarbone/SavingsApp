@@ -35,7 +35,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
         // TODO: Ask entire years, given that by just page could lead to incomplete years calculations
         var statements = await repository.fetch(nextPage);
         
-        _prepareStatements(statements);
+        //_prepareStatements(statements);
 
         allStatements.addAll(statements);
         yield PageLoaded(nextPage, allStatements);

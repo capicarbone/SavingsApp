@@ -24,14 +24,17 @@ class FundChange {
 class PeriodStatement {
   final int year;
   final int month;
+  final int level;
   final List<AccountChange> accounts;
   final List<FundChange> funds;
   final List<CategoryChange> categories;
 
   PeriodStatement(
-      this.year, this.month, this.accounts, this.funds, this.categories);
+      this.year, this.month, this.level, this.accounts, this.funds, this.categories);
 
-  bool get isYear => month == null;
+  bool get isYear => level == 2;
+  bool get isMonth => level == 3;
+  bool get isGeneral => level == 1;
 
   factory PeriodStatement.fromMap(Map<String, dynamic> map) {
     var accountsChanges = (map['accounts'] as List)
@@ -46,7 +49,7 @@ class PeriodStatement {
         .map((e) => CategoryChange(e['category_id'], e['change']))
         .toList();
 
-    return PeriodStatement(map['year'], map['month'], accountsChanges,
+    return PeriodStatement(map['year'], map['month'], map['level'], accountsChanges,
         fundChanges, categorychanges);
   }
 
@@ -108,7 +111,7 @@ class PeriodStatement {
     });
 
     return PeriodStatement(
-        year, null, accountsChanges, fundsChanges, categoriesChanges);
+        year, null, 2, accountsChanges, fundsChanges, categoriesChanges);
   }
 
   AccountChange getAccountChange(String id) {
@@ -140,4 +143,5 @@ class PeriodStatement {
 
     return ((income + expense) / income)*100;
   }
+
 }
