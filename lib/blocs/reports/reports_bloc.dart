@@ -35,7 +35,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
         // TODO: Ask entire years, given that by just page could lead to incomplete years calculations
         var statements = await repository.fetch(nextPage);
         
-        //_prepareStatements(statements);
+        _prepareStatements(statements);
 
         allStatements.addAll(statements);
         yield PageLoaded(nextPage, allStatements);
@@ -48,25 +48,33 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
   }
 
   /**
-   * Orders statements and adds years total.
+   * Orders statements according to levels and years groups.
    */
   void _prepareStatements(List<PeriodStatement> statements){
 
-    statements.sort((a, b) => DateTime(b.year, b.month).compareTo(DateTime(a.year, a.month)) );
+    statements.sort((a, b) => a.level.compareTo(b.level) );
 
-    var years = Set.from(statements.map((e) => e.year));
-    var yearsStatements = <PeriodStatement>[];
+    var yearStatementsIndexes = [];
 
-    years.forEach((year) {
-      var yearStatements = statements.where((statement) => statement.year == year).toList();
-      yearsStatements.add(PeriodStatement.computeYear(yearStatements[0].year, yearStatements));
-    });
+    for (var i = 0; i < statements.length ; i++){
+      if (statements[i].isYear) {
+        yearStatementsIndexes.add(i);
+      }
+    }
 
-    yearsStatements.forEach((yearStatement) {
-      var insertionIndex = statements.indexWhere((element) {
-        return element.year == yearStatement.year;
-      } );
-      statements.insert(insertionIndex, yearStatement);
+    yearStatementsIndexes.forEach((yearIndex) {
+      var year = statements[yearIndex].year;
+      var monthStatementIndex = yearIndex;
+      var nextInsertionIndex = yearIndex + 1;
+      while (monthStatementIndex != -1){
+        monthStatementIndex = statements.indexWhere((element) => element.year == year, monthStatementIndex + 1);
+        if (monthStatementIndex != -1){
+          final monthStatement = statements[monthStatementIndex];
+          statements.removeAt(monthStatementIndex);
+          statements.insert(nextInsertionIndex, monthStatement);
+          nextInsertionIndex++;
+        }
+      }
     });
 
   }
