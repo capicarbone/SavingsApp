@@ -7,13 +7,15 @@ import 'package:savings_app/blocs/settings_syncer/settings_syncer_bloc.dart';
 import 'package:savings_app/blocs/settings_syncer/settings_syncer_events.dart';
 
 class AccountForm extends StatelessWidget {
-
   var nameController = TextEditingController();
+  var initialBalanceController = TextEditingController();
 
   AccountForm();
 
   void _submitForm(BuildContext ctx) {
-    var event = SubmitEvent(name: nameController.text);
+    var event = SubmitEvent(
+        name: nameController.text,
+        initialBalance: initialBalanceController.text);
 
     BlocProvider.of<AccountFormBloc>(ctx).add(event);
   }
@@ -31,6 +33,11 @@ class AccountForm extends StatelessWidget {
           TextFormField(
             decoration: const InputDecoration(hintText: "Name"),
             controller: nameController,
+          ),
+          TextFormField(
+            decoration: const InputDecoration(hintText: "Initial balance"),
+            keyboardType: TextInputType.number,
+            controller: initialBalanceController,
           ),
           BlocBuilder<AccountFormBloc, AccountFormState>(
               builder: (ctx, state) => Row(

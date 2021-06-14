@@ -36,7 +36,10 @@ class AccountsRepository extends WebRepository {
   Future<Account> post({String name, double initialBalance}) async {
 
     var headers = getAuthenticatedHeader();
-    var body = {'name': name};
+    Map<String, void> body = {'name': name};
+    if (initialBalance != 0){
+      body['initial_balance'] = initialBalance.toString();
+    }
     var url  = "${getHost()}accounts";
 
     var response = await http.post(url, body: body, headers: headers);

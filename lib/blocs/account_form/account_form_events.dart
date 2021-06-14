@@ -3,6 +3,7 @@ class AccountFormEvent {}
 
 class SubmitEvent extends AccountFormEvent {
   String name;
+  String initialBalance;
 
-  SubmitEvent({this.name});
+  SubmitEvent({this.name, this.initialBalance});
 }
