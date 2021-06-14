@@ -33,16 +33,17 @@ class AccountsRepository extends WebRepository {
 
   }
 
-  Future<Account> post(Account account) async {
+  Future<Account> post({String name, double initialBalance}) async {
 
     var headers = getAuthenticatedHeader();
-    var body = {'name': account.name};
+    var body = {'name': name};
     var url  = "${getHost()}accounts";
 
     var response = await http.post(url, body: body, headers: headers);
 
     if (response.statusCode == 200){
-      var newAccount = Account(id: json.decode(response.body)['id'], name: account.name);
+      var serverAccount = json.decode(response.body);
+      var newAccount = Account(id: serverAccount['id'], name: serverAccount['name']);
       return newAccount;
     }else{
       throw Exception(response.body);
@@ -50,9 +51,9 @@ class AccountsRepository extends WebRepository {
 
   }
 
-  Future<Account> save(Account account) async{
+  Future<Account> save({String name, double initialBalance = 0.0}) async{
 
-    var newAccount = await post(account);
+    var newAccount = await post(name: name, initialBalance: initialBalance);
 
     _box.put(newAccount.id, newAccount);
 
