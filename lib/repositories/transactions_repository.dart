@@ -18,15 +18,13 @@ import 'package:savings_app/repositories/web_repository.dart';
 class TransactionsRepository extends WebRepository {
   String authToken;
 
-  TransactionsRepository(
-      {@required this.authToken});
+  TransactionsRepository({@required this.authToken});
 
   Map<String, String> _getAuthenticatedHeader() {
     return {"Authorization": "Bearer $authToken"};
   }
 
   Future<Transaction> postTransaction(TransactionPost transactionData) async {
-
     var url = "${getHost()}transactions";
     var headers = _getAuthenticatedHeader();
     var body = {
@@ -46,16 +44,14 @@ class TransactionsRepository extends WebRepository {
     if (response.statusCode == 200) {
       Transaction transaction = Transaction.fromMap(json.decode(response.body));
       return transaction;
-    } else{
+    } else {
       throw Exception(response.body);
     }
-
   }
 
   Future<Transaction> postAccountTransfer(
       AccountTransferPost transferData) async {
-    var url =
-        "${getHost()}transaction/account-transfer";
+    var url = "${getHost()}transaction/account-transfer";
 
     var body = {
       'description': transferData.description,
@@ -77,7 +73,7 @@ class TransactionsRepository extends WebRepository {
   /**
    * Send delete request for a transaction entity.
    */
-  Future<bool> delete(String accountId, String transactionId) async{
+  Future<bool> delete(String accountId, String transactionId) async {
     var url = "${getHost()}transaction/$transactionId";
 
     // TODO: Save delete action in database
@@ -86,13 +82,13 @@ class TransactionsRepository extends WebRepository {
 
     if (response.statusCode == 204) {
       return true;
-    }else {
+    } else {
       throw Exception(response.body);
     }
   }
 
-  Future<List<Transaction>> fetch(
-      String accountId, String fundId, {int pageSize:100}) async {
+  Future<List<Transaction>> fetch(String accountId, String fundId,
+      {int pageSize: 100}) async {
     var url = "${getHost()}transactions?page_size=$pageSize";
 
     if (accountId != null) {
@@ -110,13 +106,18 @@ class TransactionsRepository extends WebRepository {
     if (response.statusCode == 200) {
       var jsonMap = json.decode(response.body) as List<dynamic>;
 
-      var transactions = jsonMap
-          .map((e) => Transaction.fromMap(e))
-          .toList();
+      var transactions = jsonMap.map((e) => Transaction.fromMap(e)).toList();
 
-      transactions.sort((left, right) =>
-          right.dateAccomplished.millisecondsSinceEpoch -
-              left.dateAccomplished.millisecondsSinceEpoch);
+      transactions.sort((left, right) {
+        var rightDate = right.dateAccomplished == null
+            ? DateTime(0)
+            : right.dateAccomplished;
+        var leftDate =
+            left.dateAccomplished == null ? DateTime(0) : left.dateAccomplished;
+
+        return rightDate.millisecondsSinceEpoch -
+            leftDate.millisecondsSinceEpoch;
+      });
 
       return transactions;
     } else {
@@ -131,6 +132,4 @@ class TransactionsRepository extends WebRepository {
   Future<List<Transaction>> fetchAccountTransactions(String accountId) async {
     return await fetch(accountId, null);
   }
-
-
 }

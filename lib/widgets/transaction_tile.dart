@@ -30,9 +30,9 @@ class TransactionTile extends StatelessWidget {
       onTap: (){
         onTap(transaction);
       },
-      leading: _buildTileDate(date),
+      leading: (date != null) ? _buildTileDate(date) : null,
       title: Text(title),
-      subtitle: Text(description),
+      subtitle: (description != null) ? Text(description) : null,
       trailing: Text(
         "\$${change}",
         style: TextStyle(

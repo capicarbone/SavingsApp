@@ -7,13 +7,11 @@ class AccountTransaction {
   final String accountId;
   final double change;
 
-  AccountTransaction(
-      {@required this.accountId, @required this.change});
+  AccountTransaction({@required this.accountId, @required this.change});
 
   factory AccountTransaction.fromMap(Map<String, dynamic> map,
       [Account account]) {
-    return AccountTransaction(
-        accountId: map['account'], change: map['change']);
+    return AccountTransaction(accountId: map['account'], change: map['change']);
   }
 }
 
@@ -24,8 +22,7 @@ class FundTransaction {
   FundTransaction({@required this.fundId, @required this.change});
 
   factory FundTransaction.fromMap(Map<String, dynamic> map, [Fund fund]) {
-    return FundTransaction(
-        fundId: map['fund'], change: map['change']);
+    return FundTransaction(fundId: map['fund'], change: map['change']);
   }
 }
 
@@ -47,7 +44,8 @@ class Transaction {
 
   get isAccountTransfer => accountTransactions.length == 2;
 
-  get isFundTransfer => fundTransactions.length == 2 &&
+  get isFundTransfer =>
+      fundTransactions.length == 2 &&
       fundTransactions[0].change + fundTransactions[1].change == 0;
 
   get isIncome =>
@@ -70,7 +68,10 @@ class Transaction {
     var transaction = Transaction(
         id: map['id'],
         description: map['description'],
-        dateAccomplished: DateTime.parse(map['date_accomplished']),
+        dateAccomplished: map.containsKey('date_accomplished') &&
+                map['date_accomplished'] != null
+            ? DateTime.parse(map['date_accomplished'])
+            : null,
         categoryId: map['category'],
         category: category);
 
@@ -114,23 +115,21 @@ class Transaction {
   }
 
   FundTransaction getFundReceiver() {
-    if (isFundTransfer){
+    if (isFundTransfer) {
       return fundTransactions.firstWhere((element) => element.change > 0);
     }
     return null;
   }
 
   FundTransaction getFundSource() {
-    if (isFundTransfer){
+    if (isFundTransfer) {
       return fundTransactions.firstWhere((element) => element.change < 0);
     }
     return null;
   }
 
   AccountTransaction getReceiverAccount() {
-
     return accountTransactions.firstWhere((element) => element.change > 0);
-
   }
 
   AccountTransaction getAccountSource() {

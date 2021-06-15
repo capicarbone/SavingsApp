@@ -28,6 +28,9 @@ class AccountDetailsScreen extends StatelessWidget {
       Map<String, Category> categories
       ) {
 
+    if (transaction.dateAccomplished == null)
+      return "Initial balance";
+
     if (transaction.isAccountTransfer) {
       var receiver = transaction.getReceiverAccount();
       var source = transaction.getAccountSource();

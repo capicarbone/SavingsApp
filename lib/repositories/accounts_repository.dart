@@ -57,6 +57,7 @@ class AccountsRepository extends WebRepository {
   Future<Account> save({String name, double initialBalance = 0.0}) async{
 
     var newAccount = await post(name: name, initialBalance: initialBalance);
+    newAccount.balance = initialBalance;
 
     _box.put(newAccount.id, newAccount);
 
