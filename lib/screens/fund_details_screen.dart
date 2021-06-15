@@ -23,6 +23,13 @@ class FundDetailsScreen extends StatelessWidget {
       Map<String, Category> categories,
       Map<String, Fund> funds,
       String fundId) {
+
+    if (transaction.dateAccomplished == null){
+      var receiverAccount =
+      accounts[transaction.getReceiverAccount().accountId];
+
+      return "Initial balance for " + receiverAccount.name;
+    }
     if (transaction.isFundTransfer) {
       var receiver = transaction.getFundReceiver();
       var source = transaction.getFundSource();
