@@ -23,8 +23,10 @@ class AccountFormBloc extends Bloc<AccountFormEvent, AccountFormState> {
         return;
       }
 
+      final double initialBalance = (event.initialBalance == 0) ? double.parse(event.initialBalance) : 0;
+
       await repository.save(
-          name: event.name, initialBalance: double.parse(event.initialBalance));
+          name: event.name, initialBalance: initialBalance);
 
       yield FormSubmittedState();
     }
