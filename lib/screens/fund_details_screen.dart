@@ -7,9 +7,6 @@ import 'package:savings_app/models/account.dart';
 import 'package:savings_app/models/category.dart';
 import 'package:savings_app/models/fund.dart';
 import 'package:savings_app/models/transaction.dart';
-import 'package:savings_app/repositories/accounts_repository.dart';
-import 'package:savings_app/repositories/funds_repository.dart';
-import 'package:savings_app/repositories/transactions_repository.dart';
 import 'package:savings_app/widgets/transaction_tile.dart';
 
 class FundDetailsScreen extends StatelessWidget {

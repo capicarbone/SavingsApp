@@ -19,15 +19,19 @@ class ReportScreen extends StatelessWidget {
 
     PeriodStatement statement = args['statement'];
 
-    var title = (statement.isYear)
-        ? statement.year.toString()
-        : DateFormat.MMMM().format(DateTime(1, statement.month));
+    var screen_title = "";
+
+    switch (statement.level) {
+      case 1: screen_title = "General"; break;
+      case 2: screen_title = statement.year.toString(); break;
+      case 3: screen_title = DateFormat.MMMM().format(DateTime(1, statement.month)); break;
+    }
 
     return DefaultTabController(
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(title),
+          title: Text(screen_title),
           bottom: PreferredSize(
             preferredSize: Size.fromHeight(112),
             child: Column(

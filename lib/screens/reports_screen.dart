@@ -94,7 +94,6 @@ class _PeriodStatementItem extends StatelessWidget {
       return "General";
     }
 
-    print("Gola");
   }
   @override
   Widget build(BuildContext context) {
