@@ -88,7 +88,7 @@ class TransactionsRepository extends WebRepository {
   }
 
   Future<List<Transaction>> fetch(String accountId, String fundId,
-      {int pageSize: 100}) async {
+      {int pageSize: 10}) async {
     var url = "${getHost()}transactions?page_size=$pageSize";
 
     if (accountId != null) {
@@ -104,9 +104,10 @@ class TransactionsRepository extends WebRepository {
     var response = await http.get(url, headers: header);
 
     if (response.statusCode == 200) {
-      var jsonMap = json.decode(response.body) as List<dynamic>;
+      var jsonMap = json.decode(response.body) as Map<String, dynamic>;
 
-      var transactions = jsonMap.map((e) => Transaction.fromMap(e)).toList();
+      var transactions = List<Transaction>.from(
+          jsonMap['_items'].map((e) => Transaction.fromMap(e)));
 
       transactions.sort((left, right) {
         var rightDate = right.dateAccomplished == null
