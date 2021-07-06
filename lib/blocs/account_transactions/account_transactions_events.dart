@@ -1,11 +1,12 @@
 
 class AccountTransactionsEvent {}
 
-class AccountTransactionsLoad extends AccountTransactionsEvent {}
+class LoadNextPageEvent extends AccountTransactionsEvent {
+}
 
-class AccountTransactionsDeleteEvent extends AccountTransactionsEvent {
+class DeleteTransactionEvent extends AccountTransactionsEvent {
   String accountId;
   String transactionId;
 
-  AccountTransactionsDeleteEvent(this.accountId, this.transactionId);
+  DeleteTransactionEvent(this.accountId, this.transactionId);
 }

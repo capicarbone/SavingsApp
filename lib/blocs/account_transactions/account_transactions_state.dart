@@ -14,9 +14,11 @@ class AccountTransactionsUpdated extends AccountTransactionsState{
   List<Transaction> transactions;
   Map<String, Account> accountsMap;
   Map<String, Category> categoriesMap;
+  bool hasNextPage = false;
   bool transactionDeleted;
 
   AccountTransactionsUpdated({this.transactions,
+    this.hasNextPage,
     this.accountsMap,
     this.categoriesMap,
     this.transactionDeleted});

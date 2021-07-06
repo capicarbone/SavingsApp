@@ -88,8 +88,8 @@ class TransactionsRepository extends WebRepository {
   }
 
   Future<List<Transaction>> fetch(String accountId, String fundId,
-      {int pageSize: 10}) async {
-    var url = "${getHost()}transactions?page_size=$pageSize";
+      {page: 1, int pageSize: 10}) async {
+    var url = "${getHost()}transactions?page_size=$pageSize&page=$page";
 
     if (accountId != null) {
       url += "&account_id=$accountId";
@@ -130,7 +130,7 @@ class TransactionsRepository extends WebRepository {
     return await fetch(null, fundId);
   }
 
-  Future<List<Transaction>> fetchAccountTransactions(String accountId) async {
+  Future<List<Transaction>> fetchAccountTransactions(String accountId, int page) async {
     return await fetch(accountId, null);
   }
 }

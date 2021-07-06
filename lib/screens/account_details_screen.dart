@@ -10,99 +10,126 @@ import 'package:savings_app/blocs/account_transactions/account_transactions_stat
 import 'package:savings_app/models/account.dart';
 import 'package:savings_app/models/category.dart';
 import 'package:savings_app/models/transaction.dart';
-import 'package:savings_app/repositories/accounts_repository.dart';
-import 'package:savings_app/repositories/categories_repository.dart';
-import 'package:savings_app/repositories/funds_repository.dart';
-import 'package:savings_app/repositories/transactions_repository.dart';
 import 'package:savings_app/widgets/transaction_tile.dart';
 
-class AccountDetailsScreen extends StatelessWidget {
+class AccountDetailsScreen extends StatefulWidget {
   static const routeName = '/account-details';
 
+  @override
+  _AccountDetailsScreenState createState() => _AccountDetailsScreenState();
+}
+
+class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
   AccountTransactionsBloc _bloc;
+
   Account account;
+  bool _loading = false;
+  bool _hasNextPage = true;
 
-  String _getShortDescription(Transaction transaction,
-      String accountId,
-      Map<String, Account> accounts,
-      Map<String, Category> categories
-      ) {
+  ScrollController _scrollController = ScrollController();
 
-    if (transaction.dateAccomplished == null)
-      return "Initial balance";
+  String _getShortDescription(Transaction transaction, String accountId,
+      Map<String, Account> accounts, Map<String, Category> categories) {
+    if (transaction.dateAccomplished == null) return "Initial balance";
 
     if (transaction.isAccountTransfer) {
       var receiver = transaction.getReceiverAccount();
       var source = transaction.getAccountSource();
 
-      if (receiver.accountId == accountId){
-        return "Transfer from " +  accounts[source.accountId].name;
-      }else{
+      if (receiver.accountId == accountId) {
+        return "Transfer from " + accounts[source.accountId].name;
+      } else {
         return "Transfer to " + accounts[receiver.accountId].name;
       }
     }
 
-    if (transaction.categoryId != null){
+    if (transaction.categoryId != null) {
       return categories[transaction.categoryId].name;
-    }else{
-      if (transaction.isIncome){
+    } else {
+      if (transaction.isIncome) {
         return "Income";
-      }else{
+      } else {
         return "Expense";
       }
     }
-
   }
 
   void _onTransactionTap(BuildContext ctx, Transaction transaction) {
     showModalBottomSheet(
-        context: ctx, builder: (_) {
-      return Container(
-        child: Wrap(
-          children: <Widget>[
-            ListTile(
-              onTap: (){
-                var event = AccountTransactionsDeleteEvent(account.id, transaction.id);
-                _bloc.add(event);
+        context: ctx,
+        builder: (_) {
+          return Container(
+            child: Wrap(
+              children: <Widget>[
+                ListTile(
+                  onTap: () {
+                    var event =
+                        DeleteTransactionEvent(account.id, transaction.id);
+                    _bloc.add(event);
 
-                var accountTransaction = transaction.transactionForAccount(account.id);
+                    var accountTransaction =
+                        transaction.transactionForAccount(account.id);
 
-                BlocProvider.of<AccountSummaryBloc>(ctx).add(
-                  AccountSummaryBalanceUpdateEvent(accountTransaction.change)
-                );
+                    BlocProvider.of<AccountSummaryBloc>(ctx).add(
+                        AccountSummaryBalanceUpdateEvent(
+                            accountTransaction.change));
 
-                Navigator.pop(ctx);
-
-              },
-              leading: Icon(Icons.delete),
-              title: Text("Delete", style: TextStyle(color: Colors.red),),
+                    Navigator.pop(ctx);
+                  },
+                  leading: Icon(Icons.delete),
+                  title: Text(
+                    "Delete",
+                    style: TextStyle(color: Colors.red),
+                  ),
+                ),
+              ],
             ),
-          ],),
-      );
-    });
+          );
+        });
   }
 
   Widget _buildTransactionsList(
-      BuildContext ctx, Account account,
-      AccountTransactionsUpdated state) {
+      BuildContext ctx, Account account, AccountTransactionsUpdated state) {
     var transactions = state.transactions;
-    return ListView.builder(
-        itemCount: transactions.length,
-        itemBuilder: (_, index) {
-          var transaction = transactions[index];
-          var accountTransaction =
-              transaction.transactionForAccount(account.id);
 
-          return TransactionTile(
-            transaction: transaction,
-            title: _getShortDescription(transaction, account.id, state.accountsMap, state.categoriesMap),
-            description: transaction.description,
-            date: transaction.dateAccomplished,
-            change: accountTransaction.change,
-            onTap: (transaction) {
-              _onTransactionTap(ctx, transaction);
-            },
-          );
+    _loading = false;
+    _hasNextPage = state.hasNextPage;
+
+    // TODO: improve. remove listener when triggered. increase margin
+    if (!_scrollController.hasListeners) {
+      _scrollController.addListener(() {
+        if (_scrollController.position.maxScrollExtent ==
+                _scrollController.position.pixels &&
+            _hasNextPage && _loading == false) {
+          _loading = true;
+          _bloc.add(LoadNextPageEvent());
+        }
+      });
+    }
+
+    return ListView.builder(
+        controller: _scrollController,
+        itemCount: transactions.length + ((_hasNextPage)? 1 : 0),
+        itemBuilder: (_, index) {
+          if (index < transactions.length) {
+            var transaction = transactions[index];
+            var accountTransaction =
+                transaction.transactionForAccount(account.id);
+
+            return TransactionTile(
+              transaction: transaction,
+              title: _getShortDescription(transaction, account.id,
+                  state.accountsMap, state.categoriesMap),
+              description: transaction.description,
+              date: transaction.dateAccomplished,
+              change: accountTransaction.change,
+              onTap: (transaction) {
+                _onTransactionTap(ctx, transaction);
+              },
+            );
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
         });
   }
 
@@ -121,7 +148,6 @@ class AccountDetailsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
-
             Text(
               "Balance",
               style: TextStyle(color: Colors.white),
@@ -148,12 +174,13 @@ class AccountDetailsScreen extends StatelessWidget {
       child: BlocBuilder<AccountTransactionsBloc, AccountTransactionsState>(
         builder: (ctx, state) {
           if (state is AccountTransactionsUpdated) {
-            if (state.transactions.length > 0){
+            if (state.transactions.length > 0) {
               return _buildTransactionsList(ctx, account, state);
-            }else{
-              return Center(child: Text("No transactions"),);
+            } else {
+              return Center(
+                child: Text("No transactions"),
+              );
             }
-
           }
           return _buildLoadingView();
         },
@@ -169,19 +196,18 @@ class AccountDetailsScreen extends StatelessWidget {
 
     assert(account != null);
 
-    if (_bloc == null){
-      _bloc = AccountTransactionsBloc(
-          accountId: account.id);
+    if (_bloc == null) {
+      _bloc = AccountTransactionsBloc(accountId: account.id);
     }
 
-    _bloc.add(AccountTransactionsLoad());
+    _bloc.add(LoadNextPageEvent());
 
     return Scaffold(
       appBar: AppBar(
         title: Text(account.name),
       ),
       body: BlocProvider(
-        create: (_){
+        create: (_) {
           return AccountSummaryBloc(account.balance);
         },
         child: BlocProvider(
