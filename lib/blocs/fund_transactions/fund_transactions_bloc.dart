@@ -16,6 +16,7 @@ class FundTransactionsBloc
     extends Bloc<FundTransactionsEvent, FundTransactionsState> {
   String fundId;
   String authToken;
+  int _lastLoadedPage = 0;
   TransactionsRepository _transactionsRepository;
   FundsRepository _fundsRepository;
   AccountsRepository _accountsRepository;
@@ -33,26 +34,33 @@ class FundTransactionsBloc
   @override
   Stream<FundTransactionsState> mapEventToState(
       FundTransactionsEvent event) async* {
-    if (event is FundTransactionsLoadEvent) {
-      yield FundTransactionsLoadingState();
 
-      List<Transaction> transactions;
+    if (event is FundTransactionsLoadEvent) {
+
+      _lastLoadedPage++;
+
+      if (_lastLoadedPage == 1){
+        yield FundTransactionsLoadingState();
+      }
+
+      TransactionsPage transactionsPage;
 
       try {
-        transactions =
+        transactionsPage =
             await _transactionsRepository.fetchFundTransactions(fundId);
       } catch (e, trace) {
         log(e.toString(), error: e, stackTrace: trace);
         yield FundTransactionsLoadingFailed();
       }
 
-      if (transactions != null) {
+      if (transactionsPage != null) {
         var accounts = _accountsRepository.restore();
         var funds = _fundsRepository.restore();
         var categories = _categoriesRepository.restore();
 
         yield FundTransactionsUpdatedState(
-            transactions: transactions,
+          hasNextPage: _lastLoadedPage < transactionsPage.totalPages,
+            transactions: transactionsPage.items,
             fundsMap: {for (var fund in funds) fund.id: fund},
             accountsMap: {for (var account in accounts) account.id: account},
             categoriesMap: {for (var cat in categories) cat.id: cat});

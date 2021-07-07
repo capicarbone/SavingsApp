@@ -13,6 +13,7 @@ class FundTransactionsLoadingState extends FundTransactionsState {}
 
 class FundTransactionsUpdatedState extends FundTransactionsState {
   List<Transaction> transactions;
+  bool hasNextPage;
   Map<String, Fund> fundsMap;
   Map<String, Account> accountsMap;
   Map<String, Category> categoriesMap;
@@ -20,7 +21,8 @@ class FundTransactionsUpdatedState extends FundTransactionsState {
   FundTransactionsUpdatedState({this.transactions,
     this.accountsMap,
     this.fundsMap,
-    this.categoriesMap
+    this.categoriesMap,
+    this.hasNextPage
   });
 }
 

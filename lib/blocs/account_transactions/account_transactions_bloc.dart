@@ -13,7 +13,7 @@ import 'package:savings_app/repositories/user_repository.dart';
 class AccountTransactionsBloc
     extends Bloc<AccountTransactionsEvent, AccountTransactionsState> {
   String accountId;
-  int _lastPage = 0;
+  int _lastLoadedPage = 0;
   List<Transaction> _transactions = [];
 
   TransactionsRepository _transactionsRepository;
@@ -46,9 +46,9 @@ class AccountTransactionsBloc
 
     if (event is LoadNextPageEvent ) {
 
-      _lastPage++;
+      _lastLoadedPage++;
 
-      if (_lastPage == 1){
+      if (_lastLoadedPage == 1){
         yield AccountTransactionsLoading();
       }
 
@@ -56,7 +56,7 @@ class AccountTransactionsBloc
 
       try {
         transactionsPage =
-            await _transactionsRepository.fetchAccountTransactionsPage(accountId, _lastPage);
+            await _transactionsRepository.fetchAccountTransactionsPage(accountId, _lastLoadedPage);
       } catch (e, trace) {
         log(e.toString(), error: e, stackTrace: trace);
         yield AccountTransactionsLoadingFailed();
@@ -70,7 +70,7 @@ class AccountTransactionsBloc
 
         yield AccountTransactionsUpdated(
             transactions: _transactions,
-            hasNextPage: _lastPage < transactionsPage.totalPages,
+            hasNextPage: _lastLoadedPage < transactionsPage.totalPages,
             accountsMap: {for (var account in accountsMap) account.id: account},
             categoriesMap: {for (var cat in categoriesMap) cat.id: cat},
             transactionDeleted: transactionDeleted);
