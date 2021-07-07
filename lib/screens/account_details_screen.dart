@@ -54,6 +54,12 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
     }
   }
 
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   void _onTransactionTap(BuildContext ctx, Transaction transaction) {
     showModalBottomSheet(
         context: ctx,
@@ -95,7 +101,6 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
     _loading = false;
     _hasNextPage = state.hasNextPage;
 
-    // TODO: improve. remove listener when triggered. increase margin
     if (!_scrollController.hasListeners) {
       _scrollController.addListener(() {
         if (_scrollController.position.maxScrollExtent ==
