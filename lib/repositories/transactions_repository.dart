@@ -4,16 +4,19 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 import 'package:intl/intl.dart';
-import 'package:savings_app/app_settings.dart';
 import 'package:savings_app/models/account_transfer_post.dart';
-import 'package:savings_app/models/fund.dart';
-import 'package:savings_app/models/category.dart' as transactionCategory;
 import 'package:savings_app/models/transaction.dart';
 import 'package:savings_app/models/transaction_post.dart';
-import 'package:savings_app/repositories/accounts_repository.dart';
-import 'package:savings_app/repositories/categories_repository.dart';
-import 'package:savings_app/repositories/funds_repository.dart';
 import 'package:savings_app/repositories/web_repository.dart';
+
+class TransactionsPage {
+  List<Transaction> items;
+  int count;
+  int totalPages;
+  int page;
+
+  TransactionsPage({this.items, this.count, this.totalPages, this.page});
+}
 
 class TransactionsRepository extends WebRepository {
   String authToken;
@@ -87,7 +90,7 @@ class TransactionsRepository extends WebRepository {
     }
   }
 
-  Future<List<Transaction>> fetch(String accountId, String fundId,
+  Future<TransactionsPage> fetchPage(String accountId, String fundId,
       {page: 1, int pageSize: 10}) async {
     var url = "${getHost()}transactions?page_size=$pageSize&page=$page";
 
@@ -120,17 +123,21 @@ class TransactionsRepository extends WebRepository {
             leftDate.millisecondsSinceEpoch;
       });
 
-      return transactions;
+      return TransactionsPage(items: transactions,
+      page: page,
+      count: jsonMap['_count'],
+      totalPages: jsonMap['_total_pages']);
     } else {
       throw Exception("Error on request: " + response.statusCode.toString());
     }
   }
 
   Future<List<Transaction>> fetchFundTransactions(String fundId) async {
-    return await fetch(null, fundId);
+    var page = await fetchPage(null, fundId);
+    return page.items;
   }
 
-  Future<List<Transaction>> fetchAccountTransactions(String accountId, int page) async {
-    return await fetch(accountId, null);
+  Future<TransactionsPage> fetchAccountTransactionsPage(String accountId, int page) async {
+    return await fetchPage(accountId, null, page: page);
   }
 }

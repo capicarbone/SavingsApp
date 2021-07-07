@@ -52,25 +52,25 @@ class AccountTransactionsBloc
         yield AccountTransactionsLoading();
       }
 
-      var transactions;
+      TransactionsPage transactionsPage;
 
       try {
-        transactions =
-            await _transactionsRepository.fetchAccountTransactions(accountId, _lastPage);
+        transactionsPage =
+            await _transactionsRepository.fetchAccountTransactionsPage(accountId, _lastPage);
       } catch (e, trace) {
         log(e.toString(), error: e, stackTrace: trace);
         yield AccountTransactionsLoadingFailed();
       }
 
-      if (transactions != null) {
+      if (transactionsPage != null) {
         var categoriesMap = _categoriesRepository.restore();
         var accountsMap = _accountsRepository.restore();
 
-        _transactions.addAll(transactions);
+        _transactions.addAll(transactionsPage.items);
 
         yield AccountTransactionsUpdated(
             transactions: _transactions,
-            hasNextPage: _lastPage < 2, // TODO: get from response
+            hasNextPage: _lastPage < transactionsPage.totalPages,
             accountsMap: {for (var account in accountsMap) account.id: account},
             categoriesMap: {for (var cat in categoriesMap) cat.id: cat},
             transactionDeleted: transactionDeleted);
