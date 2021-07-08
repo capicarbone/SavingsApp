@@ -24,7 +24,7 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
 
   Account account;
   bool _loading = false;
-  bool _hasNextPage = true;
+  bool _hasNextPage = false;
 
   ScrollController _scrollController = ScrollController();
 

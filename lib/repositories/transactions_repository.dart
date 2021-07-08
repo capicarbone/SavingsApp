@@ -132,8 +132,8 @@ class TransactionsRepository extends WebRepository {
     }
   }
 
-  Future<TransactionsPage> fetchFundTransactions(String fundId) async {
-    return await fetchPage(null, fundId);
+  Future<TransactionsPage> fetchFundTransactions(String fundId, int page) async {
+    return await fetchPage(null, fundId, page: page);
   }
 
   Future<TransactionsPage> fetchAccountTransactionsPage(String accountId, int page) async {

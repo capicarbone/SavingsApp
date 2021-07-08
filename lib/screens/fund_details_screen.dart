@@ -13,6 +13,9 @@ class FundDetailsScreen extends StatelessWidget {
   static const routeName = '/fund-details';
 
   FundTransactionsBloc _bloc;
+  var _loading = false;
+  var _hasNextPage = false;
+  final _scrollController = ScrollController();
 
   String _getShortDescription(
       Transaction transaction,
@@ -20,10 +23,9 @@ class FundDetailsScreen extends StatelessWidget {
       Map<String, Category> categories,
       Map<String, Fund> funds,
       String fundId) {
-
-    if (transaction.dateAccomplished == null){
+    if (transaction.dateAccomplished == null) {
       var receiverAccount =
-      accounts[transaction.getReceiverAccount().accountId];
+          accounts[transaction.getReceiverAccount().accountId];
 
       return "Initial balance for " + receiverAccount.name;
     }
@@ -80,27 +82,50 @@ class FundDetailsScreen extends StatelessWidget {
       List<Transaction> transactions,
       Map<String, Account> accounts,
       Map<String, Category> categories,
-      Map<String, Fund> funds) {
+      Map<String, Fund> funds,
+      ) {
+    
+    if (!_scrollController.hasListeners){
+      _scrollController.addListener(() {
+        if (_scrollController.position.maxScrollExtent ==
+            _scrollController.position.pixels &&
+            _hasNextPage && _loading == false) {
+          _loading = true;
+          _bloc.add(LoadNextPageEvent());
+        }
+      });
+    }
+
     return ListView.builder(
-        itemCount: transactions.length,
+        controller: _scrollController,
+        itemCount: transactions.length + ((_hasNextPage) ? 1 : 0),
         itemBuilder: (_, index) {
-          var transaction = transactions[index];
-          var fundTransaction = transaction.transactionForFund(fund.id);
-          return TransactionTile(
-            title: _getShortDescription(
-                transaction, accounts, categories, funds, fund.id),
-            description: transaction.description,
-            date: transaction.dateAccomplished,
-            change: fundTransaction.change,
-          );
+          if (index < transactions.length) {
+            var transaction = transactions[index];
+            var fundTransaction = transaction.transactionForFund(fund.id);
+            return TransactionTile(
+              title: _getShortDescription(
+                  transaction, accounts, categories, funds, fund.id),
+              description: transaction.description,
+              date: transaction.dateAccomplished,
+              change: fundTransaction.change,
+            );
+          } else {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
         });
   }
 
   Widget _buildFundTransactionsList(Fund fund) {
+
     return Container(
       child: BlocBuilder<FundTransactionsBloc, FundTransactionsState>(
         builder: (ctx, state) {
           if (state is FundTransactionsUpdatedState) {
+            _hasNextPage = state.hasNextPage;
+            _loading = false;
             if (state.transactions.length > 0) {
               return _buildTransactionsList(fund, state.transactions,
                   state.accountsMap, state.categoriesMap, state.fundsMap);
@@ -135,7 +160,7 @@ class FundDetailsScreen extends StatelessWidget {
       ),
       body: BlocProvider(
         create: (_) {
-          _bloc.add(FundTransactionsLoadEvent());
+          _bloc.add(LoadNextPageEvent());
           return _bloc;
         },
         child: Column(

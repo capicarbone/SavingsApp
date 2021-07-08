@@ -17,6 +17,7 @@ class FundTransactionsBloc
   String fundId;
   String authToken;
   int _lastLoadedPage = 0;
+  List<Transaction> _cachedTransactions = [];
   TransactionsRepository _transactionsRepository;
   FundsRepository _fundsRepository;
   AccountsRepository _accountsRepository;
@@ -35,7 +36,7 @@ class FundTransactionsBloc
   Stream<FundTransactionsState> mapEventToState(
       FundTransactionsEvent event) async* {
 
-    if (event is FundTransactionsLoadEvent) {
+    if (event is LoadNextPageEvent) {
 
       _lastLoadedPage++;
 
@@ -47,7 +48,7 @@ class FundTransactionsBloc
 
       try {
         transactionsPage =
-            await _transactionsRepository.fetchFundTransactions(fundId);
+            await _transactionsRepository.fetchFundTransactions(fundId, _lastLoadedPage);
       } catch (e, trace) {
         log(e.toString(), error: e, stackTrace: trace);
         yield FundTransactionsLoadingFailed();
@@ -58,9 +59,11 @@ class FundTransactionsBloc
         var funds = _fundsRepository.restore();
         var categories = _categoriesRepository.restore();
 
+        _cachedTransactions.addAll(transactionsPage.items);
+
         yield FundTransactionsUpdatedState(
           hasNextPage: _lastLoadedPage < transactionsPage.totalPages,
-            transactions: transactionsPage.items,
+            transactions: _cachedTransactions,
             fundsMap: {for (var fund in funds) fund.id: fund},
             accountsMap: {for (var account in accounts) account.id: account},
             categoriesMap: {for (var cat in categories) cat.id: cat});

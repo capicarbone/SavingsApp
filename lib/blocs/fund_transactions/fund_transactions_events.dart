@@ -1,4 +1,4 @@
 
 class FundTransactionsEvent {}
 
-class FundTransactionsLoadEvent extends FundTransactionsEvent {}
+class LoadNextPageEvent extends FundTransactionsEvent {}
