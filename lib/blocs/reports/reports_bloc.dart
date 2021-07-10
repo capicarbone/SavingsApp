@@ -9,7 +9,7 @@ import 'package:savings_app/repositories/month_statements_repository.dart';
 import 'package:savings_app/repositories/user_repository.dart';
 
 class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
-  int nextPage = 0;
+  int nextPage = 1;
   List<PeriodStatement> allStatements = [];
 
   ReportsBloc() : super(InitialState());
@@ -19,7 +19,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
 
 
     if (event is ReloadData){
-      nextPage = 0;
+      nextPage = 1;
       allStatements.clear();
     }
 

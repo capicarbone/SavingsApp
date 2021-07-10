@@ -12,7 +12,7 @@ class MonthStatementsRepository extends WebRepository {
   String get _resourceUrl => getHost() + resourceUri;
 
   // TODO: add month and year as parameters
-  Future<List<PeriodStatement>> fetch([int page = 0]) async {
+  Future<List<PeriodStatement>> fetch([int page = 1]) async {
 
     var url = "$_resourceUrl?page=$page";
 
