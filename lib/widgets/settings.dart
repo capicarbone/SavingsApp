@@ -1,6 +1,8 @@
 
 import 'package:flutter/material.dart';
-import 'package:savings_app/models/fund.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:savings_app/blocs/authentication/authentication_bloc.dart';
+import 'package:savings_app/blocs/authentication/authentication_events.dart';
 import 'package:savings_app/widgets/account_form.dart';
 import 'package:savings_app/widgets/category_form.dart';
 import 'package:savings_app/widgets/fund_form.dart';
@@ -33,6 +35,10 @@ class SettingsScreen extends StatelessWidget {
               child: FundForm(),
             ),
           ),
+          OutlinedButton(onPressed: (){
+            BlocProvider.of<AuthenticationBloc>(context)
+                .add(AuthenticationLoggedOut());
+          }, child: Text("Logout"))
         ],
       ),
     );
