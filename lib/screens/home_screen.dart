@@ -32,53 +32,55 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _body() {
 
-    return BlocProvider(
-      create: (context) {
+    return SafeArea(
+      child: BlocProvider(
+        create: (context) {
 
-        _categoriesRepository = CategoriesRepository(authToken: widget.authToken);
-        _fundsRepository = FundsRepository(authToken: widget.authToken);
-        _accountsRepository = AccountsRepository(authToken: widget.authToken);
+          _categoriesRepository = CategoriesRepository(authToken: widget.authToken);
+          _fundsRepository = FundsRepository(authToken: widget.authToken);
+          _accountsRepository = AccountsRepository(authToken: widget.authToken);
 
-        return SettingsSyncerBloc(
-            categoriesRepository: _categoriesRepository,
-            accountsRepository: _accountsRepository,
-            fundsRepository: _fundsRepository);
-      },
-      child: BlocBuilder<SettingsSyncerBloc, SettingsSyncState>(
-        buildWhen: (context, state) => state is SettingsLoaded || state is InitialSync,
-          builder: (context, state) {
+          return SettingsSyncerBloc(
+              categoriesRepository: _categoriesRepository,
+              accountsRepository: _accountsRepository,
+              fundsRepository: _fundsRepository);
+        },
+        child: BlocBuilder<SettingsSyncerBloc, SettingsSyncState>(
+          buildWhen: (context, state) => state is SettingsLoaded || state is InitialSync,
+            builder: (context, state) {
 
-        if (state is InitialSync)
-          BlocProvider.of<SettingsSyncerBloc>(context)
-              .add(SettingsSyncerSyncRequested());
+          if (state is InitialSync)
+            BlocProvider.of<SettingsSyncerBloc>(context)
+                .add(SettingsSyncerSyncRequested());
 
-        if (state is SettingsLoaded ) {
+          if (state is SettingsLoaded ) {
 
-          return IndexedStack(
-            index: _selectedPageIndex,
-            children: [
-              const MySummaryScreen(),
-              const NewTransactionScreen(),
-              const ReportsScreen(),
-              const SettingsScreen()
-            ],
-          );
-        }
+            return IndexedStack(
+              index: _selectedPageIndex,
+              children: [
+                const MySummaryScreen(),
+                const NewTransactionScreen(),
+                const ReportsScreen(),
+                const SettingsScreen()
+              ],
+            );
+          }
 
-        return Container(
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                children: <Widget>[
-                  CircularProgressIndicator(),
-                  Text("Syncing")
-                ],
+          return Container(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  children: <Widget>[
+                    CircularProgressIndicator(),
+                    Text("Syncing")
+                  ],
+                ),
               ),
             ),
-          ),
-        );
-      }),
+          );
+        }),
+      ),
     );
   }
 
@@ -91,18 +93,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Home"),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.exit_to_app),
-            onPressed: () {
-              BlocProvider.of<AuthenticationBloc>(context)
-                  .add(AuthenticationLoggedOut());
-            },
-          )
-        ],
-      ),
       body: _body(),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedPageIndex,
