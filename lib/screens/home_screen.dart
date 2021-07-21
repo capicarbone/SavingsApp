@@ -58,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
             return IndexedStack(
               index: _selectedPageIndex,
               children: [
-                const MySummaryScreen(),
+                const BalanceScreen(),
                 const NewTransactionScreen(),
                 const ReportsScreen(),
                 const SettingsScreen()
@@ -101,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
         unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(
-              icon: Icon(Icons.dashboard), title: Text("Dashboard")),
+              icon: Icon(Icons.dashboard), title: Text("Balance")),
           BottomNavigationBarItem(
               icon: Icon(Icons.add), title: Text("New Transaction")),
           BottomNavigationBarItem(

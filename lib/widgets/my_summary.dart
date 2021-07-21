@@ -10,16 +10,16 @@ import 'package:savings_app/screens/account_details_screen.dart';
 import 'package:savings_app/screens/fund_details_screen.dart';
 import 'package:savings_app/widgets/currency_value.dart';
 
-class MySummaryScreen extends StatefulWidget {
+class BalanceScreen extends StatefulWidget {
 
 
-  const MySummaryScreen() ;
+  const BalanceScreen() ;
 
   @override
-  _MySummaryScreenState createState() => _MySummaryScreenState();
+  _BalanceScreenState createState() => _BalanceScreenState();
 }
 
-class _MySummaryScreenState extends State<MySummaryScreen> {
+class _BalanceScreenState extends State<BalanceScreen> {
 
   void _refresh(BuildContext ctx){
     //TODO: I should update from the database and not from the server
