@@ -10,7 +10,7 @@ import 'package:savings_app/repositories/accounts_repository.dart';
 import 'package:savings_app/repositories/categories_repository.dart';
 import 'package:savings_app/repositories/funds_repository.dart';
 import 'package:savings_app/screens/reports_screen.dart';
-import 'package:savings_app/widgets/my_summary.dart';
+import 'package:savings_app/widgets/balance.dart';
 import 'package:savings_app/widgets/new_transaction.dart';
 import 'package:savings_app/widgets/settings.dart';
 

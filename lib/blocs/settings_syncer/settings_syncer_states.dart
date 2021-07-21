@@ -29,26 +29,39 @@ class DataContainerState extends SettingsSyncState {
   List<Category> categories;
   List<Account> accounts;
   List<Fund> funds;
+  final double generalBalance;
 
-  DataContainerState({this.categories, this.accounts, this.funds});
-
-
+  DataContainerState(
+      {this.categories, this.accounts, this.funds, this.generalBalance});
 
   @override
-  List<Object> get props => [categories, accounts, funds];
+  List<Object> get props => [categories, accounts, funds, generalBalance];
 }
-
 
 class SettingsLoaded extends DataContainerState {
   SettingsLoaded(
-      {List<Category> categories, List<Account> accounts, List<Fund> funds})
-      : super(categories: categories, accounts: accounts, funds: funds);
+      {List<Category> categories,
+      List<Account> accounts,
+      List<Fund> funds,
+      double generalBalance})
+      : super(
+            categories: categories,
+            accounts: accounts,
+            funds: funds,
+            generalBalance: generalBalance);
 }
 
 class LocalDataUpdated extends DataContainerState {
   LocalDataUpdated(
-      {List<Category> categories, List<Account> accounts, List<Fund> funds})
-      : super(categories: categories, accounts: accounts, funds: funds);
+      {List<Category> categories,
+      List<Account> accounts,
+      List<Fund> funds,
+      double balance})
+      : super(
+            categories: categories,
+            accounts: accounts,
+            funds: funds,
+            generalBalance: balance);
 }
 
 class SyncFailed extends SettingsSyncState {
