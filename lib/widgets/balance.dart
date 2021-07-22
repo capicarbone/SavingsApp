@@ -119,8 +119,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
         child: Container(
-            child: Padding(
-      padding: const EdgeInsets.all(18.0),
+          padding: const EdgeInsets.all(18.0),
       child: Column(
         children: <Widget>[
           _Balance(),
@@ -134,7 +133,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
           _accountsSectionWidget(),
         ],
       ),
-    )));
+    ));
   }
 }
 
