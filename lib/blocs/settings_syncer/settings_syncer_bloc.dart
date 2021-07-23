@@ -34,7 +34,8 @@ class SettingsSyncerBloc extends Bloc<SettingsSyncerEvent, SettingsSyncState> {
       yield LocalDataUpdated(
           categories: categories,
           accounts: accounts,
-          funds: funds
+          funds: funds,
+          balance: _getBalance(accounts)
       );
     }
 
@@ -52,7 +53,8 @@ class SettingsSyncerBloc extends Bloc<SettingsSyncerEvent, SettingsSyncState> {
         yield SettingsLoaded( 
             categories: categories,
             accounts: accounts,
-            funds: funds
+            funds: funds,
+            generalBalance: _getBalance(accounts)
         );
       }
 
@@ -63,9 +65,14 @@ class SettingsSyncerBloc extends Bloc<SettingsSyncerEvent, SettingsSyncState> {
       yield SettingsLoaded(
           categories: categories,
           accounts: accounts,
-          funds: funds
+          funds: funds,
+          generalBalance: _getBalance(accounts)
       );
     }
+  }
+
+  double _getBalance(List<Account> acounts) {
+    return accounts.fold(0.0, (previousValue, element) => previousValue + element.balance);
   }
 
   void _loadCache(bool loadAccounts, bool loadFunds, bool loadCategories){

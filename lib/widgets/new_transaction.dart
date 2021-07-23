@@ -7,6 +7,7 @@ import 'package:savings_app/widgets/account_transfer_form.dart';
 import 'package:savings_app/widgets/in_out_form.dart';
 import 'package:savings_app/widgets/nested_tabs/nested_tab_bar.dart';
 import 'package:savings_app/widgets/nested_tabs/tab.dart';
+import 'package:savings_app/widgets/section_title.dart';
 
 class NewTransactionScreen extends StatefulWidget {
 
@@ -23,40 +24,46 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Card(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              NestedTabBar(
-                onTap: (position) {
-                  setState(() {
-                    _selectedTab = position;
-                  });
-                },
-                tabs: [
-                  NestedTab(
-                    text: "Expense",
+        padding: const EdgeInsets.all(18.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SectionTitle(title: "New Transaction",),
+            Card(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  NestedTabBar(
+                    onTap: (position) {
+                      setState(() {
+                        _selectedTab = position;
+                      });
+                    },
+                    tabs: [
+                      NestedTab(
+                        text: "Expense",
+                      ),
+                      NestedTab(
+                        text: "Income",
+                      ),
+                      NestedTab(text: "Transfer"),
+                    ],
                   ),
-                  NestedTab(
-                    text: "Income",
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: IndexedStack(
+                      index: _selectedTab,
+                      children: [
+                        const InOutForm(expenseMode: true,),
+                        const InOutForm(),
+                        const AccountTransferForm(),
+                      ],
+                    ),
                   ),
-                  NestedTab(text: "Transfer"),
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: IndexedStack(
-                  index: _selectedTab,
-                  children: [
-                    const InOutForm(expenseMode: true,),
-                    const InOutForm(),
-                    const AccountTransferForm(),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

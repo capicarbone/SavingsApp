@@ -8,6 +8,7 @@ import 'package:savings_app/blocs/settings_syncer/settings_syncer_bloc.dart';
 import 'package:savings_app/blocs/settings_syncer/settings_syncer_states.dart';
 import 'package:savings_app/models/period_statement.dart';
 import 'package:savings_app/screens/report_screen.dart';
+import 'package:savings_app/widgets/section_title.dart';
 
 class ReportsScreen extends StatelessWidget {
 
@@ -69,11 +70,17 @@ class _StatementsList extends StatelessWidget {
     // TODO: implement build
     return ListView.builder(
       itemBuilder: (context, index) {
+        if (index == 0){
+          return Padding(
+            padding: const EdgeInsets.only(right: 18, left: 18, top: 18),
+            child: SectionTitle(title: "Reports" ,),
+          );
+        }
         return _PeriodStatementItem(
-          statement: statements[index],
+          statement: statements[index - 1],
         );
       },
-      itemCount: statements.length,
+      itemCount: statements.length + 1,
     );
   }
 }
