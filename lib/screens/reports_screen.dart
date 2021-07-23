@@ -70,11 +70,17 @@ class _StatementsList extends StatelessWidget {
     // TODO: implement build
     return ListView.builder(
       itemBuilder: (context, index) {
+        if (index == 0){
+          return Padding(
+            padding: const EdgeInsets.only(right: 18, left: 18, top: 18),
+            child: SectionTitle(title: "Reports" ,),
+          );
+        }
         return _PeriodStatementItem(
-          statement: statements[index],
+          statement: statements[index - 1],
         );
       },
-      itemCount: statements.length,
+      itemCount: statements.length + 1,
     );
   }
 }
