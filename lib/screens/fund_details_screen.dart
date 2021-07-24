@@ -72,7 +72,7 @@ class FundDetailsScreen extends StatelessWidget {
                   color: Colors.white,
                   fontWeight: FontWeight.bold),
             ),
-            FundStatusBar()
+            FundStatusBar(fund: fund, balance: fund.balance,)
           ],
         ),
       ),
