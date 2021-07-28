@@ -1,20 +1,63 @@
 import 'package:flutter/material.dart';
 import 'package:savings_app/models/fund.dart';
 
+enum _MarkDirection { right, left }
+
 class _GoalMark extends StatelessWidget {
   final height;
-  const _GoalMark({Key key, this.height}) : super(key: key);
+  final width;
+  final _MarkDirection direction;
+  const _GoalMark(
+      {Key key, this.height, this.width, this.direction})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+
+    final mark = Container(
       width: 6,
       height: height,
       color: Colors.blue,
     );
+
+    final bar = Row(
+      children: [
+        if (direction == _MarkDirection.right)
+        mark,
+        Container(
+          height: height,
+          width: width - 6,
+          decoration: BoxDecoration(
+              color: Colors.white.withAlpha(70),
+              borderRadius: BorderRadius.only(
+                  topRight: (direction == _MarkDirection.right) ? Radius.circular(12) : Radius.zero,
+                  bottomRight: (direction == _MarkDirection.right) ? Radius.circular(12) : Radius.zero,
+              topLeft: (direction == _MarkDirection.left) ? Radius.circular(12) : Radius.zero,
+              bottomLeft: (direction == _MarkDirection.left) ? Radius.circular(12) : Radius.zero)
+
+          ),
+        ),
+        if (direction == _MarkDirection.left)
+          mark
+      ],
+    );
+
+    if (direction == _MarkDirection.right){
+      return Positioned(
+        child: bar,
+        top: 0,
+        right: 0,
+      );
+    }
+    else{
+      return Positioned(
+        child: bar,
+        top: 0,
+        left: 0,
+      );
+    }
   }
 }
-
 
 class FundStatusBar extends StatelessWidget {
   final Fund fund;
@@ -34,12 +77,12 @@ class FundStatusBar extends StatelessWidget {
           nextGoal = fund.maximumLimit;
         }
 
-        if (balance > fund.minimumLimit && balance < fund.maximumLimit) {
+        if (balance >= fund.minimumLimit && balance < fund.maximumLimit) {
           currentGoal = fund.maximumLimit;
           previousGoal = fund.minimumLimit;
         }
 
-        if (balance > fund.maximumLimit) {
+        if (balance >= fund.maximumLimit) {
           previousGoal = fund.maximumLimit;
           currentGoal = -1;
         }
@@ -81,24 +124,26 @@ class FundStatusBar extends StatelessWidget {
             ),
           ),
           if (previousGoal > 0)
-            Positioned(
-              child: _GoalMark(height: height,),
-              top: 0,
-              left: (currentGoal == -1)
+            _GoalMark(
+              direction: _MarkDirection.left,
+              height: height,
+              width: (currentGoal == -1)
                   ? proportionedWidth * (previousGoal / balance)
-                  : width * 0.25,
+                  : width * 0.20,
             ),
           if (currentGoal > 0)
-            Positioned(
-              child: _GoalMark(height: height,),
-              top: 0,
-              right: width * 0.25,
+            _GoalMark(
+              direction: _MarkDirection.right,
+              height: height,
+              width: width * 0.20,
             ),
+
           if (nextGoal > 0)
-            Positioned(
-              child: _GoalMark(height: height,),
-              top: 0,
-              right: width * 0.05,
+            _GoalMark(
+              height: height,
+              width: width * 0.05,
+              direction: _MarkDirection.right,
+
             ),
           // TODO Show next goal mark
           // Add next goal mark
