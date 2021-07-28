@@ -1,6 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:savings_app/models/fund.dart';
 
+class _GoalMark extends StatelessWidget {
+  final height;
+  const _GoalMark({Key key, this.height}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 6,
+      height: height,
+      color: Colors.blue,
+    );
+  }
+}
+
+
 class FundStatusBar extends StatelessWidget {
   final Fund fund;
   final double balance;
@@ -67,11 +82,7 @@ class FundStatusBar extends StatelessWidget {
           ),
           if (previousGoal > 0)
             Positioned(
-              child: Container(
-                width: 6,
-                height: height,
-                color: Colors.blue,
-              ),
+              child: _GoalMark(height: height,),
               top: 0,
               left: (currentGoal == -1)
                   ? proportionedWidth * (previousGoal / balance)
@@ -79,13 +90,15 @@ class FundStatusBar extends StatelessWidget {
             ),
           if (currentGoal > 0)
             Positioned(
-              child: Container(
-                width: 6,
-                height: height,
-                color: Colors.blue,
-              ),
+              child: _GoalMark(height: height,),
               top: 0,
               right: width * 0.25,
+            ),
+          if (nextGoal > 0)
+            Positioned(
+              child: _GoalMark(height: height,),
+              top: 0,
+              right: width * 0.05,
             ),
           // TODO Show next goal mark
           // Add next goal mark
