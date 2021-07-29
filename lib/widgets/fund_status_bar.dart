@@ -4,6 +4,9 @@ import 'package:savings_app/models/fund.dart';
 enum _MarkDirection { right, left }
 
 class _GoalMark extends StatelessWidget {
+
+  final _MARK_WIDTH = 3.0;
+
   final height;
   final width;
   final _MarkDirection direction;
@@ -15,18 +18,19 @@ class _GoalMark extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final mark = Container(
-      width: 6,
-      height: height,
+      width: _MARK_WIDTH,
+      height: height * 1.4,
       color: Colors.blue,
     );
 
     final bar = Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (direction == _MarkDirection.right)
         mark,
         Container(
           height: height,
-          width: width - 6,
+          width: width - _MARK_WIDTH,
           decoration: BoxDecoration(
               color: Colors.white.withAlpha(80),
               borderRadius: BorderRadius.only(
@@ -114,52 +118,56 @@ class FundStatusBar extends StatelessWidget {
       final width = constraints.maxWidth;
       final proportionedWidth =
           width - width * 0.25 * ((previousGoal != 0) ? 2 : 1);
-      final height = 20.0;
+      final barHeight = 20.0;
 
-      return Stack(
-        children: [
-          Container(
-            width: width,
-            height: height,
-            decoration: BoxDecoration(
-                color: Colors.grey,
-                borderRadius: BorderRadius.all(Radius.circular(12))),
-          ),
-          Positioned(
-            child: Container(
-              width: proportionedWidth * currentToCurrentGoal +
-                  ((previousGoal == 0) ? 0 : width * 0.25),
-              height: height,
+      return Container(
+        width: width,
+        height: barHeight * 1.4,
+        child: Stack(
+          children: [
+            Container(
+              width: width,
+              height: barHeight,
               decoration: BoxDecoration(
-                  color: _getBarColor(),
+                  color: Colors.grey,
                   borderRadius: BorderRadius.all(Radius.circular(12))),
             ),
-          ),
-          if (previousGoal > 0)
-            _GoalMark(
-              direction: _MarkDirection.left,
-              height: height,
-              width: (currentGoal == -1)
-                  ? proportionedWidth * (previousGoal / balance)
-                  : width * 0.10,
+            Positioned(
+              child: Container(
+                width: proportionedWidth * currentToCurrentGoal +
+                    ((previousGoal == 0) ? 0 : width * 0.25),
+                height: barHeight,
+                decoration: BoxDecoration(
+                    color: _getBarColor(),
+                    borderRadius: BorderRadius.all(Radius.circular(12))),
+              ),
             ),
-          if (currentGoal > 0)
-            _GoalMark(
-              direction: _MarkDirection.right,
-              height: height,
-              width: width * 0.20,
-            ),
+            if (previousGoal > 0)
+              _GoalMark(
+                direction: _MarkDirection.left,
+                height: barHeight,
+                width: (currentGoal == -1)
+                    ? proportionedWidth * (previousGoal / balance)
+                    : width * 0.10,
+              ),
+            if (currentGoal > 0)
+              _GoalMark(
+                direction: _MarkDirection.right,
+                height: barHeight,
+                width: width * 0.20,
+              ),
 
-          if (nextGoal > 0)
-            _GoalMark(
-              height: height,
-              width: width * 0.05,
-              direction: _MarkDirection.right,
+            if (nextGoal > 0)
+              _GoalMark(
+                height: barHeight,
+                width: width * 0.05,
+                direction: _MarkDirection.right,
 
-            ),
-          // TODO Show next goal mark
-          // Add next goal mark
-        ],
+              ),
+            // TODO Show next goal mark
+            // Add next goal mark
+          ],
+        ),
       );
     });
   }
