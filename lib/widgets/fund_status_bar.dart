@@ -28,7 +28,7 @@ class _GoalMark extends StatelessWidget {
           height: height,
           width: width - 6,
           decoration: BoxDecoration(
-              color: Colors.white.withAlpha(70),
+              color: Colors.white.withAlpha(80),
               borderRadius: BorderRadius.only(
                   topRight: (direction == _MarkDirection.right) ? Radius.circular(12) : Radius.zero,
                   bottomRight: (direction == _MarkDirection.right) ? Radius.circular(12) : Radius.zero,
@@ -63,6 +63,18 @@ class FundStatusBar extends StatelessWidget {
   final Fund fund;
   final double balance;
   const FundStatusBar({Key key, this.fund, this.balance}) : super(key: key);
+
+  Color _getBarColor(){
+    if ( fund.minimumLimit != null && balance < fund.minimumLimit){
+      return Colors.red;
+    }
+
+    if ((fund.maximumLimit == null && fund.minimumLimit == null) || (fund.maximumLimit != null && balance >= fund.maximumLimit * 0.9)){
+      return Colors.green;
+    }
+
+    return Colors.orange;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +131,7 @@ class FundStatusBar extends StatelessWidget {
                   ((previousGoal == 0) ? 0 : width * 0.25),
               height: height,
               decoration: BoxDecoration(
-                  color: Colors.orange,
+                  color: _getBarColor(),
                   borderRadius: BorderRadius.all(Radius.circular(12))),
             ),
           ),
@@ -129,7 +141,7 @@ class FundStatusBar extends StatelessWidget {
               height: height,
               width: (currentGoal == -1)
                   ? proportionedWidth * (previousGoal / balance)
-                  : width * 0.20,
+                  : width * 0.10,
             ),
           if (currentGoal > 0)
             _GoalMark(
