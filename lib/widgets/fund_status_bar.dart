@@ -83,13 +83,17 @@ class FundStatusBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const _height = 40.0;
+
+
+
+
     return LayoutBuilder(builder: (context, constraints) {
       double currentGoal = 0;
       double previousGoal = 0;
       double nextGoal = 0;
       var currentGoalIsMaximum = false;
 
+      var smallArea = constraints.widthConstraints().maxWidth < 200;
 
       if (fund.minimumLimit != null && fund.maximumLimit != null) {
         if (balance < fund.minimumLimit) {
@@ -123,11 +127,13 @@ class FundStatusBar extends StatelessWidget {
       final width = constraints.maxWidth;
       final proportionedWidth =
           width - width * 0.25 * ((previousGoal != 0) ? 2 : 1);
-      final barHeight = 20.0;
+
+      final height = smallArea ? 15.0 : 35.0;
+      final barHeight = smallArea ? height * 0.8 : height * 0.5;
 
       return Container(
         width: width,
-        height: _height,
+        height: height,
         child: Stack(
           children: [
             // Background
@@ -173,7 +179,7 @@ class FundStatusBar extends StatelessWidget {
                 direction: _MarkDirection.right,
               ),
 
-            if (currentGoal > 0)
+            if (!smallArea && currentGoal > 0)
               Positioned(
                 right: width * 0.20 + 6,
                 top: barHeight + 2,

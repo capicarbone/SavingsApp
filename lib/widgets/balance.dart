@@ -9,6 +9,7 @@ import 'package:savings_app/models/fund.dart';
 import 'package:savings_app/screens/account_details_screen.dart';
 import 'package:savings_app/screens/fund_details_screen.dart';
 import 'package:savings_app/widgets/currency_value.dart';
+import 'package:savings_app/widgets/fund_status_bar.dart';
 import 'package:savings_app/widgets/section_title.dart';
 
 class BalanceScreen extends StatefulWidget {
@@ -55,9 +56,20 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                 "Receiving ${(e.percetageAssignment * 100).toStringAsFixed(0)}% of your income.",
                                 style: TextStyle(fontSize: 12),
                               ),
-                              trailing: CurrencyValue(
-                                e.balance,
-                                style: TextStyle(fontSize: 16),
+                              trailing: Column(
+                                children: [
+                                  CurrencyValue(
+                                    e.balance,
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  Container(
+                                    padding: EdgeInsets.only(top: 6),
+                                    width: 100,
+                                      child: FundStatusBar(
+                                    fund: e,
+                                    balance: e.balance,
+                                  ))
+                                ],
                               ),
                             ),
                           ))
@@ -119,7 +131,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
         child: Container(
-          padding: const EdgeInsets.all(18.0),
+      padding: const EdgeInsets.all(18.0),
       child: Column(
         children: <Widget>[
           _Balance(),
@@ -147,20 +159,17 @@ class _Balance extends StatelessWidget {
       children: [
         SectionTitle(title: "Balance"),
         BlocBuilder<SettingsSyncerBloc, SettingsSyncState>(
-          buildWhen: (_, state) =>
-            state is DataContainerState
-          ,
-            builder: (context, state){
-            final balance = (state as DataContainerState).generalBalance;
-            return CurrencyValue(
-              balance,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold,
-              ),
-            );
-
-
-        }),
-
+            buildWhen: (_, state) => state is DataContainerState,
+            builder: (context, state) {
+              final balance = (state as DataContainerState).generalBalance;
+              return CurrencyValue(
+                balance,
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              );
+            }),
       ],
     );
   }
