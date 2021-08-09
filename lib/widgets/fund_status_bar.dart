@@ -4,19 +4,16 @@ import 'package:savings_app/models/fund.dart';
 enum _MarkDirection { right, left }
 
 class _GoalMark extends StatelessWidget {
-
   final _MARK_WIDTH = 3.0;
 
   final height;
   final width;
   final _MarkDirection direction;
-  const _GoalMark(
-      {Key key, this.height, this.width, this.direction})
+  const _GoalMark({Key key, this.height, this.width, this.direction})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     final mark = Container(
       width: _MARK_WIDTH,
       height: height * 1.4,
@@ -26,34 +23,37 @@ class _GoalMark extends StatelessWidget {
     final bar = Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (direction == _MarkDirection.right)
-        mark,
+        if (direction == _MarkDirection.right) mark,
         Container(
           height: height,
           width: width - _MARK_WIDTH,
           decoration: BoxDecoration(
               color: Colors.white.withAlpha(80),
               borderRadius: BorderRadius.only(
-                  topRight: (direction == _MarkDirection.right) ? Radius.circular(12) : Radius.zero,
-                  bottomRight: (direction == _MarkDirection.right) ? Radius.circular(12) : Radius.zero,
-              topLeft: (direction == _MarkDirection.left) ? Radius.circular(12) : Radius.zero,
-              bottomLeft: (direction == _MarkDirection.left) ? Radius.circular(12) : Radius.zero)
-
-          ),
+                  topRight: (direction == _MarkDirection.right)
+                      ? Radius.circular(12)
+                      : Radius.zero,
+                  bottomRight: (direction == _MarkDirection.right)
+                      ? Radius.circular(12)
+                      : Radius.zero,
+                  topLeft: (direction == _MarkDirection.left)
+                      ? Radius.circular(12)
+                      : Radius.zero,
+                  bottomLeft: (direction == _MarkDirection.left)
+                      ? Radius.circular(12)
+                      : Radius.zero)),
         ),
-        if (direction == _MarkDirection.left)
-          mark
+        if (direction == _MarkDirection.left) mark
       ],
     );
 
-    if (direction == _MarkDirection.right){
+    if (direction == _MarkDirection.right) {
       return Positioned(
         child: bar,
         top: 0,
         right: 0,
       );
-    }
-    else{
+    } else {
       return Positioned(
         child: bar,
         top: 0,
@@ -68,12 +68,13 @@ class FundStatusBar extends StatelessWidget {
   final double balance;
   const FundStatusBar({Key key, this.fund, this.balance}) : super(key: key);
 
-  Color _getBarColor(){
-    if ( fund.minimumLimit != null && balance < fund.minimumLimit){
+  Color _getBarColor() {
+    if (fund.minimumLimit != null && balance < fund.minimumLimit) {
       return Colors.red;
     }
 
-    if ((fund.maximumLimit == null && fund.minimumLimit == null) || (fund.maximumLimit != null && balance >= fund.maximumLimit * 0.9)){
+    if ((fund.maximumLimit == null && fund.minimumLimit == null) ||
+        (fund.maximumLimit != null && balance >= fund.maximumLimit * 0.9)) {
       return Colors.green;
     }
 
@@ -82,10 +83,13 @@ class FundStatusBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const _height = 40.0;
     return LayoutBuilder(builder: (context, constraints) {
       double currentGoal = 0;
       double previousGoal = 0;
       double nextGoal = 0;
+      var currentGoalIsMaximum = false;
+
 
       if (fund.minimumLimit != null && fund.maximumLimit != null) {
         if (balance < fund.minimumLimit) {
@@ -96,6 +100,7 @@ class FundStatusBar extends StatelessWidget {
         if (balance >= fund.minimumLimit && balance < fund.maximumLimit) {
           currentGoal = fund.maximumLimit;
           previousGoal = fund.minimumLimit;
+          currentGoalIsMaximum = true;
         }
 
         if (balance >= fund.maximumLimit) {
@@ -122,9 +127,10 @@ class FundStatusBar extends StatelessWidget {
 
       return Container(
         width: width,
-        height: barHeight * 1.4,
+        height: _height,
         child: Stack(
           children: [
+            // Background
             Container(
               width: width,
               height: barHeight,
@@ -132,6 +138,8 @@ class FundStatusBar extends StatelessWidget {
                   color: Colors.grey,
                   borderRadius: BorderRadius.all(Radius.circular(12))),
             ),
+
+            // Status bar
             Positioned(
               child: Container(
                 width: proportionedWidth * currentToCurrentGoal +
@@ -142,6 +150,7 @@ class FundStatusBar extends StatelessWidget {
                     borderRadius: BorderRadius.all(Radius.circular(12))),
               ),
             ),
+
             if (previousGoal > 0)
               _GoalMark(
                 direction: _MarkDirection.left,
@@ -162,8 +171,18 @@ class FundStatusBar extends StatelessWidget {
                 height: barHeight,
                 width: width * 0.05,
                 direction: _MarkDirection.right,
-
               ),
+
+            if (currentGoal > 0)
+              Positioned(
+                right: width * 0.20 + 6,
+                top: barHeight + 2,
+                child: Text(
+                  "\$${currentGoal - balance} to reach ${(currentGoalIsMaximum) ? 'goal' : 'minimum'}",
+                  textAlign: TextAlign.right,
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
             // TODO Show next goal mark
             // Add next goal mark
           ],

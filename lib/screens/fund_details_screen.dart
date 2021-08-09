@@ -72,6 +72,7 @@ class FundDetailsScreen extends StatelessWidget {
                   color: Colors.white,
                   fontWeight: FontWeight.bold),
             ),
+            SizedBox(height: 4,),
             FundStatusBar(fund: fund, balance: fund.balance,)
           ],
         ),
