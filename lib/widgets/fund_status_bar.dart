@@ -121,7 +121,7 @@ class FundStatusBar extends StatelessWidget {
         }
       }
 
-      var currentToCurrentGoal =
+      var currentToCurrentGoal = (balance < 0) ? 0 :
           (currentGoal == -1) ? 1 : balance / currentGoal;
 
       final width = constraints.maxWidth;
