@@ -7,6 +7,7 @@ import 'package:savings_app/models/account.dart';
 import 'package:savings_app/models/category.dart';
 import 'package:savings_app/models/fund.dart';
 import 'package:savings_app/models/transaction.dart';
+import 'package:savings_app/widgets/fund_status_bar.dart';
 import 'package:savings_app/widgets/transaction_tile.dart';
 
 class FundDetailsScreen extends StatelessWidget {
@@ -70,7 +71,9 @@ class FundDetailsScreen extends StatelessWidget {
                   fontSize: 32,
                   color: Colors.white,
                   fontWeight: FontWeight.bold),
-            )
+            ),
+            SizedBox(height: 4,),
+            FundStatusBar(fund: fund, balance: fund.balance,)
           ],
         ),
       ),

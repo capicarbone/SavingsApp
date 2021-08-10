@@ -21,24 +21,15 @@ class SettingsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children:[
             SectionTitle(title: "Settings"),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Card(
-                child: AccountForm(),
-              ),
+            Card(
+              child: AccountForm(),
             ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Card(
-                  child: CategoryForm(),
-                ),
+              Card(
+                child: CategoryForm(),
               ),
 
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Card(
-                child: FundForm(),
-              ),
+            Card(
+              child: FundForm(),
             ),
             OutlinedButton(onPressed: (){
               BlocProvider.of<AuthenticationBloc>(context)
