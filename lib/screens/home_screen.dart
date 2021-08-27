@@ -33,15 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return SafeArea(
       child: BlocProvider(
         create: (context) {
-
-          _categoriesRepository = CategoriesRepository(authToken: widget.authToken);
-          _fundsRepository = FundsRepository(authToken: widget.authToken);
-          _accountsRepository = AccountsRepository(authToken: widget.authToken);
-
-          return SettingsSyncerBloc(
-              categoriesRepository: _categoriesRepository,
-              accountsRepository: _accountsRepository,
-              fundsRepository: _fundsRepository);
+          return SettingsSyncerBloc();
         },
         child: BlocBuilder<SettingsSyncerBloc, SettingsSyncState>(
           buildWhen: (context, state) => state is SettingsLoaded || state is InitialSync,
