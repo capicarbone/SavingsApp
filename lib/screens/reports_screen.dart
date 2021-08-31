@@ -35,12 +35,13 @@ class ReportsScreen extends StatelessWidget {
           )
         ],
         child: BlocBuilder<ReportsBloc, ReportsState>(
-          buildWhen: (context, state) {
-            return !(state is PageLoadFailed);
-          },
           builder: (context, state) {
             if (state is PageLoaded) {
               return _StatementsList(statements: state.monthStatements);
+            }
+
+            if (state is PageLoadFailed) {
+              return Center(child: Center(child: Text("Error loading reports"),),);
             }
 
             return _Loading();
