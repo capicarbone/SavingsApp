@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:savings_app/formatters.dart';
 import 'package:savings_app/models/fund.dart';
 
 enum _MarkDirection { right, left }
@@ -184,7 +185,7 @@ class FundStatusBar extends StatelessWidget {
                 right: width * 0.20 + 6,
                 top: barHeight + 2,
                 child: Text(
-                  "\$${currentGoal - balance} to reach ${(currentGoalIsMaximum) ? 'goal' : 'minimum'}",
+                  "${currencyFormat(context).format(currentGoal - balance) } to reach ${(currentGoalIsMaximum) ? 'goal' : 'minimum'}",
                   textAlign: TextAlign.right,
                   style: TextStyle(color: Colors.white),
                 ),

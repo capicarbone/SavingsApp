@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:savings_app/formatters.dart';
 
 class CurrencyValue extends StatelessWidget {
   double value;
@@ -49,7 +50,7 @@ class CurrencyValue extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      "${_valueSymbol} \$${_absoluteValue.toStringAsFixed(2)}",
+      "${_valueSymbol} ${currencyFormat(context).format(_absoluteValue)}",
       style: _textStyle,
       textAlign: TextAlign.right,
     );
