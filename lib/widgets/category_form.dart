@@ -116,7 +116,7 @@ class CategoryForm extends StatelessWidget {
               BlocBuilder<SettingsSyncerBloc, SettingsSyncState>(
                 buildWhen: (_, dataState) => dataState is DataContainerState,
                   builder: (context, dataState){
-                    var funds = (dataState as DataContainerState).funds;
+                    var funds = (dataState as DataContainerState).settings.funds;
                     return _react(builder: (ctx, state) {
                       if (!state.incomeMode)
                         return DropdownButtonFormField(

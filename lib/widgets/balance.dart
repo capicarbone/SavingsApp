@@ -29,9 +29,9 @@ class _BalanceScreenState extends State<BalanceScreen> {
   Widget _fundsSectionWidget() {
     return BlocBuilder<SettingsSyncerBloc, SettingsSyncState>(
         buildWhen: (_, state) =>
-            state is DataContainerState && state.funds != null,
+            state is DataContainerState && state.settings.funds != null,
         builder: (context, state) {
-          var funds = (state as DataContainerState).funds;
+          var funds = (state as DataContainerState).settings.funds;
           return Container(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,9 +84,9 @@ class _BalanceScreenState extends State<BalanceScreen> {
   Widget _accountsSectionWidget() {
     return BlocBuilder<SettingsSyncerBloc, SettingsSyncState>(
         buildWhen: (_, state) =>
-            state is DataContainerState && state.accounts != null,
+            state is DataContainerState && state.settings.accounts != null,
         builder: (context, state) {
-          var accounts = (state as DataContainerState).accounts;
+          var accounts = (state as DataContainerState).settings.accounts;
           return Container(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

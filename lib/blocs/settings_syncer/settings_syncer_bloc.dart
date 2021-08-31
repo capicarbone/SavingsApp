@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:savings_app/blocs/settings_data.dart';
 import 'package:savings_app/blocs/settings_syncer/settings_syncer_events.dart';
 import 'package:savings_app/blocs/settings_syncer/settings_syncer_states.dart';
 import 'package:savings_app/models/account.dart';
@@ -36,9 +37,9 @@ class SettingsSyncerBloc extends Bloc<SettingsSyncerEvent, SettingsSyncState> {
       _loadCache(event.accounts, event.funds, event.categories);
 
       yield LocalDataUpdated(
-          categories: categories,
+        settings: SettingsData(categories: categories,
           accounts: accounts,
-          funds: funds,
+          funds: funds,),
           balance: _getBalance(accounts));
     }
 
@@ -52,9 +53,9 @@ class SettingsSyncerBloc extends Bloc<SettingsSyncerEvent, SettingsSyncState> {
         _loadAllCache();
 
         yield SettingsLoaded(
-            categories: categories,
+          settings: SettingsData(categories: categories,
             accounts: accounts,
-            funds: funds,
+            funds: funds,),
             generalBalance: _getBalance(accounts));
       }
 
@@ -63,9 +64,11 @@ class SettingsSyncerBloc extends Bloc<SettingsSyncerEvent, SettingsSyncState> {
       _loadAllCache();
 
       yield SettingsLoaded(
+        settings: SettingsData(
           categories: categories,
           accounts: accounts,
           funds: funds,
+        ),
           generalBalance: _getBalance(accounts));
     }
   }

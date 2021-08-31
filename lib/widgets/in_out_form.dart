@@ -192,7 +192,7 @@ class _InOutFormState extends State<InOutForm> {
                           decoration:
                               const InputDecoration(hintText: "Account"),
                           items: [
-                            ...data.accounts.map((e) => DropdownMenuItem(
+                            ...data.settings.accounts.map((e) => DropdownMenuItem(
                                   child: Text(e.name),
                                   value: e.id,
                                 ))
@@ -203,12 +203,12 @@ class _InOutFormState extends State<InOutForm> {
                   BlocBuilder<SettingsSyncerBloc, SettingsSyncState>(
                       buildWhen: (_, dataState) =>
                           dataState is DataContainerState &&
-                          dataState.categories != null,
+                          dataState.settings.categories != null,
                       builder: (context, dataState) {
                         var data = dataState as DataContainerState;
 
                         var categoriesFiltered =
-                            data.categories.where((category) {
+                            data.settings.categories.where((category) {
                           if (widget.expenseMode) {
                             return !category.isIncome;
                           }
@@ -230,7 +230,7 @@ class _InOutFormState extends State<InOutForm> {
                           popupItemBuilder: (BuildContext context,
                               Category item, bool isSelected) {
                             return _categoryItemBuilder(
-                                context, item, data.funds, isSelected);
+                                context, item, data.settings.funds, isSelected);
                           },
                           onChanged: (category) {
                             _selectedCategory = category;

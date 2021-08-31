@@ -100,10 +100,10 @@ class _AccountTransferFormState extends State<AccountTransferForm> {
           ),
           BlocBuilder<SettingsSyncerBloc, SettingsSyncState>(
               buildWhen: (_, dataState) =>
-                  dataState is DataContainerState && dataState.accounts != null,
+                  dataState is DataContainerState && dataState.settings.accounts != null,
               builder: (context, dataState) {
 
-                var accounts = (dataState as DataContainerState).accounts;
+                var accounts = (dataState as DataContainerState).settings.accounts;
                 return DropdownButtonFormField(
                   onChanged: (accountId) {
                     accountFromId = accountId;
