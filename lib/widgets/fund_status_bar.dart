@@ -85,9 +85,6 @@ class FundStatusBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-
-
-
     return LayoutBuilder(builder: (context, constraints) {
       double currentGoal = 0;
       double previousGoal = 0;
@@ -122,8 +119,8 @@ class FundStatusBar extends StatelessWidget {
         }
       }
 
-      var currentToCurrentGoal = (balance < 0) ? 0 :
-          (currentGoal == -1) ? 1 : balance / currentGoal;
+      var currentToCurrentGoal = (balance <= 0) ? 0 :
+          (currentGoal == -1 ) ? 1 : balance / currentGoal;
 
       final width = constraints.maxWidth;
       final proportionedWidth =
