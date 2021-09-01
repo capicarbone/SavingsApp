@@ -39,20 +39,18 @@ class DataContainerState extends SettingsSyncState {
 
 class SettingsLoaded extends DataContainerState {
   SettingsLoaded(
-      {SettingsData settings,
-      double generalBalance})
+      {SettingsData settings})
       : super(
             settings: settings,
-            generalBalance: generalBalance);
+            );
 }
 
 class LocalDataUpdated extends DataContainerState {
   LocalDataUpdated(
-      {SettingsData settings,
-      double balance})
+      {SettingsData settings,})
       : super(
             settings: settings,
-            generalBalance: balance);
+            );
 }
 
 class SyncFailed extends SettingsSyncState {

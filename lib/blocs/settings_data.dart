@@ -10,4 +10,8 @@ class SettingsData {
 
   SettingsData({this.categories, this.accounts, this.funds});
 
+  // TODO Move to a entity dedicated for balances
+  double get generalBalance => accounts.fold(
+      0.0, (previousValue, element) => previousValue + element.balance);
+
 }

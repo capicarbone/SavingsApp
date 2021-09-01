@@ -11,6 +11,7 @@ import 'package:savings_app/screens/reports_screen.dart';
 import 'package:savings_app/widgets/balance.dart';
 import 'package:savings_app/widgets/new_transaction.dart';
 import 'package:savings_app/widgets/settings.dart';
+import 'package:savings_app/widgets/user_settings.dart';
 
 class HomeScreen extends StatefulWidget {
   String authToken;
@@ -35,22 +36,25 @@ class _HomeScreenState extends State<HomeScreen> {
           return SettingsSyncerBloc();
         },
         child: BlocBuilder<SettingsSyncerBloc, SettingsSyncState>(
-            buildWhen: (context, state) =>
-                state is SettingsLoaded || state is InitialSync,
+            //buildWhen: (context, state) =>
+              //  state is SettingsLoaded || state is InitialSync,
             builder: (context, state) {
               if (state is InitialSync)
                 BlocProvider.of<SettingsSyncerBloc>(context)
                     .add(SettingsSyncerSyncRequested());
 
-              if (state is SettingsLoaded) {
-                return IndexedStack(
-                  index: _selectedPageIndex,
-                  children: [
-                    const BalanceScreen(),
-                    //const NewTransactionScreen(),
-                    const ReportsScreen(),
-                    const SettingsScreen()
-                  ],
+              if (state is DataContainerState) {
+                return UserSettings(
+                  settings: state.settings,
+                  child: IndexedStack(
+                    index: _selectedPageIndex,
+                    children: [
+                      const BalanceScreen(),
+                      //const NewTransactionScreen(),
+                      const ReportsScreen(),
+                      const SettingsScreen()
+                    ],
+                  ),
                 );
               }
 
