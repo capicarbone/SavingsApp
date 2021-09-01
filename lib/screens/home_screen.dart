@@ -43,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 BlocProvider.of<SettingsSyncerBloc>(context)
                     .add(SettingsSyncerSyncRequested());
 
-              if (state is DataContainerState) {
+              if (state is SettingsLoaded) {
                 return UserSettings(
                   settings: state.settings,
                   child: IndexedStack(

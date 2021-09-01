@@ -26,31 +26,14 @@ class SyncingSettings extends SettingsSyncState {
   List<Object> get props => [initial];
 }
 
-class DataContainerState extends SettingsSyncState {
+class SettingsLoaded extends SettingsSyncState{
   final SettingsData settings;
-  final double generalBalance;
 
-  DataContainerState(
-      {this.settings, this.generalBalance});
+  SettingsLoaded(
+      {this.settings});
 
   @override
-  List<Object> get props => [settings, generalBalance];
-}
-
-class SettingsLoaded extends DataContainerState {
-  SettingsLoaded(
-      {SettingsData settings})
-      : super(
-            settings: settings,
-            );
-}
-
-class LocalDataUpdated extends DataContainerState {
-  LocalDataUpdated(
-      {SettingsData settings,})
-      : super(
-            settings: settings,
-            );
+  List<Object> get props => [settings];
 }
 
 class SyncFailed extends SettingsSyncState {

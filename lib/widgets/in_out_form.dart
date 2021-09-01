@@ -172,9 +172,9 @@ class _InOutFormState extends State<InOutForm> {
                   ),
                   BlocBuilder<SettingsSyncerBloc, SettingsSyncState>(
                       buildWhen: (_, dataState) =>
-                          dataState is DataContainerState,
+                          dataState is SettingsLoaded,
                       builder: (context, dataState) {
-                        var data = dataState as DataContainerState;
+                        var data = dataState as SettingsLoaded;
                         return DropdownButtonFormField(
                           onChanged: (accountId) {
                             _selectedAccount = accountId;
@@ -202,10 +202,10 @@ class _InOutFormState extends State<InOutForm> {
                   SizedBox(height: 24),
                   BlocBuilder<SettingsSyncerBloc, SettingsSyncState>(
                       buildWhen: (_, dataState) =>
-                          dataState is DataContainerState &&
+                          dataState is SettingsLoaded &&
                           dataState.settings.categories != null,
                       builder: (context, dataState) {
-                        var data = dataState as DataContainerState;
+                        var data = dataState as SettingsLoaded;
 
                         var categoriesFiltered =
                             data.settings.categories.where((category) {

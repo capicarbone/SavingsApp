@@ -36,7 +36,7 @@ class SettingsSyncerBloc extends Bloc<SettingsSyncerEvent, SettingsSyncState> {
     if (event is ReloadLocalData) {
       _loadCache(event.accounts, event.funds, event.categories);
 
-      yield LocalDataUpdated(
+      yield SettingsLoaded(
         settings: SettingsData(categories: categories,
           accounts: accounts,
           funds: funds,),);
