@@ -7,6 +7,7 @@ import 'package:savings_app/blocs/settings_syncer/settings_syncer_bloc.dart';
 import 'package:savings_app/blocs/settings_syncer/settings_syncer_events.dart';
 import 'package:savings_app/blocs/settings_syncer/settings_syncer_states.dart';
 import 'package:savings_app/models/fund.dart';
+import 'package:savings_app/widgets/user_settings.dart';
 
 class CategoryForm extends StatelessWidget {
 
@@ -83,6 +84,8 @@ class CategoryForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final settings = UserSettings.of(context);
+
     return BlocProvider<CategoryFormBloc>(
       create: (_) {
         return CategoryFormBloc();
@@ -113,30 +116,23 @@ class CategoryForm extends StatelessWidget {
                   Text("Is income")
                 ],
               ),
-              BlocBuilder<SettingsSyncerBloc, SettingsSyncState>(
-                buildWhen: (_, dataState) => dataState is DataContainerState,
-                  builder: (context, dataState){
-                    var funds = (dataState as DataContainerState).settings.funds;
-                    return _react(builder: (ctx, state) {
-                      if (!state.incomeMode)
-                        return DropdownButtonFormField(
-                            value: state.fundId,
-                            decoration: const InputDecoration(hintText: "Fund"),
-                            items: [
-                              ...funds.map((e) => DropdownMenuItem(
-                                child: Text(e.name),
-                                value: e.id,
-                              ))
-                            ],
-                            onChanged: (value) {
-                              _changeFund(ctx, value);
-                            });
+              _react(builder: (ctx, state) {
+                if (!state.incomeMode)
+                  return DropdownButtonFormField(
+                      value: state.fundId,
+                      decoration: const InputDecoration(hintText: "Fund"),
+                      items: [
+                        ...settings.funds.map((e) => DropdownMenuItem(
+                          child: Text(e.name),
+                          value: e.id,
+                        ))
+                      ],
+                      onChanged: (value) {
+                        _changeFund(ctx, value);
+                      });
 
-                      return Container();
-                    });
-
+                return Container();
               }),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
