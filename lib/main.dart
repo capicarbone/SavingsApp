@@ -84,7 +84,7 @@ class MyApp extends StatelessWidget {
                 900: Color(0xFF0f1325)
               }),
               accentColor: Color(0xFF2573D5),
-              backgroundColor: Color(0xff29304d),
+              backgroundColor: Color(0xFFF7F9FC),
           ),
           ),
       home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
