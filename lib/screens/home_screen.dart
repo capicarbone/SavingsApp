@@ -158,7 +158,7 @@ class _NavigationItem extends StatelessWidget {
           child: Center(
             child: Icon(
               icon,
-              color: isSelected ? Theme.of(context).primaryColor : Colors.grey,
+              color: isSelected ? Theme.of(context).colorScheme.secondary: Colors.grey,
             ),
           ),
         ),

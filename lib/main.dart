@@ -47,20 +47,19 @@ void main() async {
   Hive.registerAdapter(AccountAdapter());
   Hive.registerAdapter(FundAdapter());
 
-  runApp(
-    BlocProvider<AuthenticationBloc>(
-      create: (context) {
-        return AuthenticationBloc(userRepository: userRepository)..add(AuthenticationStarted());
-      },
-      child: MyApp(userRepository: userRepository),
-    )
-  );
+  runApp(BlocProvider<AuthenticationBloc>(
+    create: (context) {
+      return AuthenticationBloc(userRepository: userRepository)
+        ..add(AuthenticationStarted());
+    },
+    child: MyApp(userRepository: userRepository),
+  ));
 }
 
 class MyApp extends StatelessWidget {
   final UserRepository userRepository;
 
-  MyApp({Key key, @required this.userRepository}): super(key: key);
+  MyApp({Key key, @required this.userRepository}) : super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -68,14 +67,32 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Savings App',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          backgroundColor: Color(0xff29304d),
+          secondaryHeaderColor: Color(0xFF2573D5),
+          colorScheme: ColorScheme.fromSwatch(
+              primarySwatch: MaterialColor(0xFF29304d, {
+                50: Color(0xFFe5e6ea).withOpacity(1),
+                100: Color(0xFFbfc1ca),
+                200: Color(0xFF9498a6),
+                300: Color(0xFF696e82),
+                400: Color(0xFF494f68),
+                500: Color(0xFF29304d),
+                600: Color(0xFF242b46),
+                700: Color(0xFF1f243d),
+                800: Color(0xFF191e34),
+                900: Color(0xFF0f1325)
+              }),
+              accentColor: Color(0xFF2573D5),
+              backgroundColor: Color(0xff29304d),
+          ),
+          ),
       home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
         builder: (context, state) {
-
           if (state is AuthenticationSuccess) {
-            return HomeScreen(authToken: state.token,);
+            return HomeScreen(
+              authToken: state.token,
+            );
           }
 
           if (state is AuthenticationFailure) {
@@ -89,7 +106,7 @@ class MyApp extends StatelessWidget {
           }
 
           //if (state is AuthenticationInitial) {
-            return SplashScreen();
+          return SplashScreen();
           //}
         },
       ),
