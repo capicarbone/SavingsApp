@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:savings_app/blocs/settings_data.dart';
+import 'package:savings_app/models/settings_data.dart';
 import 'package:savings_app/blocs/settings_syncer/settings_syncer_events.dart';
 import 'package:savings_app/blocs/settings_syncer/settings_syncer_states.dart';
 import 'package:savings_app/models/account.dart';

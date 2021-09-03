@@ -3,7 +3,7 @@
 // settings updated
 // settings syncFailed
 import 'package:equatable/equatable.dart';
-import 'package:savings_app/blocs/settings_data.dart';
+import 'package:savings_app/models/settings_data.dart';
 import 'package:savings_app/models/account.dart';
 import 'package:savings_app/models/category.dart';
 import 'package:savings_app/models/fund.dart';

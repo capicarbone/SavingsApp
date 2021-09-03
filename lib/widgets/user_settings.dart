@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:savings_app/blocs/settings_data.dart';
+import 'package:savings_app/models/settings_data.dart';
 
 class UserSettings extends InheritedWidget {
   const UserSettings({
