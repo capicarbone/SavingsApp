@@ -13,6 +13,7 @@ import 'package:savings_app/widgets/currency_value.dart';
 import 'package:savings_app/widgets/fund_status_bar.dart';
 import 'package:savings_app/widgets/section_title.dart';
 import 'package:savings_app/widgets/user_settings.dart';
+import 'package:savings_app/widgets/utils.dart';
 
 class BalanceScreen extends StatefulWidget {
   const BalanceScreen();
@@ -59,41 +60,53 @@ class _BalanceScreenState extends State<BalanceScreen> {
             "Funds".toUpperCase(),
             style: TextStyle(color: Theme.of(context).primaryColor),
           ),
-          Column(
-            children: funds
-                .map((e) => InkWell(
-              onTap: () {
-                Navigator.of(context).pushNamed(
-                    FundDetailsScreen.routeName,
-                    arguments: {'fund': e});
-              },
-              child: ListTile(
-                title: Text(
-                  e.name,
-                ),
-                subtitle: Text(
-                  "Receiving ${(e.percetageAssignment * 100).toStringAsFixed(0)}% of your income.",
-                  style: TextStyle(fontSize: 12),
-                ),
-                trailing: Column(
-                  children: [
-                    CurrencyValue(
-                      e.balance,
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    Container(
-                        padding: EdgeInsets.only(top: 6),
-                        width: 100,
-                        child: FundStatusBar(
-                          fund: e,
-                          balance: e.balance,
-                        ))
-                  ],
-                ),
-              ),
-            ))
-                .toList(),
-          )
+          SizedBox(
+            height: 12,
+          ),
+          Container(
+            decoration: cardDecoration,
+            child: Column(
+              children: funds.asMap().entries.map((entry) {
+                var e = entry.value;
+                var i = entry.key;
+                return InkWell(
+                  onTap: () {
+                    Navigator.of(context).pushNamed(FundDetailsScreen.routeName,
+                        arguments: {'fund': e});
+                  },
+                  child: Column(
+                    children: [
+                      ListTile(
+                        title: Text(
+                          e.name,
+                        ),
+                        subtitle: Text(
+                          "Receiving ${(e.percetageAssignment * 100).toStringAsFixed(0)}% of your income.",
+                          style: TextStyle(fontSize: 12),
+                        ),
+                        trailing: Column(
+                          children: [
+                            CurrencyValue(
+                              e.balance,
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            Container(
+                                padding: EdgeInsets.only(top: 6),
+                                width: 100,
+                                child: FundStatusBar(
+                                  fund: e,
+                                  balance: e.balance,
+                                ))
+                          ],
+                        ),
+                      ),
+                      if (i != funds.length - 1) const CardDivider()
+                    ],
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
         ],
       ),
     );
@@ -108,31 +121,42 @@ class _BalanceScreenState extends State<BalanceScreen> {
             "Accounts".toUpperCase(),
             style: TextStyle(color: Theme.of(context).primaryColor),
           ),
-          Column(
-            children: accounts
-                .map((e) => InkWell(
-              onTap: () {
-                Navigator.of(context).pushNamed(
-                    AccountDetailsScreen.routeName,
-                    arguments: {'account': e}).then((_) {
-                  _refresh(context);
-                });
-              },
-              child: ListTile(
-                title: Text(
-                  e.name,
-                ),
-                trailing: CurrencyValue(
-                  e.balance,
-                  style: TextStyle(
-                      color: e.balance < 0
-                          ? Colors.red
-                          : Colors.black,
-                      fontSize: 16),
-                ),
-              ),
-            ))
-                .toList(),
+          SizedBox(height: 12,),
+          Container(
+            decoration: cardDecoration,
+            child: Column(
+              children: accounts.asMap().entries
+                  .map((entry) {
+                    final e = entry.value;
+                    final i = entry.key;
+                    return InkWell(
+                        onTap: () {
+                          Navigator.of(context).pushNamed(
+                              AccountDetailsScreen.routeName,
+                              arguments: {'account': e}).then((_) {
+                            _refresh(context);
+                          });
+                        },
+                        child: Column(
+                          children: [
+                            ListTile(
+                              title: Text(
+                                e.name,
+                              ),
+                              trailing: CurrencyValue(
+                                e.balance,
+                                style: TextStyle(
+                                    color: e.balance < 0 ? Colors.red : Colors.black,
+                                    fontSize: 16),
+                              ),
+                            ),
+                            if (i != accounts.length - 1)
+                            const CardDivider()
+                          ],
+                        ),
+                      );})
+                  .toList(),
+            ),
           )
         ],
       ),
@@ -148,7 +172,9 @@ class _BalanceScreenState extends State<BalanceScreen> {
         padding: const EdgeInsets.all(18.0),
         child: Column(
           children: <Widget>[
-            _Balance(balance: settings.generalBalance,),
+            _Balance(
+              balance: settings.generalBalance,
+            ),
             SizedBox(
               height: 18,
             ),
@@ -163,5 +189,3 @@ class _BalanceScreenState extends State<BalanceScreen> {
     );
   }
 }
-
-
