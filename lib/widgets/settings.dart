@@ -8,34 +8,38 @@ import 'package:savings_app/widgets/category_form.dart';
 import 'package:savings_app/widgets/fund_form.dart';
 import 'package:savings_app/widgets/section_title.dart';
 
+import 'content_surface.dart';
+
 class SettingsScreen extends StatelessWidget {
 
   const SettingsScreen();
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(18.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children:[
-            SectionTitle(title: "Settings"),
-            Card(
-              child: AccountForm(),
-            ),
+    return ContentSurface(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(18.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children:[
+              SectionTitle(title: "Settings"),
               Card(
-                child: CategoryForm(),
+                child: AccountForm(),
               ),
+                Card(
+                  child: CategoryForm(),
+                ),
 
-            Card(
-              child: FundForm(),
-            ),
-            OutlinedButton(onPressed: (){
-              BlocProvider.of<AuthenticationBloc>(context)
-                  .add(AuthenticationLoggedOut());
-            }, child: Text("Logout"))
-          ],
+              Card(
+                child: FundForm(),
+              ),
+              OutlinedButton(onPressed: (){
+                BlocProvider.of<AuthenticationBloc>(context)
+                    .add(AuthenticationLoggedOut());
+              }, child: Text("Logout"))
+            ],
+          ),
         ),
       ),
     );

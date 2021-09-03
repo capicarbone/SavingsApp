@@ -8,6 +8,7 @@ import 'package:savings_app/models/account.dart';
 import 'package:savings_app/models/fund.dart';
 import 'package:savings_app/screens/account_details_screen.dart';
 import 'package:savings_app/screens/fund_details_screen.dart';
+import 'package:savings_app/widgets/content_surface.dart';
 import 'package:savings_app/widgets/currency_value.dart';
 import 'package:savings_app/widgets/fund_status_bar.dart';
 import 'package:savings_app/widgets/section_title.dart';
@@ -141,23 +142,25 @@ class _BalanceScreenState extends State<BalanceScreen> {
   @override
   Widget build(BuildContext context) {
     final settings = UserSettings.of(context);
-    return SingleChildScrollView(
-        child: Container(
-      padding: const EdgeInsets.all(18.0),
-      child: Column(
-        children: <Widget>[
-          _Balance(balance: settings.generalBalance,),
-          SizedBox(
-            height: 18,
-          ),
-          _fundsSectionWidget(settings.funds),
-          SizedBox(
-            height: 18,
-          ),
-          _accountsSectionWidget(settings.accounts),
-        ],
-      ),
-    ));
+    return ContentSurface(
+      child: SingleChildScrollView(
+          child: Container(
+        padding: const EdgeInsets.all(18.0),
+        child: Column(
+          children: <Widget>[
+            _Balance(balance: settings.generalBalance,),
+            SizedBox(
+              height: 18,
+            ),
+            _fundsSectionWidget(settings.funds),
+            SizedBox(
+              height: 18,
+            ),
+            _accountsSectionWidget(settings.accounts),
+          ],
+        ),
+      )),
+    );
   }
 }
 

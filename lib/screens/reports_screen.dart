@@ -8,6 +8,7 @@ import 'package:savings_app/blocs/settings_syncer/settings_syncer_bloc.dart';
 import 'package:savings_app/blocs/settings_syncer/settings_syncer_states.dart';
 import 'package:savings_app/models/period_statement.dart';
 import 'package:savings_app/screens/report_screen.dart';
+import 'package:savings_app/widgets/content_surface.dart';
 import 'package:savings_app/widgets/section_title.dart';
 
 class ReportsScreen extends StatelessWidget {
@@ -16,36 +17,38 @@ class ReportsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => ReportsBloc(),
-      child: MultiBlocListener(
-        listeners: [
-          BlocListener<SettingsSyncerBloc, SettingsSyncState>(
-            listener: (context, state) {
-              BlocProvider.of<ReportsBloc>(context).add(ReloadData());
+    return ContentSurface(
+      child: BlocProvider(
+        create: (_) => ReportsBloc(),
+        child: MultiBlocListener(
+          listeners: [
+            BlocListener<SettingsSyncerBloc, SettingsSyncState>(
+              listener: (context, state) {
+                BlocProvider.of<ReportsBloc>(context).add(ReloadData());
+              },
+              listenWhen: (context, state) =>
+                  state is SettingsLoaded
+            ),
+            BlocListener<ReportsBloc, ReportsState>(
+              listener: (context, state) {
+                // TODO: Notify error
+              },
+              listenWhen: (context, state) => state is PageLoadFailed,
+            )
+          ],
+          child: BlocBuilder<ReportsBloc, ReportsState>(
+            builder: (context, state) {
+              if (state is PageLoaded) {
+                return _StatementsList(statements: state.monthStatements);
+              }
+
+              if (state is PageLoadFailed) {
+                return Center(child: Center(child: Text("Error loading reports"),),);
+              }
+
+              return _Loading();
             },
-            listenWhen: (context, state) =>
-                state is SettingsLoaded
           ),
-          BlocListener<ReportsBloc, ReportsState>(
-            listener: (context, state) {
-              // TODO: Notify error
-            },
-            listenWhen: (context, state) => state is PageLoadFailed,
-          )
-        ],
-        child: BlocBuilder<ReportsBloc, ReportsState>(
-          builder: (context, state) {
-            if (state is PageLoaded) {
-              return _StatementsList(statements: state.monthStatements);
-            }
-
-            if (state is PageLoadFailed) {
-              return Center(child: Center(child: Text("Error loading reports"),),);
-            }
-
-            return _Loading();
-          },
         ),
       ),
     );

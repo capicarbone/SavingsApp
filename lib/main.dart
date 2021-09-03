@@ -66,10 +66,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Savings App',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
           visualDensity: VisualDensity.adaptivePlatformDensity,
-          backgroundColor: Color(0xff29304d),
-          secondaryHeaderColor: Color(0xFF2573D5),
+          scaffoldBackgroundColor: Color(0xFF29304d),
           colorScheme: ColorScheme.fromSwatch(
               primarySwatch: MaterialColor(0xFF29304d, {
                 50: Color(0xFFe5e6ea).withOpacity(1),
@@ -84,7 +84,8 @@ class MyApp extends StatelessWidget {
                 900: Color(0xFF0f1325)
               }),
               accentColor: Color(0xFF2573D5),
-              backgroundColor: Color(0xFFF7F9FC),
+              backgroundColor: Color(0xff29304d),
+            cardColor: Color(0xFFF7F9FC)
           ),
           ),
       home: BlocBuilder<AuthenticationBloc, AuthenticationState>(

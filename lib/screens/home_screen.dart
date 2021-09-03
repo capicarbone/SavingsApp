@@ -94,6 +94,8 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
         bottomNavigationBar: BottomAppBar(
+          color: Theme.of(context).colorScheme.surface,
+          elevation: 0,
           child: LayoutBuilder(builder: (context, constraints) {
             return Row(
               children: [
