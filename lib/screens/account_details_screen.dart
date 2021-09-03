@@ -10,6 +10,7 @@ import 'package:savings_app/blocs/account_transactions/account_transactions_stat
 import 'package:savings_app/models/account.dart';
 import 'package:savings_app/models/category.dart';
 import 'package:savings_app/models/transaction.dart';
+import 'package:savings_app/widgets/content_surface.dart';
 import 'package:savings_app/widgets/transaction_tile.dart';
 
 class AccountDetailsScreen extends StatefulWidget {
@@ -112,30 +113,32 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
       });
     }
 
-    return ListView.builder(
-        controller: _scrollController,
-        itemCount: transactions.length + ((_hasNextPage)? 1 : 0),
-        itemBuilder: (_, index) {
-          if (index < transactions.length) {
-            var transaction = transactions[index];
-            var accountTransaction =
-                transaction.transactionForAccount(account.id);
+    return ContentSurface(
+      child: ListView.builder(
+          controller: _scrollController,
+          itemCount: transactions.length + ((_hasNextPage)? 1 : 0),
+          itemBuilder: (_, index) {
+            if (index < transactions.length) {
+              var transaction = transactions[index];
+              var accountTransaction =
+                  transaction.transactionForAccount(account.id);
 
-            return TransactionTile(
-              transaction: transaction,
-              title: _getShortDescription(transaction, account.id,
-                  state.accountsMap, state.categoriesMap),
-              description: transaction.description,
-              date: transaction.dateAccomplished,
-              change: accountTransaction.change,
-              onTap: (transaction) {
-                _onTransactionTap(ctx, transaction);
-              },
-            );
-          } else {
-            return Center(child: CircularProgressIndicator());
-          }
-        });
+              return TransactionTile(
+                transaction: transaction,
+                title: _getShortDescription(transaction, account.id,
+                    state.accountsMap, state.categoriesMap),
+                description: transaction.description,
+                date: transaction.dateAccomplished,
+                change: accountTransaction.change,
+                onTap: (transaction) {
+                  _onTransactionTap(ctx, transaction);
+                },
+              );
+            } else {
+              return Center(child: CircularProgressIndicator());
+            }
+          }),
+    );
   }
 
   Widget _buildLoadingView() {
@@ -147,7 +150,6 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
   Widget _buildAccountSummary(Account account) {
     return Container(
       width: double.infinity,
-      color: Colors.blueGrey,
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(
@@ -210,6 +212,7 @@ class _AccountDetailsScreenState extends State<AccountDetailsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(account.name),
+        elevation: 0,
       ),
       body: BlocProvider(
         create: (_) {

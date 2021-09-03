@@ -7,6 +7,7 @@ import 'package:savings_app/models/account.dart';
 import 'package:savings_app/models/category.dart';
 import 'package:savings_app/models/fund.dart';
 import 'package:savings_app/models/transaction.dart';
+import 'package:savings_app/widgets/content_surface.dart';
 import 'package:savings_app/widgets/fund_status_bar.dart';
 import 'package:savings_app/widgets/transaction_tile.dart';
 
@@ -55,7 +56,6 @@ class FundDetailsScreen extends StatelessWidget {
   Widget _buildFundSummary(Fund fund) {
     return Container(
       width: double.infinity,
-      color: Colors.blueGrey,
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(
@@ -99,26 +99,28 @@ class FundDetailsScreen extends StatelessWidget {
       });
     }
 
-    return ListView.builder(
-        controller: _scrollController,
-        itemCount: transactions.length + ((_hasNextPage) ? 1 : 0),
-        itemBuilder: (_, index) {
-          if (index < transactions.length) {
-            var transaction = transactions[index];
-            var fundTransaction = transaction.transactionForFund(fund.id);
-            return TransactionTile(
-              title: _getShortDescription(
-                  transaction, accounts, categories, funds, fund.id),
-              description: transaction.description,
-              date: transaction.dateAccomplished,
-              change: fundTransaction.change,
-            );
-          } else {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        });
+    return ContentSurface(
+      child: ListView.builder(
+          controller: _scrollController,
+          itemCount: transactions.length + ((_hasNextPage) ? 1 : 0),
+          itemBuilder: (_, index) {
+            if (index < transactions.length) {
+              var transaction = transactions[index];
+              var fundTransaction = transaction.transactionForFund(fund.id);
+              return TransactionTile(
+                title: _getShortDescription(
+                    transaction, accounts, categories, funds, fund.id),
+                description: transaction.description,
+                date: transaction.dateAccomplished,
+                change: fundTransaction.change,
+              );
+            } else {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          }),
+    );
   }
 
   Widget _buildFundTransactionsList(Fund fund) {
@@ -160,6 +162,7 @@ class FundDetailsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(fund.name),
+        elevation: 0,
       ),
       body: BlocProvider(
         create: (_) {
