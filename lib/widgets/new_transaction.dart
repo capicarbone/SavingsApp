@@ -47,49 +47,52 @@ class _NewTransactionScreenState extends State<NewTransactionScreen> {
               return Center(child: CircularProgressIndicator(),);
             }
             return SafeArea(
-              child: ContentSurface(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        SectionTitle(title: "New Transaction",),
-                        Card(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              NestedTabBar(
-                                onTap: (position) {
-                                  setState(() {
-                                    _selectedTab = position;
-                                  });
-                                },
-                                tabs: [
-                                  NestedTab(
-                                    text: "Expense",
-                                  ),
-                                  NestedTab(
-                                    text: "Income",
-                                  ),
-                                  NestedTab(text: "Transfer"),
-                                ],
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: IndexedStack(
-                                  index: _selectedTab,
-                                  children: [
-                                    const InOutForm(expenseMode: true,),
-                                    const InOutForm(),
-                                    const AccountTransferForm(),
+              child: Container(
+                height: double.infinity,
+                child: ContentSurface(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          SectionTitle(title: "New Transaction",),
+                          Card(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                NestedTabBar(
+                                  onTap: (position) {
+                                    setState(() {
+                                      _selectedTab = position;
+                                    });
+                                  },
+                                  tabs: [
+                                    NestedTab(
+                                      text: "Expense",
+                                    ),
+                                    NestedTab(
+                                      text: "Income",
+                                    ),
+                                    NestedTab(text: "Transfer"),
                                   ],
                                 ),
-                              ),
-                            ],
+                                Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: IndexedStack(
+                                    index: _selectedTab,
+                                    children: [
+                                      const InOutForm(expenseMode: true,),
+                                      const InOutForm(),
+                                      const AccountTransferForm(),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
