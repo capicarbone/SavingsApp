@@ -28,18 +28,21 @@ class _Balance extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        SectionTitle(title: "Balance"),
-        CurrencyValue(
-          balance,
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
-        )
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(18.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SectionTitle(title: "Balance"),
+          CurrencyValue(
+            balance,
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          )
+        ],
+      ),
     );
   }
 }
@@ -52,113 +55,119 @@ class _BalanceScreenState extends State<BalanceScreen> {
   }
 
   Widget _fundsSectionWidget(List<Fund> funds) {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            "Funds".toUpperCase(),
-            style: TextStyle(color: Theme.of(context).primaryColor),
-          ),
-          SizedBox(
-            height: 12,
-          ),
-          Container(
-            decoration: cardDecoration,
-            child: Column(
-              children: funds.asMap().entries.map((entry) {
-                var e = entry.value;
-                var i = entry.key;
-                return InkWell(
-                  onTap: () {
-                    Navigator.of(context).pushNamed(FundDetailsScreen.routeName,
-                        arguments: {'fund': e});
-                  },
-                  child: Column(
-                    children: [
-                      ListTile(
-                        title: Text(
-                          e.name,
-                        ),
-                        subtitle: Text(
-                          "Receiving ${(e.percetageAssignment * 100).toStringAsFixed(0)}% of your income.",
-                          style: TextStyle(fontSize: 12),
-                        ),
-                        trailing: Column(
-                          children: [
-                            CurrencyValue(
-                              e.balance,
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            Container(
-                                padding: EdgeInsets.only(top: 6),
-                                width: 100,
-                                child: FundStatusBar(
-                                  fund: e,
-                                  balance: e.balance,
-                                ))
-                          ],
-                        ),
-                      ),
-                      if (i != funds.length - 1) const CardDivider()
-                    ],
-                  ),
-                );
-              }).toList(),
+    return SingleChildScrollView(
+      child: Container(
+        padding: const EdgeInsets.all(18.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              "Funds".toUpperCase(),
+              style: TextStyle(color: Theme.of(context).primaryColor),
             ),
-          ),
-        ],
+            SizedBox(
+              height: 12,
+            ),
+            Container(
+              decoration: cardDecoration,
+              child: Column(
+                children: funds.asMap().entries.map((entry) {
+                  var e = entry.value;
+                  var i = entry.key;
+                  return InkWell(
+                    onTap: () {
+                      Navigator.of(context).pushNamed(FundDetailsScreen.routeName,
+                          arguments: {'fund': e});
+                    },
+                    child: Column(
+                      children: [
+                        ListTile(
+                          title: Text(
+                            e.name,
+                          ),
+                          subtitle: Text(
+                            "Receiving ${(e.percetageAssignment * 100).toStringAsFixed(0)}% of your income.",
+                            style: TextStyle(fontSize: 12),
+                          ),
+                          trailing: Column(
+                            children: [
+                              CurrencyValue(
+                                e.balance,
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              Container(
+                                  padding: EdgeInsets.only(top: 6),
+                                  width: 100,
+                                  child: FundStatusBar(
+                                    fund: e,
+                                    balance: e.balance,
+                                  ))
+                            ],
+                          ),
+                        ),
+                        if (i != funds.length - 1) const CardDivider()
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _accountsSectionWidget(List<Account> accounts) {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            "Accounts".toUpperCase(),
-            style: TextStyle(color: Theme.of(context).primaryColor),
-          ),
-          SizedBox(height: 12,),
-          Container(
-            decoration: cardDecoration,
-            child: Column(
-              children: accounts.asMap().entries
-                  .map((entry) {
-                    final e = entry.value;
-                    final i = entry.key;
-                    return InkWell(
-                        onTap: () {
-                          Navigator.of(context).pushNamed(
-                              AccountDetailsScreen.routeName,
-                              arguments: {'account': e}).then((_) {
-                            _refresh(context);
-                          });
-                        },
-                        child: Column(
-                          children: [
-                            ListTile(
-                              title: Text(
-                                e.name,
-                              ),
-                              trailing: CurrencyValue(
-                                e.balance,
-                                style: TextStyle(
-                                    color: e.balance < 0 ? Colors.red : Colors.black,
-                                    fontSize: 16),
-                              ),
-                            ),
-                            if (i != accounts.length - 1)
-                            const CardDivider()
-                          ],
-                        ),
-                      );})
-                  .toList(),
+    return SingleChildScrollView(
+      child: Container(
+        padding: const EdgeInsets.all(18.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              "Accounts".toUpperCase(),
+              style: TextStyle(color: Theme.of(context).primaryColor),
             ),
-          )
-        ],
+            SizedBox(height: 12,),
+            Container(
+              decoration: cardDecoration,
+              child: Column(
+                children: accounts.asMap().entries
+                    .map((entry) {
+                      final e = entry.value;
+                      final i = entry.key;
+                      return InkWell(
+                          onTap: () {
+                            Navigator.of(context).pushNamed(
+                                AccountDetailsScreen.routeName,
+                                arguments: {'account': e}).then((_) {
+                              _refresh(context);
+                            });
+                          },
+                          child: Column(
+                            children: [
+                              ListTile(
+                                title: Text(
+                                  e.name,
+                                ),
+                                trailing: CurrencyValue(
+                                  e.balance,
+                                  style: TextStyle(
+                                      color: e.balance < 0 ? Colors.red : Colors.black,
+                                      fontSize: 16),
+                                ),
+                              ),
+                              if (i != accounts.length - 1)
+                              const CardDivider()
+                            ],
+                          ),
+                        );})
+                    .toList(),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -167,25 +176,30 @@ class _BalanceScreenState extends State<BalanceScreen> {
   Widget build(BuildContext context) {
     final settings = UserSettings.of(context);
     return ContentSurface(
-      child: SingleChildScrollView(
-          child: Container(
-        padding: const EdgeInsets.all(18.0),
+      child: Container(
         child: Column(
           children: <Widget>[
             _Balance(
               balance: settings.generalBalance,
             ),
-            SizedBox(
-              height: 18,
-            ),
-            _fundsSectionWidget(settings.funds),
-            SizedBox(
-              height: 18,
-            ),
-            _accountsSectionWidget(settings.accounts),
+            Flexible(
+              child: LayoutBuilder(
+                builder: (context, contraints) {
+                  return Container(
+                    height: contraints.maxHeight,
+                    child: PageView(
+                      children: [
+                        _fundsSectionWidget(settings.funds),
+                        _accountsSectionWidget(settings.accounts),
+                      ],
+                    ),
+                  );
+                }
+              ),
+            )
           ],
         ),
-      )),
+      ),
     );
   }
 }
