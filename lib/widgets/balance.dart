@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:meta/meta.dart';
 import 'package:flutter/material.dart';
 import 'package:savings_app/blocs/settings_syncer/settings_syncer_bloc.dart';
@@ -29,16 +30,18 @@ class _Balance extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(18.0),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           SectionTitle(title: "Balance"),
           CurrencyValue(
             balance,
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
+            style: GoogleFonts.poppins(
+              height: 1,
+              color: Theme.of(context).colorScheme.primary,
+              fontSize: 36,
+              fontWeight: FontWeight.w600,
             ),
           )
         ],
@@ -57,7 +60,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
   Widget _fundsSectionWidget(List<Fund> funds) {
     return SingleChildScrollView(
       child: Container(
-        padding: const EdgeInsets.all(18.0),
+        padding: const EdgeInsets.all(24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -121,7 +124,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
   Widget _accountsSectionWidget(List<Account> accounts) {
     return SingleChildScrollView(
       child: Container(
-        padding: const EdgeInsets.all(18.0),
+        padding: const EdgeInsets.all(24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[

@@ -38,10 +38,7 @@ class CurrencyValue extends StatelessWidget {
 
   TextStyle get _textStyle {
     if (style != null) {
-      return _baseTextStyle.copyWith(
-          color: style.color,
-          fontSize: style.fontSize,
-          fontWeight: style.fontWeight);
+      return _baseTextStyle.merge(style);
     }
 
     return _baseTextStyle;
