@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:savings_app/app_colors.dart';
 import 'package:savings_app/formatters.dart';
 import 'package:savings_app/models/fund.dart';
 
@@ -71,15 +72,15 @@ class FundStatusBar extends StatelessWidget {
 
   Color _getBarColor() {
     if (fund.minimumLimit != null && balance < fund.minimumLimit) {
-      return Colors.red;
+      return AppColors.decrease;
     }
 
     if ((fund.maximumLimit == null && fund.minimumLimit == null) ||
         (fund.maximumLimit != null && balance >= fund.maximumLimit * 0.9)) {
-      return Colors.green;
+      return AppColors.increase;
     }
 
-    return Colors.orange;
+    return AppColors.low;
   }
 
   @override
