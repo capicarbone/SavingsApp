@@ -75,7 +75,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
               decoration: cardDecoration,
               child: Column(
                 children: funds.asMap().entries.map((entry) {
-                  var e = entry.value;
+                  Fund e = entry.value;
                   var i = entry.key;
                   return InkWell(
                     onTap: () {

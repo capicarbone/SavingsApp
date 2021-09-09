@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:savings_app/app_colors.dart';
 import 'package:savings_app/blocs/authentication/authentication_bloc.dart';
 import 'package:savings_app/blocs/authentication/authentication_events.dart';
 import 'package:savings_app/blocs/authentication/authentication_states.dart';
@@ -88,6 +89,8 @@ class MyApp extends StatelessWidget {
               }),
               accentColor: Color(0xFF2573D5),
               backgroundColor: Color(0xff29304d),
+            errorColor: AppColors.error,
+
             cardColor: Color(0xFFF7F9FC)
           ),
           ),
