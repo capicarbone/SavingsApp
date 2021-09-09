@@ -5,7 +5,7 @@ import 'package:savings_app/models/fund.dart';
 enum _MarkDirection { right, left }
 
 class _GoalMark extends StatelessWidget {
-  final _MARK_WIDTH = 3.0;
+  final _MARK_WIDTH = 2.0;
 
   final height;
   final width;
@@ -126,7 +126,7 @@ class FundStatusBar extends StatelessWidget {
       final proportionedWidth =
           width - width * 0.25 * ((previousGoal != 0) ? 2 : 1);
 
-      final height = smallArea ? 15.0 : 35.0;
+      final height = smallArea ? 9.0 : 35.0;
       final barHeight = smallArea ? height * 0.8 : height * 0.5;
 
       return Container(

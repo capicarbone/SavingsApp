@@ -79,7 +79,8 @@ class _BalanceScreenState extends State<BalanceScreen> {
                   var i = entry.key;
                   return InkWell(
                     onTap: () {
-                      Navigator.of(context).pushNamed(FundDetailsScreen.routeName,
+                      Navigator.of(context).pushNamed(
+                          FundDetailsScreen.routeName,
                           arguments: {'fund': e});
                     },
                     child: Column(
@@ -87,20 +88,24 @@ class _BalanceScreenState extends State<BalanceScreen> {
                         ListTile(
                           title: Text(
                             e.name,
+                            style: GoogleFonts.poppins(
+                                fontSize: 16, fontWeight: FontWeight.w500),
                           ),
                           subtitle: Text(
                             "Receiving ${(e.percetageAssignment * 100).toStringAsFixed(0)}% of your income.",
                             style: TextStyle(fontSize: 12),
                           ),
                           trailing: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               CurrencyValue(
                                 e.balance,
-                                style: TextStyle(fontSize: 16),
+                                style: GoogleFonts.poppins(
+                                    fontSize: 14, fontWeight: FontWeight.w500),
                               ),
                               Container(
-                                  padding: EdgeInsets.only(top: 6),
-                                  width: 100,
+                                  width: 90,
                                   child: FundStatusBar(
                                     fund: e,
                                     balance: e.balance,
@@ -132,41 +137,42 @@ class _BalanceScreenState extends State<BalanceScreen> {
               "Accounts".toUpperCase(),
               style: TextStyle(color: Theme.of(context).primaryColor),
             ),
-            SizedBox(height: 12,),
+            SizedBox(
+              height: 12,
+            ),
             Container(
               decoration: cardDecoration,
               child: Column(
-                children: accounts.asMap().entries
-                    .map((entry) {
-                      final e = entry.value;
-                      final i = entry.key;
-                      return InkWell(
-                          onTap: () {
-                            Navigator.of(context).pushNamed(
-                                AccountDetailsScreen.routeName,
-                                arguments: {'account': e}).then((_) {
-                              _refresh(context);
-                            });
-                          },
-                          child: Column(
-                            children: [
-                              ListTile(
-                                title: Text(
-                                  e.name,
-                                ),
-                                trailing: CurrencyValue(
-                                  e.balance,
-                                  style: TextStyle(
-                                      color: e.balance < 0 ? Colors.red : Colors.black,
-                                      fontSize: 16),
-                                ),
-                              ),
-                              if (i != accounts.length - 1)
-                              const CardDivider()
-                            ],
+                children: accounts.asMap().entries.map((entry) {
+                  final e = entry.value;
+                  final i = entry.key;
+                  return InkWell(
+                    onTap: () {
+                      Navigator.of(context).pushNamed(
+                          AccountDetailsScreen.routeName,
+                          arguments: {'account': e}).then((_) {
+                        _refresh(context);
+                      });
+                    },
+                    child: Column(
+                      children: [
+                        ListTile(
+                          title: Text(
+                            e.name,
                           ),
-                        );})
-                    .toList(),
+                          trailing: CurrencyValue(
+                            e.balance,
+                            style: TextStyle(
+                                color:
+                                    e.balance < 0 ? Colors.red : Colors.black,
+                                fontSize: 16),
+                          ),
+                        ),
+                        if (i != accounts.length - 1) const CardDivider()
+                      ],
+                    ),
+                  );
+                }).toList(),
               ),
             )
           ],
@@ -186,19 +192,17 @@ class _BalanceScreenState extends State<BalanceScreen> {
               balance: settings.generalBalance,
             ),
             Flexible(
-              child: LayoutBuilder(
-                builder: (context, contraints) {
-                  return Container(
-                    height: contraints.maxHeight,
-                    child: PageView(
-                      children: [
-                        _fundsSectionWidget(settings.funds),
-                        _accountsSectionWidget(settings.accounts),
-                      ],
-                    ),
-                  );
-                }
-              ),
+              child: LayoutBuilder(builder: (context, contraints) {
+                return Container(
+                  height: contraints.maxHeight,
+                  child: PageView(
+                    children: [
+                      _fundsSectionWidget(settings.funds),
+                      _accountsSectionWidget(settings.accounts),
+                    ],
+                  ),
+                );
+              }),
             )
           ],
         ),

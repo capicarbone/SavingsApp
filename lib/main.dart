@@ -72,6 +72,7 @@ class MyApp extends StatelessWidget {
         fontFamily: GoogleFonts.poppins().fontFamily,
           visualDensity: VisualDensity.adaptivePlatformDensity,
           scaffoldBackgroundColor: Color(0xFF29304d),
+          textTheme: TextTheme(),
           colorScheme: ColorScheme.fromSwatch(
               primarySwatch: MaterialColor(0xFF29304d, {
                 50: Color(0xFFe5e6ea).withOpacity(1),

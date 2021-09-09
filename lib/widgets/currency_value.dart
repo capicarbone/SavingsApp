@@ -21,15 +21,18 @@ class CurrencyValue extends StatelessWidget {
   }
 
   Color get _color {
-    if (value > 0) {
-      return Colors.green;
+
+    if (asChange){
+      if (value > 0) {
+        return Colors.green;
+      }
+
+      if (value < 0) {
+        return Colors.red;
+      }
     }
 
-    if (value < 0) {
-      return Colors.red;
-    }
-
-    return Colors.black54;
+    return Color(0xFF2B2B2B);
   }
 
   double get _absoluteValue => (value < 0) ? value * -1 : value;
@@ -46,9 +49,10 @@ class CurrencyValue extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Text(
       "${_valueSymbol} ${currencyFormat(context).format(_absoluteValue)}",
-      style: _textStyle,
+      style: _textStyle.copyWith(color: asChange ? _color : Theme.of(context).textTheme.bodyText1.color),
       textAlign: TextAlign.right,
     );
   }
