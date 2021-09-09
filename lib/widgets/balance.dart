@@ -159,13 +159,16 @@ class _BalanceScreenState extends State<BalanceScreen> {
                         ListTile(
                           title: Text(
                             e.name,
+                            style: GoogleFonts.poppins(fontWeight: FontWeight.w500,
+                            fontSize: 16),
                           ),
                           trailing: CurrencyValue(
                             e.balance,
-                            style: TextStyle(
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w500,
                                 color:
                                     e.balance < 0 ? Colors.red : Colors.black,
-                                fontSize: 16),
+                                fontSize: 14),
                           ),
                         ),
                         if (i != accounts.length - 1) const CardDivider()
