@@ -12,6 +12,7 @@ import 'package:savings_app/screens/fund_details_screen.dart';
 import 'package:savings_app/widgets/content_surface.dart';
 import 'package:savings_app/widgets/currency_value.dart';
 import 'package:savings_app/widgets/fund_status_bar.dart';
+import 'package:savings_app/widgets/round_tabs.dart';
 import 'package:savings_app/widgets/section_title.dart';
 import 'package:savings_app/widgets/user_settings.dart';
 import 'package:savings_app/widgets/utils.dart';
@@ -51,6 +52,20 @@ class _Balance extends StatelessWidget {
 }
 
 class _BalanceScreenState extends State<BalanceScreen> {
+  PageController _pageController;
+
+  @override
+  void initState() {
+    _pageController = PageController(initialPage: 0);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
   void _refresh(BuildContext ctx) {
     //TODO: I should update from the database and not from the server
     // so, calling the SummaryBloc it should be the right choice.
@@ -159,13 +174,13 @@ class _BalanceScreenState extends State<BalanceScreen> {
                         ListTile(
                           title: Text(
                             e.name,
-                            style: GoogleFonts.poppins(fontWeight: FontWeight.w500,
-                            fontSize: 16),
+                            style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.w500, fontSize: 16),
                           ),
                           trailing: CurrencyValue(
                             e.balance,
                             style: GoogleFonts.poppins(
-                              fontWeight: FontWeight.w500,
+                                fontWeight: FontWeight.w500,
                                 color:
                                     e.balance < 0 ? Colors.red : Colors.black,
                                 fontSize: 14),
@@ -184,6 +199,17 @@ class _BalanceScreenState extends State<BalanceScreen> {
     );
   }
 
+  void onTabSelected(int index) {
+    if (index < _pageController.page) {
+      _pageController.previousPage(
+          duration: Duration(milliseconds: 500), curve: Curves.ease);
+    }
+    if (index > _pageController.page) {
+      _pageController.nextPage(
+          duration: Duration(milliseconds: 500), curve: Curves.ease);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final settings = UserSettings.of(context);
@@ -194,11 +220,16 @@ class _BalanceScreenState extends State<BalanceScreen> {
             _Balance(
               balance: settings.generalBalance,
             ),
+            RoundTabs(
+              tabs: ["Funds", "Accounts"],
+              onTabSelected: onTabSelected,
+            ),
             Flexible(
               child: LayoutBuilder(builder: (context, contraints) {
                 return Container(
                   height: contraints.maxHeight,
                   child: PageView(
+                    controller: _pageController,
                     children: [
                       _fundsSectionWidget(settings.funds),
                       _accountsSectionWidget(settings.accounts),
