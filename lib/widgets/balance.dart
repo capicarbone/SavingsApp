@@ -79,10 +79,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(
-              "Funds".toUpperCase(),
-              style: TextStyle(color: Theme.of(context).primaryColor),
-            ),
+
             SizedBox(
               height: 12,
             ),
@@ -148,10 +145,6 @@ class _BalanceScreenState extends State<BalanceScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(
-              "Accounts".toUpperCase(),
-              style: TextStyle(color: Theme.of(context).primaryColor),
-            ),
             SizedBox(
               height: 12,
             ),
