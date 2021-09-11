@@ -223,6 +223,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
             RoundTabs(
               tabs: ["Funds", "Accounts"],
               onTabSelected: onTabSelected,
+              pageController: _pageController,
             ),
             Flexible(
               child: LayoutBuilder(builder: (context, contraints) {
