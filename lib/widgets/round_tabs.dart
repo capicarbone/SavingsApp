@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class RoundTabs extends StatefulWidget {
   final List<String> tabs;
@@ -20,13 +21,10 @@ class _RoundTabsState extends State<RoundTabs> {
   void initState() {
     _pageListener = () {
       setState(() {
-        if (widget.pageController.page.round() != selected){
-
+        if (widget.pageController.page.round() != selected) {
           selected = widget.pageController.page.round();
-
         }
       });
-
     };
     widget.pageController.addListener(_pageListener);
     super.initState();
@@ -40,42 +38,60 @@ class _RoundTabsState extends State<RoundTabs> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, BoxConstraints constraints) {
-        return Stack(
-          children: [
-            Positioned(
-              left: (constraints.maxWidth - (constraints.maxWidth / 2)) * (widget.pageController.position.pixels / widget.pageController.position.maxScrollExtent),
-              child: Container(
-                decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary),
-                height: 20,
-                width: constraints.maxWidth / 2,
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+    return Column(
+      children: [
+        Container(
+          height: 32,
+          decoration: BoxDecoration(
+              border:
+                  Border.all(width: 2, color: Theme.of(context).colorScheme.secondary),
+              borderRadius: BorderRadius.circular(15)),
+          child: LayoutBuilder(builder: (context, BoxConstraints constraints) {
+            return Stack(
               children: [
-                ...widget.tabs.asMap().entries.map(
-                      (e) => GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selected = e.key;
-                            });
-                            widget.onTabSelected(e.key);
-                          },
-                          child: Text(e.value,
-                              style: TextStyle(
-                                color: e.key == selected
-                                    ? Colors.white
-                                    : Theme.of(context).colorScheme.secondary,
-                              ))),
-                    )
+                Positioned(
+                  left: (constraints.maxWidth - (constraints.maxWidth / 2)) *
+                      (widget.pageController.position.pixels /
+                          widget.pageController.position.maxScrollExtent),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.secondary,
+                        borderRadius: BorderRadius.circular(13)),
+                    height: 28,
+                    width: constraints.maxWidth / 2,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    ...widget.tabs.asMap().entries.map(
+                          (e) => GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  selected = e.key;
+                                });
+                                widget.onTabSelected(e.key);
+                              },
+                              child: Center(
+                                child: Text(e.value,
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      color: e.key == selected
+                                          ? Colors.white
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                    )),
+                              )),
+                        )
+                  ],
+                ),
               ],
-            ),
-
-          ],
-        );
-      }
+            );
+          }),
+        ),
+      ],
     );
   }
 }

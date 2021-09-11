@@ -75,7 +75,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
   Widget _fundsSectionWidget(List<Fund> funds) {
     return SingleChildScrollView(
       child: Container(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -141,7 +141,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
   Widget _accountsSectionWidget(List<Account> accounts) {
     return SingleChildScrollView(
       child: Container(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -213,10 +213,13 @@ class _BalanceScreenState extends State<BalanceScreen> {
             _Balance(
               balance: settings.generalBalance,
             ),
-            RoundTabs(
-              tabs: ["Funds", "Accounts"],
-              onTabSelected: onTabSelected,
-              pageController: _pageController,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: RoundTabs(
+                tabs: ["Funds", "Accounts"],
+                onTabSelected: onTabSelected,
+                pageController: _pageController,
+              ),
             ),
             Flexible(
               child: LayoutBuilder(builder: (context, contraints) {
