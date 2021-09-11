@@ -19,12 +19,14 @@ class _RoundTabsState extends State<RoundTabs> {
   @override
   void initState() {
     _pageListener = () {
-      print("triggered");
-      if (widget.pageController.page.round() != selected){
-        setState(() {
+      setState(() {
+        if (widget.pageController.page.round() != selected){
+
           selected = widget.pageController.page.round();
-        });
-      }
+
+        }
+      });
+
     };
     widget.pageController.addListener(_pageListener);
     super.initState();
@@ -38,25 +40,42 @@ class _RoundTabsState extends State<RoundTabs> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        ...widget.tabs.asMap().entries.map(
-              (e) => GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selected = e.key;
-                    });
-                    widget.onTabSelected(e.key);
-                  },
-                  child: Text(e.value,
-                      style: TextStyle(
-                        color: e.key == selected
-                            ? Theme.of(context).colorScheme.secondary
-                            : Theme.of(context).colorScheme.primary,
-                      ))),
-            )
-      ],
+    return LayoutBuilder(
+      builder: (context, BoxConstraints constraints) {
+        return Stack(
+          children: [
+            Positioned(
+              left: (constraints.maxWidth - (constraints.maxWidth / 2)) * (widget.pageController.position.pixels / widget.pageController.position.maxScrollExtent),
+              child: Container(
+                decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary),
+                height: 20,
+                width: constraints.maxWidth / 2,
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ...widget.tabs.asMap().entries.map(
+                      (e) => GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              selected = e.key;
+                            });
+                            widget.onTabSelected(e.key);
+                          },
+                          child: Text(e.value,
+                              style: TextStyle(
+                                color: e.key == selected
+                                    ? Colors.white
+                                    : Theme.of(context).colorScheme.secondary,
+                              ))),
+                    )
+              ],
+            ),
+
+          ],
+        );
+      }
     );
   }
 }
