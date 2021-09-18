@@ -38,33 +38,35 @@ class _RoundTabsState extends State<RoundTabs> {
 
   @override
   Widget build(BuildContext context) {
+    final pagerScrollOffset = widget.pageController.position.pixels /
+        widget.pageController.position.maxScrollExtent;
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-          Container(
-            color: Colors.red,
-            width: 21,
-            height: 7,
-          )
-        ],),
+            Container(
+              color: Colors.red,
+              width: 21,
+              height: 7,
+            )
+          ],
+        ),
         SizedBox(
           height: 3,
         ),
         Container(
           height: 28,
           decoration: BoxDecoration(
-              border:
-                  Border.all(width: 2, color: Theme.of(context).colorScheme.secondary),
+              border: Border.all(
+                  width: 2, color: Theme.of(context).colorScheme.secondary),
               borderRadius: BorderRadius.circular(15)),
           child: LayoutBuilder(builder: (context, BoxConstraints constraints) {
             return Stack(
               children: [
                 Positioned(
                   left: (constraints.maxWidth - (constraints.maxWidth / 2)) *
-                      (widget.pageController.position.pixels /
-                          widget.pageController.position.maxScrollExtent),
+                      pagerScrollOffset,
                   child: Container(
                     decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.secondary,
@@ -106,15 +108,21 @@ class _RoundTabsState extends State<RoundTabs> {
         SizedBox(
           height: 3,
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              color: Colors.red,
-              width: 21,
-              height: 7,
-            )
-          ],),
+        LayoutBuilder(builder: (context, BoxConstraints constraints) {
+          final tabSize = constraints.maxWidth / 2;
+          final arrowSize = 21.0;
+          final arrowOffset = (tabSize / 2) * 2 * pagerScrollOffset;
+          return Row(
+            children: [
+              Container(width: (tabSize / 2) - (arrowSize / 2) + arrowOffset),
+              Container(
+                color: Colors.red,
+                width: arrowSize,
+                height: 7,
+              )
+            ],
+          );
+        }),
       ],
     );
   }
