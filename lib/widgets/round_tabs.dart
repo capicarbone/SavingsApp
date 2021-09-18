@@ -76,28 +76,36 @@ class _RoundTabsState extends State<RoundTabs> {
                   ),
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     ...widget.tabs.asMap().entries.map(
-                          (e) => GestureDetector(
+                          (e) => Expanded(
+                            child: GestureDetector(
                               onTap: () {
                                 setState(() {
                                   selected = e.key;
                                 });
                                 widget.onTabSelected(e.key);
                               },
-                              child: Center(
-                                child: Text(e.value,
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                      color: e.key == selected
-                                          ? Colors.white
-                                          : Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
-                                    )),
-                              )),
+                              child: Container(
+                                // For some reason the GestureDecture needs
+                                // a background.
+                                color: Colors.transparent,
+                                child: Center(
+                                  child: Text(e.value,
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                        color: e.key == selected
+                                            ? Colors.white
+                                            : Theme.of(context)
+                                                .colorScheme
+                                                .secondary,
+                                      )),
+                                ),
+                              ),
+                            ),
+                          ),
                         )
                   ],
                 ),
