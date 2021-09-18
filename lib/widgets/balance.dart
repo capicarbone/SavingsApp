@@ -214,7 +214,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
               balance: settings.generalBalance,
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               child: RoundTabs(
                 tabs: ["Funds", "Accounts"],
                 onTabSelected: onTabSelected,

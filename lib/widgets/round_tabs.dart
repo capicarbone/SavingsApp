@@ -40,8 +40,20 @@ class _RoundTabsState extends State<RoundTabs> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+          Container(
+            color: Colors.red,
+            width: 21,
+            height: 7,
+          )
+        ],),
+        SizedBox(
+          height: 3,
+        ),
         Container(
-          height: 32,
+          height: 28,
           decoration: BoxDecoration(
               border:
                   Border.all(width: 2, color: Theme.of(context).colorScheme.secondary),
@@ -57,7 +69,7 @@ class _RoundTabsState extends State<RoundTabs> {
                     decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.secondary,
                         borderRadius: BorderRadius.circular(13)),
-                    height: 28,
+                    height: 24,
                     width: constraints.maxWidth / 2,
                   ),
                 ),
@@ -91,6 +103,18 @@ class _RoundTabsState extends State<RoundTabs> {
             );
           }),
         ),
+        SizedBox(
+          height: 3,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              color: Colors.red,
+              width: 21,
+              height: 7,
+            )
+          ],),
       ],
     );
   }
